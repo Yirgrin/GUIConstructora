@@ -1,6 +1,6 @@
 
 package Visual;
-
+import AlquileresPanel.*;
 public class Inicio extends javax.swing.JFrame {
 
     public Inicio() {
@@ -335,7 +335,9 @@ public class Inicio extends javax.swing.JFrame {
     }//GEN-LAST:event_btnMaquinariaActionPerformed
 
     private void btnalquileresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnalquileresActionPerformed
-        
+        this.dispose();
+        Alquileres nuevoAlquiler = new Alquileres();
+        nuevoAlquiler.setVisible(true);
     }//GEN-LAST:event_btnalquileresActionPerformed
 
     private void btnActividadesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActividadesActionPerformed
