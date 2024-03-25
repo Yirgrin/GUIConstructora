@@ -1,4 +1,5 @@
-package AlquileresPanel;
+package Gestion_TareasPanel;
+import AlquileresPanel.*;
 import Visual.*;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -216,6 +217,7 @@ public class Alquileres extends javax.swing.JFrame implements ActionListener{
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Alquileres.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
