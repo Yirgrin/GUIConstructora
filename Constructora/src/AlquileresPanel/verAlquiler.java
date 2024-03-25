@@ -4,10 +4,8 @@
  */
 package AlquileresPanel;
 import ConexionBD.OracleDBManager;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -23,7 +21,7 @@ public class verAlquiler extends javax.swing.JPanel {
         initComponents();
     }
     
-    private void mostrarAlquileres() {
+    public void mostrarAlquileres() {
         // Sentencia SQL para obtener todos los alquileres
         String sql = "SELECT alquiler_id, maquina_id, codigo_proveedor, direccion, telefono_contacto, fecha_alquiler, fecha_devolucion FROM Alquileres";
 
@@ -50,7 +48,25 @@ public class verAlquiler extends javax.swing.JPanel {
             System.out.println("Error al mostrar alquileres: " + e.getMessage());
         }
     }
-
+    
+    public void borrarAlquileres(int alquilerId){
+    try {
+        Connection conn = conexion.conectar();
+        String sql = "DELETE FROM Alquileres WHERE alquiler_id = ?";
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        pstmt.setInt(1, alquilerId);
+        int filasAfectadas = pstmt.executeUpdate();
+        if (filasAfectadas > 0) {
+            JOptionPane.showMessageDialog(this, "Alquiler eliminado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "El alquiler no existe o ya ha sido eliminado.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        pstmt.close();
+        conn.close();
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(this, "Por favor, seleccione una fila para eliminar.", "Error", JOptionPane.ERROR_MESSAGE);
+    }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

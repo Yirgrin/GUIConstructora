@@ -36,22 +36,3 @@ public class OracleDBManager {
         }
     }
 }
-    /*public static Connection getConnection() throws SQLException {
-        try {
-            Class.forName("oracle.jdbc.driver.OracleDriver");
-            return DriverManager.getConnection(URL, USER, PASSWORD);
-        } catch (ClassNotFoundException | SQLException ex) {
-            throw new SQLException("Error al conectar a la base de datos: " + ex.getMessage());
-        }
-    }
-
-    // Método para cerrar la conexión
-    public static void closeConnection(Connection conn) {
-        if (conn != null) {
-            try {
-                conn.close();
-            } catch (SQLException ex) {
-                System.out.println("Error al cerrar la conexión: " + ex.getMessage());
-            }
-        }
-    }*/

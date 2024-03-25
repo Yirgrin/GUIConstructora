@@ -52,6 +52,7 @@ public class addAlquiler extends javax.swing.JPanel {
             // Ejecutar la inserción
             pstmt.executeUpdate();
             System.out.println("Alquiler insertado correctamente.");
+            conexion.desconectar();
         } catch (SQLException e) {
             System.out.println("Error al insertar alquiler: " + e.getMessage());
         }

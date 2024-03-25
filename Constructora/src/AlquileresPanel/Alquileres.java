@@ -3,6 +3,7 @@ import Visual.*;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JOptionPane;
 /**
  *
  * @author Melvin
@@ -11,10 +12,13 @@ public class Alquileres extends javax.swing.JFrame implements ActionListener{
 
     addAlquiler p1 = new addAlquiler();
     verAlquiler p3 = new verAlquiler();
+
     
     public Alquileres() {
         initComponents();
         this.setLocationRelativeTo(null);
+        this.p3 = p3;
+
     }
 
     /**
@@ -164,7 +168,18 @@ public class Alquileres extends javax.swing.JFrame implements ActionListener{
     }//GEN-LAST:event_AgregarActionPerformed
 
     private void EliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EliminarActionPerformed
+        int selectedRow = jTable1.getSelectedRow();
+
+    // Verificamos si hay una fila seleccionada
+    if (selectedRow != -1) {
+        // Obtenemos el alquilerId de la fila seleccionada
+        int alquilerId = (int) jTable1.getValueAt(selectedRow, 0);
         
+        // Llamamos al método para borrar el alquiler de la base de datos
+        p3.borrarAlquileres(alquilerId);
+    } else {
+        JOptionPane.showMessageDialog(this, "Por favor, seleccione una fila para eliminar.", "Error", JOptionPane.ERROR_MESSAGE);
+    }
     }//GEN-LAST:event_EliminarActionPerformed
 
     private void VerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VerActionPerformed
@@ -174,6 +189,8 @@ public class Alquileres extends javax.swing.JFrame implements ActionListener{
         content.add(p3,BorderLayout.CENTER);
         content.validate();
         content.repaint(); 
+        p3.mostrarAlquileres();
+        
     }//GEN-LAST:event_VerActionPerformed
 
     private void EditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarActionPerformed
