@@ -4,9 +4,13 @@
  */
 package Proyectos;
 import ConexionBD.OracleDBManager;
+import java.math.BigDecimal;
 import java.sql.*;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import com.toedter.calendar.JDateChooser;
+import java.awt.GridLayout;
+import java.util.Date;
 
 /**
  *
@@ -14,15 +18,23 @@ import javax.swing.table.DefaultTableModel;
  */
 public class verProyecto extends javax.swing.JPanel {
     OracleDBManager conexion = new OracleDBManager();
+    JDateChooser dateInicio = new JDateChooser();
+    JDateChooser dateFinalizacion = new JDateChooser();
+    
+    
+    
     /**
-     * Creates new form verAlquiler
+     * Creates new form verProyecto
      */
     public verProyecto() {
         initComponents();
+        dateInicio.setDateFormatString("yyyy-MM-dd");
+        dateFinalizacion.setDateFormatString("yyyy-MM-dd");
+        
     }
     
     public void mostrarProyecto() {
-        // Sentencia SQL para obtener todos los alquileres
+        // Sentencia SQL para obtener todos los proyectos
         String sql = "SELECT proyecto_id, codigo_proyecto, nombre, descripcion, fecha_inicio, fecha_finalizacion, cliente_datos FROM PROYECTOS";
 
         try {
@@ -53,69 +65,83 @@ public class verProyecto extends javax.swing.JPanel {
     int selectedRow = jTable1.getSelectedRow();
     int proyectoId;
     if (selectedRow != -1) {
-         alquilerId = (int) jTable1.getValueAt(selectedRow, 0);
+         proyectoId = ((BigDecimal) jTable1.getValueAt(selectedRow, 0)).intValue();
         try {
             Connection conn = conexion.conectar();
-            String sql = "DELETE FROM Alquileres WHERE alquiler_id = ?";
+            String sql = "DELETE FROM PROYECTOS WHERE PROYECTO_ID = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, alquilerId);
+            pstmt.setInt(1, proyectoId);
             int filasAfectadas = pstmt.executeUpdate();
             if (filasAfectadas > 0) {
-                JOptionPane.showMessageDialog(null, "Alquiler eliminado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Proyecto eliminado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                JOptionPane.showMessageDialog(null, "El alquiler no existe o ya ha sido eliminado.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "El Proyecto no existe o ya ha sido eliminado.", "Error", JOptionPane.ERROR_MESSAGE);
             }
             pstmt.close();
             conn.close();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al eliminar el alquiler: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Error al eliminar el Proyecto: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     } else {
         JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para eliminar.", "Error", JOptionPane.ERROR_MESSAGE);
     }
+    mostrarProyecto();
     }
-    public void editProyecto(){
-        int selectedRow = jTable1.getSelectedRow();
     
+    public void editProyecto(){
+    int selectedRow = jTable1.getSelectedRow();
     if (selectedRow != -1) {
-        int alquilerId = (int) jTable1.getValueAt(selectedRow, 0);
+        int proyectoId = ((BigDecimal) jTable1.getValueAt(selectedRow, 0)).intValue();
 
-        String nuevoMaquinaId = JOptionPane.showInputDialog(null, "Nuevo ID de Máquina:", "Editar Alquiler", JOptionPane.QUESTION_MESSAGE);
-        String nuevoCodigoProveedor = JOptionPane.showInputDialog(null, "Nuevo Código de Proveedor:", "Editar Alquiler", JOptionPane.QUESTION_MESSAGE);
-        String nuevaDireccion = JOptionPane.showInputDialog(null, "Nueva Dirección:", "Editar Alquiler", JOptionPane.QUESTION_MESSAGE);
-        String nuevoTelefono = JOptionPane.showInputDialog(null, "Nuevo Teléfono de Contacto:", "Editar Alquiler", JOptionPane.QUESTION_MESSAGE);
-        String nuevaFechaAlquiler = JOptionPane.showInputDialog(null, "Nueva Fecha de Alquiler (YYYY-MM-DD):", "Editar Alquiler", JOptionPane.QUESTION_MESSAGE);
-        String nuevaFechaDevolucion = JOptionPane.showInputDialog(null, "Nueva Fecha de Devolución (YYYY-MM-DD):", "Editar Alquiler", JOptionPane.QUESTION_MESSAGE);
+        String nuevoCodigoProyecto = JOptionPane.showInputDialog(null, "Nuevo Código de Proyecto:", "Editar Proyecto", JOptionPane.QUESTION_MESSAGE);
+        String nuevoNombre = JOptionPane.showInputDialog(null, "Nuevo Nombre:", "Editar Proyecto", JOptionPane.QUESTION_MESSAGE);
+        String nuevaDescripcion = JOptionPane.showInputDialog(null, "Nueva Descripción:", "Editar Proyecto", JOptionPane.QUESTION_MESSAGE);
+        JPanel panelInicio = new JPanel(new GridLayout(2, 2));
+        panelInicio.add(new JLabel("Nueva Fecha de Inicio:"));
+        panelInicio.add(dateInicio);
+        JOptionPane.showConfirmDialog(null, panelInicio, "Editar Proyecto", JOptionPane.OK_CANCEL_OPTION);
+        JPanel panelFinalizacion = new JPanel(new GridLayout(2, 2));
+        panelFinalizacion.add(new JLabel("Nueva Fecha de Finalización:"));
+        panelFinalizacion.add(dateFinalizacion);
+        JOptionPane.showConfirmDialog(null, panelFinalizacion, "Editar Proyecto",JOptionPane.OK_CANCEL_OPTION);
+        String nuevoClienteDatos = JOptionPane.showInputDialog(null, "Nuevos Datos del Cliente:", "Editar Proyecto", JOptionPane.QUESTION_MESSAGE);
+        Date fechaInicioUtil = dateInicio.getDate();
+        Date fechaFinalizacionUtil = dateFinalizacion.getDate();
+             
+        java.sql.Date nuevaFechaInicio = new java.sql.Date(fechaInicioUtil.getTime());
+        java.sql.Date nuevaFechaFinalizacion = new java.sql.Date(fechaFinalizacionUtil.getTime());
 
         try {
             Connection conn = conexion.conectar();
-            String sql = "UPDATE Alquileres SET maquina_id = ?, codigo_proveedor = ?, direccion = ?, telefono_contacto = ?, fecha_alquiler = ?, fecha_devolucion = ? WHERE alquiler_id = ?";
+            String sql = "UPDATE Proyectos SET codigo_proyecto = ?, nombre = ?, descripcion = ?, fecha_inicio = ?, fecha_finalizacion = ?, cliente_datos = ? WHERE proyecto_id = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, nuevoMaquinaId);
-            pstmt.setString(2, nuevoCodigoProveedor);
-            pstmt.setString(3, nuevaDireccion);
-            pstmt.setString(4, nuevoTelefono);
-            pstmt.setString(5, nuevaFechaAlquiler);
-            pstmt.setString(6, nuevaFechaDevolucion);
-            pstmt.setInt(7, alquilerId);
-            
+            pstmt.setString(1, nuevoCodigoProyecto);
+            pstmt.setString(2, nuevoNombre);
+            pstmt.setString(3, nuevaDescripcion);
+            pstmt.setDate(4, nuevaFechaInicio);
+            pstmt.setDate(5, nuevaFechaFinalizacion);
+            pstmt.setString(6, nuevoClienteDatos);
+            pstmt.setInt(7, proyectoId);
+
             int filasAfectadas = pstmt.executeUpdate();
-            
+
             if (filasAfectadas > 0) {
-                JOptionPane.showMessageDialog(null, "Alquiler editado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Proyecto editado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                JOptionPane.showMessageDialog(null, "Error al editar el alquiler.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Error al editar el proyecto.", "Error", JOptionPane.ERROR_MESSAGE);
             }
-            
+
             pstmt.close();
             conn.close();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al editar el alquiler: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Error al editar el proyecto: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     } else {
         JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para editar.", "Error", JOptionPane.ERROR_MESSAGE);
     }
-    }
+    mostrarProyecto();
+}
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

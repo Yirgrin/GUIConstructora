@@ -5,8 +5,12 @@
 package Actividades;
 import ConexionBD.OracleDBManager;
 import java.sql.*;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import com.toedter.calendar.JDateChooser;
+import java.awt.GridLayout;
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  *
@@ -14,108 +18,119 @@ import javax.swing.table.DefaultTableModel;
  */
 public class verActividad extends javax.swing.JPanel {
     OracleDBManager conexion = new OracleDBManager();
+    JDateChooser dateActividad = new JDateChooser();
     /**
-     * Creates new form verAlquiler
+     * Creates new form verActividad
      */
     public verActividad() {
         initComponents();
+        dateActividad.setDateFormatString("yyyy-MM-dd");
     }
     
-    public void mostrarAlquileres() {
-        // Sentencia SQL para obtener todos los alquileres
-        String sql = "SELECT alquiler_id, maquina_id, codigo_proveedor, direccion, telefono_contacto, fecha_alquiler, fecha_devolucion FROM Alquileres";
+    public void mostrarActividad() {
+        // Sentencia SQL para obtener todas las actividades
+    String sql = "SELECT actividad_id, nombre, fecha, hora, ubicacion, descripcion, participantes FROM Actividades";
 
-        try {
-            // Obtener la conexión desde OracleDBManager
-            Connection conn = conexion.conectar();
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
+    try {
+        // Obtener la conexión desde OracleDBManager
+        Connection conn = conexion.conectar();
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(sql);
 
-            // Crear un modelo de tabla para la jTable1
-            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-            // Limpiar la tabla antes de agregar los datos
-            model.setRowCount(0);
+        // Crear un modelo de tabla para la jTable1
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        // Limpiar la tabla antes de agregar los datos
+        model.setRowCount(0);
 
-            // Llenar la tabla con los resultados de la consulta
-            while (rs.next()) {
-                Object[] row = new Object[7];
-                for (int i = 0; i < 7; i++) {
-                    row[i] = rs.getObject(i + 1);
-                }
-                model.addRow(row);
+        // Llenar la tabla con los resultados de la consulta
+        while (rs.next()) {
+            Object[] row = new Object[7];
+            for (int i = 0; i < 7; i++) {
+                row[i] = rs.getObject(i + 1);
             }
-        } catch (SQLException e) {
-            System.out.println("Error al mostrar alquileres: " + e.getMessage());
+            model.addRow(row);
         }
+    } catch (SQLException e) {
+        System.out.println("Error al mostrar actividades: " + e.getMessage());
     }
+}
     
-    public void borrarAlquileres(){
+    public void borrarActividad(){
     int selectedRow = jTable1.getSelectedRow();
-    int alquilerId;
+    int actividadId;
     if (selectedRow != -1) {
-         alquilerId = (int) jTable1.getValueAt(selectedRow, 0);
+        actividadId = ((BigDecimal) jTable1.getValueAt(selectedRow, 0)).intValue();
         try {
             Connection conn = conexion.conectar();
-            String sql = "DELETE FROM Alquileres WHERE alquiler_id = ?";
+            String sql = "DELETE FROM Actividades WHERE actividad_id = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, alquilerId);
+            pstmt.setInt(1, actividadId);
             int filasAfectadas = pstmt.executeUpdate();
             if (filasAfectadas > 0) {
-                JOptionPane.showMessageDialog(null, "Alquiler eliminado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Actividad eliminada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                JOptionPane.showMessageDialog(null, "El alquiler no existe o ya ha sido eliminado.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "La actividad no existe o ya ha sido eliminada.", "Error", JOptionPane.ERROR_MESSAGE);
             }
             pstmt.close();
             conn.close();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al eliminar el alquiler: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Error al eliminar la actividad: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     } else {
         JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para eliminar.", "Error", JOptionPane.ERROR_MESSAGE);
     }
-    }
-    public void editAlquiler(){
-        int selectedRow = jTable1.getSelectedRow();
+    mostrarActividad();
+}
     
+    public void editActividad(){
+        int selectedRow = jTable1.getSelectedRow();
     if (selectedRow != -1) {
-        int alquilerId = (int) jTable1.getValueAt(selectedRow, 0);
+        int actividadId = ((BigDecimal) jTable1.getValueAt(selectedRow, 0)).intValue();
 
-        String nuevoMaquinaId = JOptionPane.showInputDialog(null, "Nuevo ID de Máquina:", "Editar Alquiler", JOptionPane.QUESTION_MESSAGE);
-        String nuevoCodigoProveedor = JOptionPane.showInputDialog(null, "Nuevo Código de Proveedor:", "Editar Alquiler", JOptionPane.QUESTION_MESSAGE);
-        String nuevaDireccion = JOptionPane.showInputDialog(null, "Nueva Dirección:", "Editar Alquiler", JOptionPane.QUESTION_MESSAGE);
-        String nuevoTelefono = JOptionPane.showInputDialog(null, "Nuevo Teléfono de Contacto:", "Editar Alquiler", JOptionPane.QUESTION_MESSAGE);
-        String nuevaFechaAlquiler = JOptionPane.showInputDialog(null, "Nueva Fecha de Alquiler (YYYY-MM-DD):", "Editar Alquiler", JOptionPane.QUESTION_MESSAGE);
-        String nuevaFechaDevolucion = JOptionPane.showInputDialog(null, "Nueva Fecha de Devolución (YYYY-MM-DD):", "Editar Alquiler", JOptionPane.QUESTION_MESSAGE);
+        String nuevoNombre = JOptionPane.showInputDialog(null, "Nuevo Nombre:", "Editar Actividad", JOptionPane.QUESTION_MESSAGE);
+        JPanel panelFecha = new JPanel(new GridLayout(2, 2));
+        panelFecha.add(new JLabel("Nueva Fecha:"));
+        panelFecha.add(dateActividad);
+        JOptionPane.showConfirmDialog(null, panelFecha, "Editar Actividad", JOptionPane.OK_CANCEL_OPTION);
+        String nuevaHora = JOptionPane.showInputDialog(null, "Nueva Hora (HH:mm):", "Editar Actividad", JOptionPane.QUESTION_MESSAGE);
+        String nuevaUbicacion = JOptionPane.showInputDialog(null, "Nueva Ubicación:", "Editar Actividad", JOptionPane.QUESTION_MESSAGE);
+        String nuevaDescripcion = JOptionPane.showInputDialog(null, "Nueva Descripción:", "Editar Actividad", JOptionPane.QUESTION_MESSAGE);
+        String nuevosParticipantes = JOptionPane.showInputDialog(null, "Nuevos Participantes:", "Editar Actividad", JOptionPane.QUESTION_MESSAGE);
+        
+        Date fechaUtil = dateActividad.getDate();
+        java.sql.Date nuevaFecha = new java.sql.Date(fechaUtil.getTime());
 
         try {
             Connection conn = conexion.conectar();
-            String sql = "UPDATE Alquileres SET maquina_id = ?, codigo_proveedor = ?, direccion = ?, telefono_contacto = ?, fecha_alquiler = ?, fecha_devolucion = ? WHERE alquiler_id = ?";
+            String sql = "UPDATE Actividades SET nombre = ?, fecha = ?, hora = ?, ubicacion = ?, descripcion = ?, participantes = ? WHERE actividad_id = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, nuevoMaquinaId);
-            pstmt.setString(2, nuevoCodigoProveedor);
-            pstmt.setString(3, nuevaDireccion);
-            pstmt.setString(4, nuevoTelefono);
-            pstmt.setString(5, nuevaFechaAlquiler);
-            pstmt.setString(6, nuevaFechaDevolucion);
-            pstmt.setInt(7, alquilerId);
-            
+            pstmt.setString(1, nuevoNombre);
+            pstmt.setDate(2, nuevaFecha);
+            pstmt.setString(3, nuevaHora);
+            pstmt.setString(4, nuevaUbicacion);
+            pstmt.setString(5, nuevaDescripcion);
+            pstmt.setString(6, nuevosParticipantes);
+            pstmt.setInt(7, actividadId);
+
             int filasAfectadas = pstmt.executeUpdate();
-            
+
             if (filasAfectadas > 0) {
-                JOptionPane.showMessageDialog(null, "Alquiler editado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Actividad editada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                JOptionPane.showMessageDialog(null, "Error al editar el alquiler.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Error al editar la actividad.", "Error", JOptionPane.ERROR_MESSAGE);
             }
-            
+
             pstmt.close();
             conn.close();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al editar el alquiler: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Error al editar la actividad: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     } else {
         JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para editar.", "Error", JOptionPane.ERROR_MESSAGE);
     }
-    }
+    mostrarActividad();
+}
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

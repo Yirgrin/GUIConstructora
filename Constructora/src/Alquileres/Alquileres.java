@@ -92,6 +92,7 @@ public class Alquileres extends javax.swing.JFrame implements ActionListener{
             }
         });
 
+        jLabel1.setBackground(new java.awt.Color(255, 255, 255));
         jLabel1.setFont(new java.awt.Font("Eras Medium ITC", 1, 16)); // NOI18N
         jLabel1.setText("Alquileres");
 

@@ -17,44 +17,40 @@ import java.util.Date;
 public class addActividades extends javax.swing.JPanel {
     OracleDBManager conexion = new OracleDBManager();
     /**
-     * Creates new form addAlquiler
+     * Creates new form addActividad
      */
     public addActividades() {
         initComponents();
     }
     
-    private void insertarAlquiler() {
-        int idAlquilerValue = Integer.parseInt(idAlquiler.getText());
-        int idMaquinaValue = Integer.parseInt(idMaquina.getText());
-        String codProveedorValue = codProveedor.getText();
-        String direccionValue = direccion.getText();
-        String telefonoValue = telefono.getText();
-        Date fechaAlquilerValue = dateAlquiler.getDate();
-        Date fechaDevolucionValue = dateDevolucion.getDate();
+    private void insertarActividad() {
+        int idActividadValue = Integer.parseInt(idActividad.getText());
+        String nombreActividadValue = nameActividad.getText();
+        Date fechaActividadValue = dateActividad.getDate();
+        String horaActividadValue = horaActividad.getText();
+        String ubicacionActividadValue = ubiActividad.getText();
+        String descripcionActividadValue = descActividad.getText();
+        String participantesActividadValue = Participantes.getText();
 
-        // Sentencia SQL para insertar un nuevo alquiler
-        String sql = "INSERT INTO Alquileres (alquiler_id, maquina_id, codigo_proveedor, direccion, telefono_contacto, fecha_alquiler, fecha_devolucion) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Actividades (actividad_id, nombre, fecha, hora, ubicacion, descripcion, participantes) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try {
-            // Obtener la conexión desde OracleDBManager
             Connection conn = conexion.conectar();
             PreparedStatement pstmt = conn.prepareStatement(sql);
-   
-            // Establecer los valores de los parámetros
-            pstmt.setInt(1, idAlquilerValue);
-            pstmt.setInt(2, idMaquinaValue);
-            pstmt.setString(3, codProveedorValue);
-            pstmt.setString(4, direccionValue);
-            pstmt.setString(5, telefonoValue);
-            pstmt.setDate(6, new java.sql.Date(fechaAlquilerValue.getTime()));
-            pstmt.setDate(7, new java.sql.Date(fechaDevolucionValue.getTime()));
 
-            // Ejecutar la inserción
+            pstmt.setInt(1, idActividadValue);
+            pstmt.setString(2, nombreActividadValue);
+            pstmt.setDate(3, new java.sql.Date(fechaActividadValue.getTime()));
+            pstmt.setString(4, horaActividadValue);
+            pstmt.setString(5, ubicacionActividadValue);
+            pstmt.setString(6, descripcionActividadValue);
+            pstmt.setString(7, participantesActividadValue);
+
             pstmt.executeUpdate();
-            System.out.println("Alquiler insertado correctamente.");
+            System.out.println("Actividad insertada correctamente.");
             conexion.desconectar();
         } catch (SQLException e) {
-            System.out.println("Error al insertar alquiler: " + e.getMessage());
+            System.out.println("Error al insertar Actividad: " + e.getMessage());
         }
     }
     /**
@@ -73,37 +69,38 @@ public class addActividades extends javax.swing.JPanel {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        dateDevolucion = new com.toedter.calendar.JDateChooser();
-        dateAlquiler = new com.toedter.calendar.JDateChooser();
-        telefono = new javax.swing.JTextField();
-        direccion = new javax.swing.JTextField();
-        codProveedor = new javax.swing.JTextField();
-        idMaquina = new javax.swing.JTextField();
-        idAlquiler = new javax.swing.JTextField();
+        dateActividad = new com.toedter.calendar.JDateChooser();
+        ubiActividad = new javax.swing.JTextField();
+        horaActividad = new javax.swing.JTextField();
+        nameActividad = new javax.swing.JTextField();
+        idActividad = new javax.swing.JTextField();
         Enviar = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        descActividad = new javax.swing.JTextArea();
+        Participantes = new javax.swing.JTextField();
 
         setBackground(new java.awt.Color(102, 102, 102));
 
         jLabel1.setFont(new java.awt.Font("Eras Medium ITC", 0, 16)); // NOI18N
-        jLabel1.setText("Identificación del Alquiler");
+        jLabel1.setText("Identificación de la Actividad");
 
         jLabel2.setFont(new java.awt.Font("Eras Medium ITC", 0, 16)); // NOI18N
-        jLabel2.setText("Indentificación de la Maquina");
+        jLabel2.setText("Nombre de la Actividad");
 
         jLabel3.setFont(new java.awt.Font("Eras Medium ITC", 0, 16)); // NOI18N
-        jLabel3.setText("Código del Proveedor");
+        jLabel3.setText("Fecha");
 
         jLabel4.setFont(new java.awt.Font("Eras Medium ITC", 0, 16)); // NOI18N
-        jLabel4.setText("Dirección");
+        jLabel4.setText("Hora");
 
         jLabel5.setFont(new java.awt.Font("Eras Medium ITC", 0, 16)); // NOI18N
-        jLabel5.setText("Telefóno de Contacto");
+        jLabel5.setText("Ubicación");
 
         jLabel6.setFont(new java.awt.Font("Eras Medium ITC", 0, 16)); // NOI18N
-        jLabel6.setText("Fecha de Alquiler");
+        jLabel6.setText("Descripción");
 
         jLabel7.setFont(new java.awt.Font("Eras Medium ITC", 0, 16)); // NOI18N
-        jLabel7.setText("Fecha de Devolución");
+        jLabel7.setText("Participantes");
 
         Enviar.setBackground(new java.awt.Color(57, 57, 57));
         Enviar.setFont(new java.awt.Font("Eras Medium ITC", 0, 16)); // NOI18N
@@ -116,102 +113,108 @@ public class addActividades extends javax.swing.JPanel {
             }
         });
 
+        descActividad.setColumns(20);
+        descActividad.setRows(5);
+        jScrollPane1.setViewportView(descActividad);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(37, 37, 37)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(Participantes, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(telefono, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(ubiActividad, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3)
                             .addComponent(jLabel4)
-                            .addComponent(jLabel6)
-                            .addComponent(jLabel7))
+                            .addComponent(jLabel6))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(137, 137, 137)
-                                .addComponent(Enviar, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(dateAlquiler, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
-                                    .addComponent(codProveedor, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(direccion, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(dateDevolucion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(dateActividad, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(horaActividad, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(idMaquina, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(nameActividad, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(idAlquiler, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(45, 45, 45))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
+                        .addComponent(idActividad, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(Enviar)))
+                .addGap(29, 29, 29))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(21, 21, 21)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(idAlquiler, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2)
-                            .addComponent(idMaquina, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel3)
-                            .addComponent(codProveedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel4)
-                            .addComponent(direccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel5)
-                            .addComponent(telefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel6))
-                    .addComponent(dateAlquiler, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(idActividad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel7)
-                    .addComponent(dateDevolucion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(nameActividad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3)
+                    .addComponent(dateActividad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(horaActividad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(ubiActividad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(29, 29, 29)
+                        .addComponent(jLabel6))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Participantes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
                 .addComponent(Enviar)
-                .addContainerGap(59, Short.MAX_VALUE))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void EnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EnviarActionPerformed
-        insertarAlquiler();
-        codProveedor.setText("");
-        direccion.setText("");
-        idAlquiler.setText("");
-        idMaquina.setText("");
-        telefono.setText("");
-        dateAlquiler.setDate(new Date());
-        dateDevolucion.setDate(new Date());
+        insertarActividad();
+        idActividad.setText("");
+        nameActividad.setText("");
+        dateActividad.setDate(new Date());
+        horaActividad.setText("");
+        ubiActividad.setText("");
+        descActividad.setText("");
+        Participantes.setText("");
     }//GEN-LAST:event_EnviarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Enviar;
-    private javax.swing.JTextField codProveedor;
-    private com.toedter.calendar.JDateChooser dateAlquiler;
-    private com.toedter.calendar.JDateChooser dateDevolucion;
-    private javax.swing.JTextField direccion;
-    private javax.swing.JTextField idAlquiler;
-    private javax.swing.JTextField idMaquina;
+    private javax.swing.JTextField Participantes;
+    private com.toedter.calendar.JDateChooser dateActividad;
+    private javax.swing.JTextArea descActividad;
+    private javax.swing.JTextField horaActividad;
+    private javax.swing.JTextField idActividad;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -219,6 +222,8 @@ public class addActividades extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JTextField telefono;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextField nameActividad;
+    private javax.swing.JTextField ubiActividad;
     // End of variables declaration//GEN-END:variables
 }

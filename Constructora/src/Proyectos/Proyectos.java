@@ -1,6 +1,4 @@
 package Proyectos;
-import Proyectos.addProyecto;
-import Proyectos.verProyecto;
 import Visual.*;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -98,7 +96,9 @@ public class Proyectos extends javax.swing.JFrame implements ActionListener{
             }
         });
 
+        jLabel2.setBackground(new java.awt.Color(255, 255, 255));
         jLabel2.setFont(new java.awt.Font("Eras Medium ITC", 1, 16)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Proyectos");
 
         javax.swing.GroupLayout CRUDLayout = new javax.swing.GroupLayout(CRUD);
@@ -177,7 +177,7 @@ public class Proyectos extends javax.swing.JFrame implements ActionListener{
         content.removeAll();
         content.add(p1,BorderLayout.CENTER);
         content.validate();
-        content.repaint(); ; 
+        content.repaint();
     }//GEN-LAST:event_AgregarActionPerformed
 
     private void EliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EliminarActionPerformed
@@ -196,7 +196,7 @@ public class Proyectos extends javax.swing.JFrame implements ActionListener{
     }//GEN-LAST:event_VerActionPerformed
 
     private void EditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarActionPerformed
-        
+        p3.editProyecto();
     }//GEN-LAST:event_EditarActionPerformed
 
     private void VolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VolverActionPerformed

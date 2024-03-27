@@ -1,6 +1,9 @@
 
 package Visual;
+import Actividades.Actividades;
 import Alquileres.Alquileres;
+import Proyectos.Proyectos;
+import Tareas.Tareas;
 public class Inicio extends javax.swing.JFrame {
 
     public Inicio() {
@@ -341,15 +344,21 @@ public class Inicio extends javax.swing.JFrame {
     }//GEN-LAST:event_btnalquileresActionPerformed
 
     private void btnActividadesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActividadesActionPerformed
-        
+        this.dispose();
+        Actividades nuevaActividad = new Actividades();
+        nuevaActividad.setVisible(true);
     }//GEN-LAST:event_btnActividadesActionPerformed
 
     private void btnProyectosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProyectosActionPerformed
-        
+        this.dispose();
+        Proyectos nuevoProyecto = new Proyectos();
+        nuevoProyecto.setVisible(true);
     }//GEN-LAST:event_btnProyectosActionPerformed
 
     private void btnTareasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTareasActionPerformed
-        // TODO add your handling code here:
+        /*this.dispose();
+        Tareas nuevaTarea = new Tareas();
+        nuevaTarea.setVisible(true);*/
     }//GEN-LAST:event_btnTareasActionPerformed
 
     private void btnvolver2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnvolver2ActionPerformed
