@@ -1,6 +1,6 @@
 
 package Visual;
-import AlquileresPanel.*;
+import Alquileres.Alquileres;
 public class Inicio extends javax.swing.JFrame {
 
     public Inicio() {

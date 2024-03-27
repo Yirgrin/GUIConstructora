@@ -2,9 +2,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package ProyectosPanel;
+package Actividades;
 
-import AlquileresPanel.*;
 import ConexionBD.OracleDBManager;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,12 +14,12 @@ import java.util.Date;
  *
  * @author Melvin
  */
-public class addAlquiler extends javax.swing.JPanel {
+public class addActividades extends javax.swing.JPanel {
     OracleDBManager conexion = new OracleDBManager();
     /**
      * Creates new form addAlquiler
      */
-    public addAlquiler() {
+    public addActividades() {
         initComponents();
     }
     

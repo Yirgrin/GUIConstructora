@@ -1,21 +1,21 @@
-package ActividadesPanel;
-import AlquileresPanel.*;
+package Proyectos;
+import Proyectos.addProyecto;
+import Proyectos.verProyecto;
 import Visual.*;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JOptionPane;
 /**
  *
  * @author Melvin
  */
-public class Alquileres extends javax.swing.JFrame implements ActionListener{
+public class Proyectos extends javax.swing.JFrame implements ActionListener{
 
-    addAlquiler p1 = new addAlquiler();
-    verAlquiler p3 = new verAlquiler();
+    addProyecto p1 = new addProyecto();
+    verProyecto p3 = new verProyecto();
 
     
-    public Alquileres() {
+    public Proyectos() {
         initComponents();
         this.setLocationRelativeTo(null);
         this.p3 = p3;
@@ -30,13 +30,18 @@ public class Alquileres extends javax.swing.JFrame implements ActionListener{
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel1 = new javax.swing.JLabel();
         CRUD = new javax.swing.JPanel();
         Agregar = new javax.swing.JButton();
         Eliminar = new javax.swing.JButton();
         Editar = new javax.swing.JButton();
         Volver = new javax.swing.JButton();
         Ver = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
         content = new javax.swing.JPanel();
+
+        jLabel1.setFont(new java.awt.Font("Eras Medium ITC", 1, 16)); // NOI18N
+        jLabel1.setText("Alquileres");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -45,7 +50,7 @@ public class Alquileres extends javax.swing.JFrame implements ActionListener{
         Agregar.setBackground(new java.awt.Color(57, 57, 57));
         Agregar.setFont(new java.awt.Font("Eras Medium ITC", 0, 16)); // NOI18N
         Agregar.setForeground(new java.awt.Color(255, 255, 255));
-        Agregar.setText("Agregar Alquiler");
+        Agregar.setText("Agregar Proyecto");
         Agregar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 AgregarActionPerformed(evt);
@@ -55,7 +60,7 @@ public class Alquileres extends javax.swing.JFrame implements ActionListener{
         Eliminar.setBackground(new java.awt.Color(57, 57, 57));
         Eliminar.setFont(new java.awt.Font("Eras Medium ITC", 0, 16)); // NOI18N
         Eliminar.setForeground(new java.awt.Color(255, 255, 255));
-        Eliminar.setText("Eliminar Alquiler");
+        Eliminar.setText("Eliminar Proyecto");
         Eliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 EliminarActionPerformed(evt);
@@ -65,7 +70,7 @@ public class Alquileres extends javax.swing.JFrame implements ActionListener{
         Editar.setBackground(new java.awt.Color(57, 57, 57));
         Editar.setFont(new java.awt.Font("Eras Medium ITC", 0, 16)); // NOI18N
         Editar.setForeground(new java.awt.Color(255, 255, 255));
-        Editar.setText("Editar Alquiler");
+        Editar.setText("Editar Proyecto");
         Editar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 EditarActionPerformed(evt);
@@ -86,12 +91,15 @@ public class Alquileres extends javax.swing.JFrame implements ActionListener{
         Ver.setBackground(new java.awt.Color(57, 57, 57));
         Ver.setFont(new java.awt.Font("Eras Medium ITC", 0, 16)); // NOI18N
         Ver.setForeground(new java.awt.Color(255, 255, 255));
-        Ver.setText("Ver Alquileres");
+        Ver.setText("Ver Proyecto");
         Ver.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 VerActionPerformed(evt);
             }
         });
+
+        jLabel2.setFont(new java.awt.Font("Eras Medium ITC", 1, 16)); // NOI18N
+        jLabel2.setText("Proyectos");
 
         javax.swing.GroupLayout CRUDLayout = new javax.swing.GroupLayout(CRUD);
         CRUD.setLayout(CRUDLayout);
@@ -100,28 +108,33 @@ public class Alquileres extends javax.swing.JFrame implements ActionListener{
             .addGroup(CRUDLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(CRUDLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(Editar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(Ver, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(Agregar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CRUDLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(Eliminar))
                     .addGroup(CRUDLayout.createSequentialGroup()
                         .addGroup(CRUDLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(Eliminar)
-                            .addComponent(Editar, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(Volver, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Ver, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel2))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         CRUDLayout.setVerticalGroup(
             CRUDLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(CRUDLayout.createSequentialGroup()
-                .addGap(74, 74, 74)
-                .addComponent(Agregar, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addGap(43, 43, 43)
+                .addComponent(Agregar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(Ver)
                 .addGap(18, 18, 18)
                 .addComponent(Eliminar)
                 .addGap(18, 18, 18)
                 .addComponent(Editar)
-                .addGap(83, 83, 83)
+                .addGap(91, 91, 91)
                 .addComponent(Volver)
                 .addContainerGap())
         );
@@ -133,11 +146,11 @@ public class Alquileres extends javax.swing.JFrame implements ActionListener{
         content.setLayout(contentLayout);
         contentLayout.setHorizontalGroup(
             contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 800, Short.MAX_VALUE)
+            .addGap(0, 786, Short.MAX_VALUE)
         );
         contentLayout.setVerticalGroup(
             contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 375, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -147,12 +160,12 @@ public class Alquileres extends javax.swing.JFrame implements ActionListener{
             .addGroup(layout.createSequentialGroup()
                 .addComponent(CRUD, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, 794, Short.MAX_VALUE))
+                .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, 786, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(CRUD, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
         );
 
         pack();
@@ -168,7 +181,7 @@ public class Alquileres extends javax.swing.JFrame implements ActionListener{
     }//GEN-LAST:event_AgregarActionPerformed
 
     private void EliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EliminarActionPerformed
-        p3.borrarAlquileres();
+        p3.borrarProyecto();
     }//GEN-LAST:event_EliminarActionPerformed
 
     private void VerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VerActionPerformed
@@ -178,7 +191,7 @@ public class Alquileres extends javax.swing.JFrame implements ActionListener{
         content.add(p3,BorderLayout.CENTER);
         content.validate();
         content.repaint(); 
-        p3.mostrarAlquileres();
+        p3.mostrarProyecto();
         
     }//GEN-LAST:event_VerActionPerformed
 
@@ -209,21 +222,23 @@ public class Alquileres extends javax.swing.JFrame implements ActionListener{
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Alquileres.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Proyectos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Alquileres.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Proyectos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Alquileres.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Proyectos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Alquileres.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Proyectos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Alquileres().setVisible(true);
+                new Proyectos().setVisible(true);
             }
         });
     }
@@ -236,6 +251,8 @@ public class Alquileres extends javax.swing.JFrame implements ActionListener{
     private javax.swing.JButton Ver;
     private javax.swing.JButton Volver;
     private javax.swing.JPanel content;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     // End of variables declaration//GEN-END:variables
 
     @Override

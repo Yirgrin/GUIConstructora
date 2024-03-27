@@ -1,10 +1,8 @@
-package ProyectosPanel;
-import AlquileresPanel.*;
+package Alquileres;
 import Visual.*;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JOptionPane;
 /**
  *
  * @author Melvin
@@ -36,6 +34,7 @@ public class Alquileres extends javax.swing.JFrame implements ActionListener{
         Editar = new javax.swing.JButton();
         Volver = new javax.swing.JButton();
         Ver = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
         content = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -93,6 +92,9 @@ public class Alquileres extends javax.swing.JFrame implements ActionListener{
             }
         });
 
+        jLabel1.setFont(new java.awt.Font("Eras Medium ITC", 1, 16)); // NOI18N
+        jLabel1.setText("Alquileres");
+
         javax.swing.GroupLayout CRUDLayout = new javax.swing.GroupLayout(CRUD);
         CRUD.setLayout(CRUDLayout);
         CRUDLayout.setHorizontalGroup(
@@ -106,15 +108,18 @@ public class Alquileres extends javax.swing.JFrame implements ActionListener{
                             .addComponent(Eliminar)
                             .addComponent(Editar, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(Volver, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Ver, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(Ver, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel1))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         CRUDLayout.setVerticalGroup(
             CRUDLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(CRUDLayout.createSequentialGroup()
-                .addGap(74, 74, 74)
-                .addComponent(Agregar, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addGap(47, 47, 47)
+                .addComponent(Agregar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(Ver)
                 .addGap(18, 18, 18)
@@ -137,7 +142,7 @@ public class Alquileres extends javax.swing.JFrame implements ActionListener{
         );
         contentLayout.setVerticalGroup(
             contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 375, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -152,7 +157,7 @@ public class Alquileres extends javax.swing.JFrame implements ActionListener{
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(CRUD, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
         );
 
         pack();
@@ -183,7 +188,7 @@ public class Alquileres extends javax.swing.JFrame implements ActionListener{
     }//GEN-LAST:event_VerActionPerformed
 
     private void EditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarActionPerformed
-        
+        p3.editAlquiler();
     }//GEN-LAST:event_EditarActionPerformed
 
     private void VolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VolverActionPerformed
@@ -218,7 +223,6 @@ public class Alquileres extends javax.swing.JFrame implements ActionListener{
             java.util.logging.Logger.getLogger(Alquileres.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -236,6 +240,7 @@ public class Alquileres extends javax.swing.JFrame implements ActionListener{
     private javax.swing.JButton Ver;
     private javax.swing.JButton Volver;
     private javax.swing.JPanel content;
+    private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 
     @Override

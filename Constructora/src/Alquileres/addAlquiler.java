@@ -2,9 +2,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package Gestion_TareasPanel;
+package Alquileres;
 
-import AlquileresPanel.*;
 import ConexionBD.OracleDBManager;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

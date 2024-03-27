@@ -1,5 +1,4 @@
-package Gestion_TareasPanel;
-import AlquileresPanel.*;
+package Actividades;
 import Visual.*;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -9,13 +8,13 @@ import javax.swing.JOptionPane;
  *
  * @author Melvin
  */
-public class Alquileres extends javax.swing.JFrame implements ActionListener{
+public class Actividades extends javax.swing.JFrame implements ActionListener{
 
-    addAlquiler p1 = new addAlquiler();
-    verAlquiler p3 = new verAlquiler();
+    addActividades p1 = new addActividades();
+    verActividad p3 = new verActividad();
 
     
-    public Alquileres() {
+    public Actividades() {
         initComponents();
         this.setLocationRelativeTo(null);
         this.p3 = p3;
@@ -209,21 +208,23 @@ public class Alquileres extends javax.swing.JFrame implements ActionListener{
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Alquileres.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Actividades.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Alquileres.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Actividades.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Alquileres.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Actividades.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Alquileres.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Actividades.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Alquileres().setVisible(true);
+                new Actividades().setVisible(true);
             }
         });
     }

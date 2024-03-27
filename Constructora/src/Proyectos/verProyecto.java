@@ -2,8 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package ActividadesPanel;
-import AlquileresPanel.*;
+package Proyectos;
 import ConexionBD.OracleDBManager;
 import java.sql.*;
 import javax.swing.JOptionPane;
@@ -13,18 +12,18 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Melvin
  */
-public class verAlquiler extends javax.swing.JPanel {
+public class verProyecto extends javax.swing.JPanel {
     OracleDBManager conexion = new OracleDBManager();
     /**
      * Creates new form verAlquiler
      */
-    public verAlquiler() {
+    public verProyecto() {
         initComponents();
     }
     
-    public void mostrarAlquileres() {
+    public void mostrarProyecto() {
         // Sentencia SQL para obtener todos los alquileres
-        String sql = "SELECT alquiler_id, maquina_id, codigo_proveedor, direccion, telefono_contacto, fecha_alquiler, fecha_devolucion FROM Alquileres";
+        String sql = "SELECT proyecto_id, codigo_proyecto, nombre, descripcion, fecha_inicio, fecha_finalizacion, cliente_datos FROM PROYECTOS";
 
         try {
             // Obtener la conexión desde OracleDBManager
@@ -46,13 +45,13 @@ public class verAlquiler extends javax.swing.JPanel {
                 model.addRow(row);
             }
         } catch (SQLException e) {
-            System.out.println("Error al mostrar alquileres: " + e.getMessage());
+            System.out.println("Error al mostrar proyectos: " + e.getMessage());
         }
     }
     
-    public void borrarAlquileres(){
+    public void borrarProyecto(){
     int selectedRow = jTable1.getSelectedRow();
-    int alquilerId;
+    int proyectoId;
     if (selectedRow != -1) {
          alquilerId = (int) jTable1.getValueAt(selectedRow, 0);
         try {
@@ -75,7 +74,7 @@ public class verAlquiler extends javax.swing.JPanel {
         JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para eliminar.", "Error", JOptionPane.ERROR_MESSAGE);
     }
     }
-    public void editAlquiler(){
+    public void editProyecto(){
         int selectedRow = jTable1.getSelectedRow();
     
     if (selectedRow != -1) {
@@ -141,7 +140,7 @@ public class verAlquiler extends javax.swing.JPanel {
                 {null, null, null, null, null, null, null}
             },
             new String [] {
-                "ID Alquiler", "ID Maquina", "Código de Proveedor", "Dirección", "Telefóno", "Fecha de Alquiler", "Fecha de Devolución"
+                "ID_Proyecto", "Cod_Proyecto", "Nombre", "Descripcion", "Fecha Inicio", "Fecha Finalizacion", "Datos del cliente"
             }
         ));
         jScrollPane1.setViewportView(jTable1);
