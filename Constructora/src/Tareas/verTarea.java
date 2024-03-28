@@ -4,9 +4,13 @@
  */
 package Tareas;
 import ConexionBD.OracleDBManager;
+import com.toedter.calendar.JDateChooser;
+import java.math.BigDecimal;
 import java.sql.*;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.GridLayout;
+import java.util.Date;
 
 /**
  *
@@ -14,108 +18,111 @@ import javax.swing.table.DefaultTableModel;
  */
 public class verTarea extends javax.swing.JPanel {
     OracleDBManager conexion = new OracleDBManager();
-    /**
-     * Creates new form verAlquiler
-     */
+    JDateChooser dateTarea = new JDateChooser();
     public verTarea() {
         initComponents();
+        dateTarea.setDateFormatString("yyyy-MM-dd");
     }
     
-    public void mostrarAlquileres() {
-        // Sentencia SQL para obtener todos los alquileres
-        String sql = "SELECT alquiler_id, maquina_id, codigo_proveedor, direccion, telefono_contacto, fecha_alquiler, fecha_devolucion FROM Alquileres";
+    public void mostrarTarea() {
+         // Sentencia SQL para obtener todas las asignaciones
+    String sql = "SELECT asignacion_id, empleado_id, proyecto_id, fecha_vencimiento, descripcion FROM Asignaciones";
 
-        try {
-            // Obtener la conexión desde OracleDBManager
-            Connection conn = conexion.conectar();
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
+    try {
+        // Obtener la conexión desde OracleDBManager
+        Connection conn = conexion.conectar();
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(sql);
 
-            // Crear un modelo de tabla para la jTable1
-            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-            // Limpiar la tabla antes de agregar los datos
-            model.setRowCount(0);
+        // Crear un modelo de tabla para la jTable1
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        // Limpiar la tabla antes de agregar los datos
+        model.setRowCount(0);
 
-            // Llenar la tabla con los resultados de la consulta
-            while (rs.next()) {
-                Object[] row = new Object[7];
-                for (int i = 0; i < 7; i++) {
-                    row[i] = rs.getObject(i + 1);
-                }
-                model.addRow(row);
+        // Llenar la tabla con los resultados de la consulta
+        while (rs.next()) {
+            Object[] row = new Object[5];
+            for (int i = 0; i < 5; i++) {
+                row[i] = rs.getObject(i + 1);
             }
-        } catch (SQLException e) {
-            System.out.println("Error al mostrar alquileres: " + e.getMessage());
+            model.addRow(row);
         }
+    } catch (SQLException e) {
+        System.out.println("Error al mostrar asignaciones: " + e.getMessage());
     }
+}
     
-    public void borrarAlquileres(){
+    public void borrarTarea(){
     int selectedRow = jTable1.getSelectedRow();
-    int alquilerId;
+    int asignacionId;
     if (selectedRow != -1) {
-         alquilerId = (int) jTable1.getValueAt(selectedRow, 0);
+        asignacionId = ((BigDecimal) jTable1.getValueAt(selectedRow, 0)).intValue();
         try {
             Connection conn = conexion.conectar();
-            String sql = "DELETE FROM Alquileres WHERE alquiler_id = ?";
+            String sql = "DELETE FROM Asignaciones WHERE asignacion_id = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, alquilerId);
+            pstmt.setInt(1, asignacionId);
             int filasAfectadas = pstmt.executeUpdate();
             if (filasAfectadas > 0) {
-                JOptionPane.showMessageDialog(null, "Alquiler eliminado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Asignación eliminada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                JOptionPane.showMessageDialog(null, "El alquiler no existe o ya ha sido eliminado.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "La asignación no existe o ya ha sido eliminada.", "Error", JOptionPane.ERROR_MESSAGE);
             }
             pstmt.close();
             conn.close();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al eliminar el alquiler: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Error al eliminar la asignación: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     } else {
         JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para eliminar.", "Error", JOptionPane.ERROR_MESSAGE);
     }
-    }
-    public void editAlquiler(){
-        int selectedRow = jTable1.getSelectedRow();
+    mostrarTarea();
+}
     
+    public void editTarea(){
+    int selectedRow = jTable1.getSelectedRow();
     if (selectedRow != -1) {
-        int alquilerId = (int) jTable1.getValueAt(selectedRow, 0);
+        int asignacionId = ((BigDecimal) jTable1.getValueAt(selectedRow, 0)).intValue();
 
-        String nuevoMaquinaId = JOptionPane.showInputDialog(null, "Nuevo ID de Máquina:", "Editar Alquiler", JOptionPane.QUESTION_MESSAGE);
-        String nuevoCodigoProveedor = JOptionPane.showInputDialog(null, "Nuevo Código de Proveedor:", "Editar Alquiler", JOptionPane.QUESTION_MESSAGE);
-        String nuevaDireccion = JOptionPane.showInputDialog(null, "Nueva Dirección:", "Editar Alquiler", JOptionPane.QUESTION_MESSAGE);
-        String nuevoTelefono = JOptionPane.showInputDialog(null, "Nuevo Teléfono de Contacto:", "Editar Alquiler", JOptionPane.QUESTION_MESSAGE);
-        String nuevaFechaAlquiler = JOptionPane.showInputDialog(null, "Nueva Fecha de Alquiler (YYYY-MM-DD):", "Editar Alquiler", JOptionPane.QUESTION_MESSAGE);
-        String nuevaFechaDevolucion = JOptionPane.showInputDialog(null, "Nueva Fecha de Devolución (YYYY-MM-DD):", "Editar Alquiler", JOptionPane.QUESTION_MESSAGE);
+        String nuevoIdEmpleado = JOptionPane.showInputDialog(null, "Nuevo ID de Empleado:", "Editar Asignación", JOptionPane.QUESTION_MESSAGE);
+        String nuevoIdProyecto = JOptionPane.showInputDialog(null, "Nuevo ID de Proyecto:", "Editar Asignación", JOptionPane.QUESTION_MESSAGE);
+        JPanel panelFecha = new JPanel(new GridLayout(2, 2));
+        panelFecha.add(new JLabel("Nueva Fecha de Tarea:"));
+        panelFecha.add(dateTarea);
+        JOptionPane.showConfirmDialog(null, panelFecha, "Editar Asignación", JOptionPane.OK_CANCEL_OPTION);
+        String nuevaDescripcion = JOptionPane.showInputDialog(null, "Nueva Descripción:", "Editar Asignación", JOptionPane.QUESTION_MESSAGE);
+        
+        Date fechaUtil = dateTarea.getDate();
+        java.sql.Date nuevaFechaTarea = new java.sql.Date(fechaUtil.getTime());
 
         try {
             Connection conn = conexion.conectar();
-            String sql = "UPDATE Alquileres SET maquina_id = ?, codigo_proveedor = ?, direccion = ?, telefono_contacto = ?, fecha_alquiler = ?, fecha_devolucion = ? WHERE alquiler_id = ?";
+            String sql = "UPDATE Asignaciones SET empleado_id = ?, proyecto_id = ?, fecha_vencimiento = ?, descripcion = ? WHERE asignacion_id = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, nuevoMaquinaId);
-            pstmt.setString(2, nuevoCodigoProveedor);
-            pstmt.setString(3, nuevaDireccion);
-            pstmt.setString(4, nuevoTelefono);
-            pstmt.setString(5, nuevaFechaAlquiler);
-            pstmt.setString(6, nuevaFechaDevolucion);
-            pstmt.setInt(7, alquilerId);
-            
+            pstmt.setString(1, nuevoIdEmpleado);
+            pstmt.setString(2, nuevoIdProyecto);
+            pstmt.setDate(3, nuevaFechaTarea);
+            pstmt.setString(4, nuevaDescripcion);
+            pstmt.setInt(5, asignacionId);
+
             int filasAfectadas = pstmt.executeUpdate();
-            
+
             if (filasAfectadas > 0) {
-                JOptionPane.showMessageDialog(null, "Alquiler editado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Asignación editada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                JOptionPane.showMessageDialog(null, "Error al editar el alquiler.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Error al editar la asignación.", "Error", JOptionPane.ERROR_MESSAGE);
             }
-            
+
             pstmt.close();
             conn.close();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al editar el alquiler: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Error al editar la asignación: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     } else {
         JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para editar.", "Error", JOptionPane.ERROR_MESSAGE);
     }
-    }
+    mostrarTarea();
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -134,13 +141,13 @@ public class verTarea extends javax.swing.JPanel {
         jTable1.setForeground(new java.awt.Color(255, 255, 255));
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "ID Alquiler", "ID Maquina", "Código de Proveedor", "Dirección", "Telefóno", "Fecha de Alquiler", "Fecha de Devolución"
+                "ID Asignación", "ID Empleado", "ID Proyecto", "Fecha Vencimiento", "Descripción", "Fecha de Devolución"
             }
         ));
         jScrollPane1.setViewportView(jTable1);

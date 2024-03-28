@@ -25,38 +25,38 @@ public class addAlquiler extends javax.swing.JPanel {
     
     private void insertarAlquiler() {
         int idAlquilerValue = Integer.parseInt(idAlquiler.getText());
-        int idMaquinaValue = Integer.parseInt(idMaquina.getText());
-        String codProveedorValue = codProveedor.getText();
-        String direccionValue = direccion.getText();
-        String telefonoValue = telefono.getText();
-        Date fechaAlquilerValue = dateAlquiler.getDate();
-        Date fechaDevolucionValue = dateDevolucion.getDate();
+    int idMaquinaValue = Integer.parseInt(idMaquina.getText());
+    String codProveedorValue = codProveedor.getText();
+    String direccionValue = direccion.getText();
+    String telefonoValue = telefono.getText();
+    Date fechaAlquilerValue = dateAlquiler.getDate();
+    Date fechaDevolucionValue = dateDevolucion.getDate();
 
-        // Sentencia SQL para insertar un nuevo alquiler
-        String sql = "INSERT INTO Alquileres (alquiler_id, maquina_id, codigo_proveedor, direccion, telefono_contacto, fecha_alquiler, fecha_devolucion) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    // Sentencia SQL para insertar un nuevo alquiler
+    String sql = "INSERT INTO Alquileres (alquiler_id, maquina_id, codigo_proveedor, direccion, telefono_contacto, fecha_alquiler, fecha_devolucion) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-        try {
-            // Obtener la conexión desde OracleDBManager
-            Connection conn = conexion.conectar();
-            PreparedStatement pstmt = conn.prepareStatement(sql);
+    try {
+        // Obtener la conexión desde OracleDBManager
+        Connection conn = conexion.conectar();
+        PreparedStatement pstmt = conn.prepareStatement(sql);
    
-            // Establecer los valores de los parámetros
-            pstmt.setInt(1, idAlquilerValue);
-            pstmt.setInt(2, idMaquinaValue);
-            pstmt.setString(3, codProveedorValue);
-            pstmt.setString(4, direccionValue);
-            pstmt.setString(5, telefonoValue);
-            pstmt.setDate(6, new java.sql.Date(fechaAlquilerValue.getTime()));
-            pstmt.setDate(7, new java.sql.Date(fechaDevolucionValue.getTime()));
+        // Establecer los valores de los parámetros
+        pstmt.setInt(1, idAlquilerValue);
+        pstmt.setInt(2, idMaquinaValue);
+        pstmt.setString(3, codProveedorValue);
+        pstmt.setString(4, direccionValue);
+        pstmt.setString(5, telefonoValue);
+        pstmt.setDate(6, new java.sql.Date(fechaAlquilerValue.getTime()));
+        pstmt.setDate(7, new java.sql.Date(fechaDevolucionValue.getTime()));
 
-            // Ejecutar la inserción
-            pstmt.executeUpdate();
-            System.out.println("Alquiler insertado correctamente.");
-            conexion.desconectar();
-        } catch (SQLException e) {
-            System.out.println("Error al insertar alquiler: " + e.getMessage());
-        }
+        // Ejecutar la inserción
+        pstmt.executeUpdate();
+        System.out.println("Alquiler insertado correctamente.");
+        conexion.desconectar();
+    } catch (SQLException e) {
+        System.out.println("Error al insertar alquiler: " + e.getMessage());
     }
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

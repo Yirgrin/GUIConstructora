@@ -306,9 +306,9 @@ public class Inicio extends javax.swing.JFrame {
     }//GEN-LAST:event_btndesplegarComponentAdded
 
     private void btnTareasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTareasActionPerformed
-        /*this.dispose();
+        this.dispose();
         Tareas nuevaTarea = new Tareas();
-        nuevaTarea.setVisible(true);*/
+        nuevaTarea.setVisible(true);
     }//GEN-LAST:event_btnTareasActionPerformed
 
     private void btnProyectosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProyectosActionPerformed

@@ -3,7 +3,6 @@ import Visual.*;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JOptionPane;
 /**
  *
  * @author Melvin
@@ -201,7 +200,7 @@ public class Tareas extends javax.swing.JFrame implements ActionListener{
     }//GEN-LAST:event_AgregarActionPerformed
 
     private void EliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EliminarActionPerformed
-        p3.borrarAlquileres();
+        p3.borrarTarea();
     }//GEN-LAST:event_EliminarActionPerformed
 
     private void VerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VerActionPerformed
@@ -211,12 +210,12 @@ public class Tareas extends javax.swing.JFrame implements ActionListener{
         content.add(p3,BorderLayout.CENTER);
         content.validate();
         content.repaint(); 
-        p3.mostrarAlquileres();
+        p3.mostrarTarea();
         
     }//GEN-LAST:event_VerActionPerformed
 
     private void EditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarActionPerformed
-        
+        p3.editTarea();
     }//GEN-LAST:event_EditarActionPerformed
 
     private void VolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VolverActionPerformed
