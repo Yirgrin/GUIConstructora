@@ -1,24 +1,21 @@
 package Planillas;
-import Maquinaria.*;
-import Actividades.*;
+
 import Visual.*;
-import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JPanel;
 /**
  *
  * @author Yirgrin
  */
 public class FramePlanillas extends javax.swing.JFrame implements ActionListener{
-
-    addActividades p1 = new addActividades();
-    verActividad p3 = new verActividad();
-
+    
     
     public FramePlanillas() {
         initComponents();
         this.setLocationRelativeTo(null);
-        this.p3 = p3;
+        
     }
 
     /**
@@ -193,31 +190,21 @@ public class FramePlanillas extends javax.swing.JFrame implements ActionListener
     }// </editor-fold>//GEN-END:initComponents
 
     private void AgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AgregarActionPerformed
-        p1.setSize(479, 367);
-        p1.setLocation(0, 0);
-        content.removeAll();
-        content.add(p1,BorderLayout.CENTER);
-        content.validate();
-        content.repaint();
+        AddPlanilla p1= new AddPlanilla();
+        ShowPanel(p1);
     }//GEN-LAST:event_AgregarActionPerformed
 
     private void EliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EliminarActionPerformed
-        p3.borrarActividad();
+        
     }//GEN-LAST:event_EliminarActionPerformed
 
     private void VerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VerActionPerformed
-        p3.setSize(760, 367);
-        p3.setLocation(0, 0);
-        content.removeAll();
-        content.add(p3,BorderLayout.CENTER);
-        content.validate();
-        content.repaint(); 
-        p3.mostrarActividad();
+        
         
     }//GEN-LAST:event_VerActionPerformed
 
     private void EditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarActionPerformed
-       p3.editActividad();
+       
     }//GEN-LAST:event_EditarActionPerformed
 
     private void VolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VolverActionPerformed
@@ -226,6 +213,17 @@ public class FramePlanillas extends javax.swing.JFrame implements ActionListener
         inicio.setVisible(true);
     }//GEN-LAST:event_VolverActionPerformed
 
+    private void ShowPanel(JPanel p) {
+        //Metodo para mostrar paneles ------------
+        p.setSize(800, 300);
+        p.setLocation(0, 0);
+        content.removeAll();
+        content.setLayout(new FlowLayout());
+        content.add(p);
+        content.revalidate();
+        content.repaint();
+        //------------------------------------------------------------    
+    }
     /**
      * @param args the command line arguments
      */

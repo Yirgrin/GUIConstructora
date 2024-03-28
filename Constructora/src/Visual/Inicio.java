@@ -5,6 +5,10 @@ import Alquileres.Alquileres;
 import Proyectos.Proyectos;
 import Usuarios.FrameUsuarios;
 import Tareas.Tareas;
+import Planillas.FramePlanillas; 
+import Presupuestos.FramePresupuestos;
+import Maquinaria.FrameMaquinaria;
+
 public class Inicio extends javax.swing.JFrame {
 
     public Inicio() {
@@ -330,15 +334,21 @@ public class Inicio extends javax.swing.JFrame {
     }//GEN-LAST:event_btnalquileresActionPerformed
 
     private void btnMaquinariaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMaquinariaActionPerformed
-
+        this.dispose();
+        FrameMaquinaria nuevoMaquina = new FrameMaquinaria();
+        nuevoMaquina.setVisible(true);
     }//GEN-LAST:event_btnMaquinariaActionPerformed
 
     private void btnPresupuestosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPresupuestosActionPerformed
-
+        this.dispose();
+        FramePresupuestos nuevoPresupuesto = new FramePresupuestos();
+        nuevoPresupuesto.setVisible(true);
     }//GEN-LAST:event_btnPresupuestosActionPerformed
 
     private void btnPlanillasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPlanillasActionPerformed
-
+        this.dispose();
+        FramePlanillas nuevaPlanilla = new FramePlanillas();
+        nuevaPlanilla.setVisible(true);
     }//GEN-LAST:event_btnPlanillasActionPerformed
 
     private void btniGestionUsuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btniGestionUsuariosActionPerformed
