@@ -3,6 +3,7 @@ package Visual;
 import Actividades.Actividades;
 import Alquileres.Alquileres;
 import Proyectos.Proyectos;
+import Usuarios.FrameUsuarios;
 import Tareas.Tareas;
 public class Inicio extends javax.swing.JFrame {
 
@@ -32,7 +33,6 @@ public class Inicio extends javax.swing.JFrame {
         btnlistaEntrenadores = new javax.swing.JButton();
         btnvolver1 = new javax.swing.JButton();
         btndesplegar = new javax.swing.JButton();
-        CentralFrame1 = new javax.swing.JPanel();
 
         CentralFrame.setBackground(new java.awt.Color(102, 102, 102));
         CentralFrame.setRequestFocusEnabled(false);
@@ -258,37 +258,17 @@ public class Inicio extends javax.swing.JFrame {
 
         btnlistaEntrenadores.getAccessibleContext().setAccessibleName("Actividades");
 
-        CentralFrame1.setBackground(new java.awt.Color(102, 102, 102));
-        CentralFrame1.setRequestFocusEnabled(false);
-
-        javax.swing.GroupLayout CentralFrame1Layout = new javax.swing.GroupLayout(CentralFrame1);
-        CentralFrame1.setLayout(CentralFrame1Layout);
-        CentralFrame1Layout.setHorizontalGroup(
-            CentralFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 774, Short.MAX_VALUE)
-        );
-        CentralFrame1Layout.setVerticalGroup(
-            CentralFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 523, Short.MAX_VALUE)
-        );
-
         javax.swing.GroupLayout panelPrincipalLayout = new javax.swing.GroupLayout(panelPrincipal);
         panelPrincipal.setLayout(panelPrincipalLayout);
         panelPrincipalLayout.setHorizontalGroup(
             panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelPrincipalLayout.createSequentialGroup()
                 .addComponent(panelMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(CentralFrame1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(786, Short.MAX_VALUE))
         );
         panelPrincipalLayout.setVerticalGroup(
             panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(panelMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(panelPrincipalLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(CentralFrame1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -303,57 +283,27 @@ public class Inicio extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(panelPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 6, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btndesplegarComponentAdded(java.awt.event.ContainerEvent evt) {//GEN-FIRST:event_btndesplegarComponentAdded
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btndesplegarComponentAdded
+    private void btnvolver2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnvolver2ActionPerformed
+       
+    }//GEN-LAST:event_btnvolver2ActionPerformed
+
+    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
+
+    }//GEN-LAST:event_btnVolverActionPerformed
 
     private void btndesplegarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btndesplegarMouseClicked
 
     }//GEN-LAST:event_btndesplegarMouseClicked
 
-    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
-    
-    }//GEN-LAST:event_btnVolverActionPerformed
-
-    private void btniGestionUsuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btniGestionUsuariosActionPerformed
-       
-    }//GEN-LAST:event_btniGestionUsuariosActionPerformed
-
-    private void btnPlanillasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPlanillasActionPerformed
-       
-    }//GEN-LAST:event_btnPlanillasActionPerformed
-
-    private void btnPresupuestosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPresupuestosActionPerformed
-        
-    }//GEN-LAST:event_btnPresupuestosActionPerformed
-
-    private void btnMaquinariaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMaquinariaActionPerformed
-      
-    }//GEN-LAST:event_btnMaquinariaActionPerformed
-
-    private void btnalquileresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnalquileresActionPerformed
-        this.dispose();
-        Alquileres nuevoAlquiler = new Alquileres();
-        nuevoAlquiler.setVisible(true);
-    }//GEN-LAST:event_btnalquileresActionPerformed
-
-    private void btnActividadesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActividadesActionPerformed
-        this.dispose();
-        Actividades nuevaActividad = new Actividades();
-        nuevaActividad.setVisible(true);
-    }//GEN-LAST:event_btnActividadesActionPerformed
-
-    private void btnProyectosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProyectosActionPerformed
-        this.dispose();
-        Proyectos nuevoProyecto = new Proyectos();
-        nuevoProyecto.setVisible(true);
-    }//GEN-LAST:event_btnProyectosActionPerformed
+    private void btndesplegarComponentAdded(java.awt.event.ContainerEvent evt) {//GEN-FIRST:event_btndesplegarComponentAdded
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btndesplegarComponentAdded
 
     private void btnTareasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTareasActionPerformed
         /*this.dispose();
@@ -361,9 +311,41 @@ public class Inicio extends javax.swing.JFrame {
         nuevaTarea.setVisible(true);*/
     }//GEN-LAST:event_btnTareasActionPerformed
 
-    private void btnvolver2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnvolver2ActionPerformed
-       
-    }//GEN-LAST:event_btnvolver2ActionPerformed
+    private void btnProyectosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProyectosActionPerformed
+        this.dispose();
+        Proyectos nuevoProyecto = new Proyectos();
+        nuevoProyecto.setVisible(true);
+    }//GEN-LAST:event_btnProyectosActionPerformed
+
+    private void btnActividadesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActividadesActionPerformed
+        this.dispose();
+        Actividades nuevaActividad = new Actividades();
+        nuevaActividad.setVisible(true);
+    }//GEN-LAST:event_btnActividadesActionPerformed
+
+    private void btnalquileresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnalquileresActionPerformed
+        this.dispose();
+        Alquileres nuevoAlquiler = new Alquileres();
+        nuevoAlquiler.setVisible(true);
+    }//GEN-LAST:event_btnalquileresActionPerformed
+
+    private void btnMaquinariaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMaquinariaActionPerformed
+
+    }//GEN-LAST:event_btnMaquinariaActionPerformed
+
+    private void btnPresupuestosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPresupuestosActionPerformed
+
+    }//GEN-LAST:event_btnPresupuestosActionPerformed
+
+    private void btnPlanillasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPlanillasActionPerformed
+
+    }//GEN-LAST:event_btnPlanillasActionPerformed
+
+    private void btniGestionUsuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btniGestionUsuariosActionPerformed
+        this.dispose();
+        FrameUsuarios nuevoUsuario = new FrameUsuarios();
+        nuevoUsuario.setVisible(true);
+    }//GEN-LAST:event_btniGestionUsuariosActionPerformed
 
   
     public static void main(String args[]) {
@@ -374,7 +356,6 @@ public class Inicio extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel CentralFrame;
-    private javax.swing.JPanel CentralFrame1;
     private javax.swing.JButton btnagendar;
     private javax.swing.JButton btndesplegar;
     private javax.swing.JButton btninscribir;

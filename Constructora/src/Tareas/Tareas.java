@@ -35,16 +35,20 @@ public class Tareas extends javax.swing.JFrame implements ActionListener{
         Editar = new javax.swing.JButton();
         Volver = new javax.swing.JButton();
         Ver = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
         content = new javax.swing.JPanel();
+        CentralFrame1 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(57, 57, 57));
 
         CRUD.setBackground(new java.awt.Color(57, 57, 57));
 
         Agregar.setBackground(new java.awt.Color(57, 57, 57));
         Agregar.setFont(new java.awt.Font("Eras Medium ITC", 0, 16)); // NOI18N
         Agregar.setForeground(new java.awt.Color(255, 255, 255));
-        Agregar.setText("Agregar Alquiler");
+        Agregar.setText("Agregar Tarea");
+        Agregar.setToolTipText("");
         Agregar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 AgregarActionPerformed(evt);
@@ -54,7 +58,7 @@ public class Tareas extends javax.swing.JFrame implements ActionListener{
         Eliminar.setBackground(new java.awt.Color(57, 57, 57));
         Eliminar.setFont(new java.awt.Font("Eras Medium ITC", 0, 16)); // NOI18N
         Eliminar.setForeground(new java.awt.Color(255, 255, 255));
-        Eliminar.setText("Eliminar Alquiler");
+        Eliminar.setText("Eliminar Tarea");
         Eliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 EliminarActionPerformed(evt);
@@ -64,7 +68,7 @@ public class Tareas extends javax.swing.JFrame implements ActionListener{
         Editar.setBackground(new java.awt.Color(57, 57, 57));
         Editar.setFont(new java.awt.Font("Eras Medium ITC", 0, 16)); // NOI18N
         Editar.setForeground(new java.awt.Color(255, 255, 255));
-        Editar.setText("Editar Alquiler");
+        Editar.setText("Editar Tarea");
         Editar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 EditarActionPerformed(evt);
@@ -85,12 +89,17 @@ public class Tareas extends javax.swing.JFrame implements ActionListener{
         Ver.setBackground(new java.awt.Color(57, 57, 57));
         Ver.setFont(new java.awt.Font("Eras Medium ITC", 0, 16)); // NOI18N
         Ver.setForeground(new java.awt.Color(255, 255, 255));
-        Ver.setText("Ver Alquileres");
+        Ver.setText("Ver Tareas");
         Ver.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 VerActionPerformed(evt);
             }
         });
+
+        jLabel2.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel2.setFont(new java.awt.Font("Eras Medium ITC", 1, 16)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2.setText("Gestión Tareas");
 
         javax.swing.GroupLayout CRUDLayout = new javax.swing.GroupLayout(CRUD);
         CRUD.setLayout(CRUDLayout);
@@ -99,44 +108,69 @@ public class Tareas extends javax.swing.JFrame implements ActionListener{
             .addGroup(CRUDLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(CRUDLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(Agregar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(Agregar, javax.swing.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
+                    .addComponent(Ver, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(Eliminar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(Editar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(CRUDLayout.createSequentialGroup()
-                        .addGroup(CRUDLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(Eliminar)
-                            .addComponent(Editar, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Volver, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Ver, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(jLabel2)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(Volver, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         CRUDLayout.setVerticalGroup(
             CRUDLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(CRUDLayout.createSequentialGroup()
-                .addGap(74, 74, 74)
-                .addComponent(Agregar, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
-                .addComponent(Ver)
-                .addGap(18, 18, 18)
-                .addComponent(Eliminar)
-                .addGap(18, 18, 18)
-                .addComponent(Editar)
-                .addGap(83, 83, 83)
-                .addComponent(Volver)
-                .addContainerGap())
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addGap(111, 111, 111)
+                .addComponent(Agregar, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(Ver, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(Eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(Editar, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(Volver, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(22, 22, 22))
         );
 
         content.setBackground(new java.awt.Color(102, 102, 102));
         content.setPreferredSize(new java.awt.Dimension(760, 375));
 
+        CentralFrame1.setBackground(new java.awt.Color(102, 102, 102));
+        CentralFrame1.setRequestFocusEnabled(false);
+
+        javax.swing.GroupLayout CentralFrame1Layout = new javax.swing.GroupLayout(CentralFrame1);
+        CentralFrame1.setLayout(CentralFrame1Layout);
+        CentralFrame1Layout.setHorizontalGroup(
+            CentralFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 785, Short.MAX_VALUE)
+        );
+        CentralFrame1Layout.setVerticalGroup(
+            CentralFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 523, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout contentLayout = new javax.swing.GroupLayout(content);
         content.setLayout(contentLayout);
         contentLayout.setHorizontalGroup(
             contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 800, Short.MAX_VALUE)
+            .addGap(0, 791, Short.MAX_VALUE)
+            .addGroup(contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(contentLayout.createSequentialGroup()
+                    .addComponent(CentralFrame1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         contentLayout.setVerticalGroup(
             contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 375, Short.MAX_VALUE)
+            .addGap(0, 535, Short.MAX_VALUE)
+            .addGroup(contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(contentLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(CentralFrame1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -146,12 +180,12 @@ public class Tareas extends javax.swing.JFrame implements ActionListener{
             .addGroup(layout.createSequentialGroup()
                 .addComponent(CRUD, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, 794, Short.MAX_VALUE))
+                .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, 791, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(CRUD, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, 535, Short.MAX_VALUE)
         );
 
         pack();
@@ -236,11 +270,13 @@ public class Tareas extends javax.swing.JFrame implements ActionListener{
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Agregar;
     private javax.swing.JPanel CRUD;
+    private javax.swing.JPanel CentralFrame1;
     private javax.swing.JButton Editar;
     private javax.swing.JButton Eliminar;
     private javax.swing.JButton Ver;
     private javax.swing.JButton Volver;
     private javax.swing.JPanel content;
+    private javax.swing.JLabel jLabel2;
     // End of variables declaration//GEN-END:variables
 
     @Override
