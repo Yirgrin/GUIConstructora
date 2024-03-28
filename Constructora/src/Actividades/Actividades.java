@@ -1,8 +1,10 @@
 package Actividades;
 import Visual.*;
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JPanel;
 /**
  *
  * @author Melvin
@@ -192,12 +194,7 @@ public class Actividades extends javax.swing.JFrame implements ActionListener{
     }// </editor-fold>//GEN-END:initComponents
 
     private void AgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AgregarActionPerformed
-        p1.setSize(479, 367);
-        p1.setLocation(0, 0);
-        content.removeAll();
-        content.add(p1,BorderLayout.CENTER);
-        content.validate();
-        content.repaint();
+        ShowPanel(p1);
     }//GEN-LAST:event_AgregarActionPerformed
 
     private void EliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EliminarActionPerformed
@@ -261,6 +258,18 @@ public class Actividades extends javax.swing.JFrame implements ActionListener{
                 new Actividades().setVisible(true);
             }
         });
+    }
+    
+     private void ShowPanel(JPanel p) {
+        //Metodo para mostrar paneles ------------
+        p.setSize(800, 300);
+        p.setLocation(0, 0);
+        content.removeAll();
+        content.setLayout(new FlowLayout());
+        content.add(p);
+        content.revalidate();
+        content.repaint();
+        //------------------------------------------------------------    
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

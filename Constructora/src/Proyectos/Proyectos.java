@@ -1,8 +1,10 @@
 package Proyectos;
 import Visual.*;
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JPanel;
 /**
  *
  * @author Melvin
@@ -37,7 +39,6 @@ public class Proyectos extends javax.swing.JFrame implements ActionListener{
         Ver = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         content = new javax.swing.JPanel();
-        CentralFrame1 = new javax.swing.JPanel();
 
         jLabel1.setFont(new java.awt.Font("Eras Medium ITC", 1, 16)); // NOI18N
         jLabel1.setText("Alquileres");
@@ -133,47 +134,23 @@ public class Proyectos extends javax.swing.JFrame implements ActionListener{
                 .addComponent(Eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(Editar, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 112, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(Volver, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(23, 23, 23))
+                .addGap(34, 34, 34))
         );
 
         content.setBackground(new java.awt.Color(102, 102, 102));
         content.setPreferredSize(new java.awt.Dimension(760, 375));
 
-        CentralFrame1.setBackground(new java.awt.Color(102, 102, 102));
-        CentralFrame1.setRequestFocusEnabled(false);
-
-        javax.swing.GroupLayout CentralFrame1Layout = new javax.swing.GroupLayout(CentralFrame1);
-        CentralFrame1.setLayout(CentralFrame1Layout);
-        CentralFrame1Layout.setHorizontalGroup(
-            CentralFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 774, Short.MAX_VALUE)
-        );
-        CentralFrame1Layout.setVerticalGroup(
-            CentralFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 523, Short.MAX_VALUE)
-        );
-
         javax.swing.GroupLayout contentLayout = new javax.swing.GroupLayout(content);
         content.setLayout(contentLayout);
         contentLayout.setHorizontalGroup(
             contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 786, Short.MAX_VALUE)
-            .addGroup(contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(contentLayout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(CentralFrame1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+            .addGap(0, 801, Short.MAX_VALUE)
         );
         contentLayout.setVerticalGroup(
             contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-            .addGroup(contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(contentLayout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(CentralFrame1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+            .addGap(0, 535, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -183,7 +160,7 @@ public class Proyectos extends javax.swing.JFrame implements ActionListener{
             .addGroup(layout.createSequentialGroup()
                 .addComponent(CRUD, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, 786, Short.MAX_VALUE))
+                .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, 801, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -195,12 +172,7 @@ public class Proyectos extends javax.swing.JFrame implements ActionListener{
     }// </editor-fold>//GEN-END:initComponents
 
     private void AgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AgregarActionPerformed
-        p1.setSize(479, 367);
-        p1.setLocation(0, 0);
-        content.removeAll();
-        content.add(p1,BorderLayout.CENTER);
-        content.validate();
-        content.repaint();
+        ShowPanel(p1);
     }//GEN-LAST:event_AgregarActionPerformed
 
     private void EliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EliminarActionPerformed
@@ -266,10 +238,20 @@ public class Proyectos extends javax.swing.JFrame implements ActionListener{
         });
     }
 
+    private void ShowPanel(JPanel p) {
+        //Metodo para mostrar paneles ------------
+        p.setSize(800, 300);
+        p.setLocation(0, 0);
+        content.removeAll();
+        content.setLayout(new FlowLayout());
+        content.add(p);
+        content.revalidate();
+        content.repaint();
+        //------------------------------------------------------------    
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Agregar;
     private javax.swing.JPanel CRUD;
-    private javax.swing.JPanel CentralFrame1;
     private javax.swing.JButton Editar;
     private javax.swing.JButton Eliminar;
     private javax.swing.JButton Ver;

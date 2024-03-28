@@ -52,14 +52,15 @@
           <Group type="102" alignment="0" attributes="0">
               <Component id="CRUD" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
-              <Component id="content" min="-2" pref="793" max="-2" attributes="0"/>
+              <Component id="content" min="-2" pref="795" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Component id="CRUD" max="32767" attributes="0"/>
-          <Component id="content" alignment="0" pref="538" max="32767" attributes="0"/>
+          <Component id="content" min="-2" pref="521" max="-2" attributes="0"/>
       </Group>
     </DimensionLayout>
   </Layout>
@@ -104,9 +105,9 @@
                   <Component id="Eliminar" min="-2" pref="48" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="Editar" min="-2" pref="48" max="-2" attributes="0"/>
-                  <EmptySpace pref="113" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
                   <Component id="Volver" min="-2" pref="45" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="47" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -229,12 +230,12 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <EmptySpace min="0" pref="793" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="795" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="521" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
       </Layout>

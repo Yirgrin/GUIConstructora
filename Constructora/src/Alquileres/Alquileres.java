@@ -1,15 +1,17 @@
 package Alquileres;
 import Visual.*;
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JPanel;
 /**
  *
  * @author Melvin
  */
 public class Alquileres extends javax.swing.JFrame implements ActionListener{
 
-    addAlquiler p1 = new addAlquiler();
+    
     verAlquiler p3 = new verAlquiler();
 
     
@@ -143,9 +145,9 @@ public class Alquileres extends javax.swing.JFrame implements ActionListener{
                 .addComponent(Eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(Editar, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 113, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(Volver, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(15, 15, 15))
+                .addGap(47, 47, 47))
         );
 
         content.setBackground(new java.awt.Color(102, 102, 102));
@@ -155,11 +157,11 @@ public class Alquileres extends javax.swing.JFrame implements ActionListener{
         content.setLayout(contentLayout);
         contentLayout.setHorizontalGroup(
             contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 793, Short.MAX_VALUE)
+            .addGap(0, 795, Short.MAX_VALUE)
         );
         contentLayout.setVerticalGroup(
             contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 521, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -169,24 +171,22 @@ public class Alquileres extends javax.swing.JFrame implements ActionListener{
             .addGroup(layout.createSequentialGroup()
                 .addComponent(CRUD, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(content, javax.swing.GroupLayout.PREFERRED_SIZE, 793, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(content, javax.swing.GroupLayout.PREFERRED_SIZE, 795, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(CRUD, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, 538, Short.MAX_VALUE)
+            .addComponent(content, javax.swing.GroupLayout.PREFERRED_SIZE, 521, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void AgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AgregarActionPerformed
-        p1.setSize(479, 367);
-        p1.setLocation(0, 0);
-        content.removeAll();
-        content.add(p1,BorderLayout.CENTER);
-        content.validate();
-        content.repaint(); ; 
+        addAlquiler p1 = new addAlquiler();
+        ShowPanel(p1);
+        
     }//GEN-LAST:event_AgregarActionPerformed
 
     private void EliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EliminarActionPerformed
@@ -194,14 +194,7 @@ public class Alquileres extends javax.swing.JFrame implements ActionListener{
     }//GEN-LAST:event_EliminarActionPerformed
 
     private void VerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VerActionPerformed
-        p3.setSize(760, 367);
-        p3.setLocation(0, 0);
-        content.removeAll();
-        content.add(p3,BorderLayout.CENTER);
-        content.validate();
-        content.repaint(); 
-        p3.mostrarAlquileres();
-        
+        ShowPanel(p3);
     }//GEN-LAST:event_VerActionPerformed
 
     private void EditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarActionPerformed
@@ -247,6 +240,18 @@ public class Alquileres extends javax.swing.JFrame implements ActionListener{
                 new Alquileres().setVisible(true);
             }
         });
+    }
+    
+    private void ShowPanel(JPanel p) {
+        //Metodo para mostrar paneles ------------
+        p.setSize(800, 300);
+        p.setLocation(0, 0);
+        content.removeAll();
+        content.setLayout(new FlowLayout());
+        content.add(p);
+        content.revalidate();
+        content.repaint();
+        //------------------------------------------------------------    
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
