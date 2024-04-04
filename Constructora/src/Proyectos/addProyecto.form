@@ -62,7 +62,7 @@
                       <Component id="jLabel8" min="-2" pref="209" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace pref="136" max="32767" attributes="0"/>
+              <EmptySpace pref="119" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -143,7 +143,7 @@
         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="ff" green="ff" red="ff" type="rgb"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="C&#xf3;digo del Proyecto:"/>
+        <Property name="text" type="java.lang.String" value="C&#xf3;digo del Presupuesto:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel3">

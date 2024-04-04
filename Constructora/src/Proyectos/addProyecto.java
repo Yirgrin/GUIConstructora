@@ -92,7 +92,7 @@ public class addProyecto extends javax.swing.JPanel {
 
         jLabel2.setFont(new java.awt.Font("Eras Medium ITC", 0, 18)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("Código del Proyecto:");
+        jLabel2.setText("Código del Presupuesto:");
 
         jLabel3.setFont(new java.awt.Font("Eras Medium ITC", 0, 18)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
@@ -180,7 +180,7 @@ public class addProyecto extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(275, 275, 275)
                         .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(136, Short.MAX_VALUE))
+                .addContainerGap(119, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

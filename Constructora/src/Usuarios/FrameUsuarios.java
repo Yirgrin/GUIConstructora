@@ -177,7 +177,8 @@ public class FrameUsuarios extends javax.swing.JFrame implements ActionListener{
     }//GEN-LAST:event_EliminarActionPerformed
 
     private void VerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VerActionPerformed
-        
+        VerListaUsuarios p2= new VerListaUsuarios();
+        ShowPanel(p2);
         
     }//GEN-LAST:event_VerActionPerformed
 

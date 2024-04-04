@@ -91,7 +91,7 @@ public class addAlquiler extends javax.swing.JPanel {
 
         jLabel2.setFont(new java.awt.Font("Eras Medium ITC", 0, 18)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("Indentificación de la Máquina:");
+        jLabel2.setText("Identificación de la Máquina:");
 
         jLabel3.setFont(new java.awt.Font("Eras Medium ITC", 0, 18)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));

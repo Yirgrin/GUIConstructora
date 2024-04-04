@@ -10,7 +10,7 @@ public class OracleDBManager {
     private static final String DRIVER = "oracle.jdbc.OracleDriver";
     private static final String URL = "jdbc:oracle:thin:@localhost:1521:orcl";
     private static final String USER = "CONSTRUCTORA_USER";
-    private static final String PASSWORD = "constructora2023";
+    private static final String PASSWORD = "constructora2024";
 
     public Connection cadena;
     
