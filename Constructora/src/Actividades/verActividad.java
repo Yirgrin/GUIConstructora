@@ -11,6 +11,7 @@ import com.toedter.calendar.JDateChooser;
 import java.awt.GridLayout;
 import java.math.BigDecimal;
 import java.util.Date;
+import oracle.jdbc.OracleTypes;
 
 /**
  *
@@ -28,20 +29,25 @@ public class verActividad extends javax.swing.JPanel {
     }
     
     public void mostrarActividad() {
-        // Sentencia SQL para obtener todas las actividades
-    String sql = "SELECT actividad_id, nombre, fecha, hora, ubicacion, descripcion, participantes FROM Actividades";
+    // Sentencia SQL para llamar al procedimiento almacenado
+    String sql = "{call sp_obtener_actividad(?)}";
 
     try {
         // Obtener la conexión desde OracleDBManager
         Connection conn = conexion.conectar();
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery(sql);
+        CallableStatement stmt = conn.prepareCall(sql);
 
         // Crear un modelo de tabla para la jTable1
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         // Limpiar la tabla antes de agregar los datos
         model.setRowCount(0);
 
+        // Parámetro de salida para los resultados del procedimiento almacenado
+        stmt.registerOutParameter(1, OracleTypes.CURSOR);
+        // Ejecutar el procedimiento almacenado
+        stmt.execute();
+        // Obtener el cursor de salida
+        ResultSet rs = (ResultSet) stmt.getObject(1);
         // Llenar la tabla con los resultados de la consulta
         while (rs.next()) {
             Object[] row = new Object[7];
@@ -50,28 +56,30 @@ public class verActividad extends javax.swing.JPanel {
             }
             model.addRow(row);
         }
+        // Cerrar recursos
+        rs.close();
+        stmt.close();
+        conexion.desconectar();
+
     } catch (SQLException e) {
         System.out.println("Error al mostrar actividades: " + e.getMessage());
     }
 }
-    
-    public void borrarActividad(){
+
+ 
+    public void borrarActividad() {
     int selectedRow = jTable1.getSelectedRow();
     int actividadId;
     if (selectedRow != -1) {
         actividadId = ((BigDecimal) jTable1.getValueAt(selectedRow, 0)).intValue();
         try {
             Connection conn = conexion.conectar();
-            String sql = "DELETE FROM Actividades WHERE actividad_id = ?";
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, actividadId);
-            int filasAfectadas = pstmt.executeUpdate();
-            if (filasAfectadas > 0) {
-                JOptionPane.showMessageDialog(null, "Actividad eliminada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(null, "La actividad no existe o ya ha sido eliminada.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-            pstmt.close();
+            String sql = "{call sp_eliminar_actividad(?)}";
+            CallableStatement stmt = conn.prepareCall(sql);
+            stmt.setInt(1, actividadId);
+            stmt.executeUpdate();
+            JOptionPane.showMessageDialog(null, "Actividad eliminada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            stmt.close();
             conn.close();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error al eliminar la actividad: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -81,9 +89,11 @@ public class verActividad extends javax.swing.JPanel {
     }
     mostrarActividad();
 }
+
     
-    public void editActividad(){
-        int selectedRow = jTable1.getSelectedRow();
+    public void editActividad() {
+    dateActividad.setDateFormatString("yyyy-MM-dd");
+    int selectedRow = jTable1.getSelectedRow();
     if (selectedRow != -1) {
         int actividadId = ((BigDecimal) jTable1.getValueAt(selectedRow, 0)).intValue();
 
@@ -102,25 +112,21 @@ public class verActividad extends javax.swing.JPanel {
 
         try {
             Connection conn = conexion.conectar();
-            String sql = "UPDATE Actividades SET nombre = ?, fecha = ?, hora = ?, ubicacion = ?, descripcion = ?, participantes = ? WHERE actividad_id = ?";
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, nuevoNombre);
-            pstmt.setDate(2, nuevaFecha);
-            pstmt.setString(3, nuevaHora);
-            pstmt.setString(4, nuevaUbicacion);
-            pstmt.setString(5, nuevaDescripcion);
-            pstmt.setString(6, nuevosParticipantes);
-            pstmt.setInt(7, actividadId);
+            String sql = "{call sp_actualizar_actividad(?, ?, ?, ?, ?, ?, ?)}";
+            CallableStatement stmt = conn.prepareCall(sql);
+            stmt.setInt(1, actividadId);
+            stmt.setString(2, nuevoNombre);
+            stmt.setDate(3, nuevaFecha);
+            stmt.setString(4, nuevaHora);
+            stmt.setString(5, nuevaUbicacion);
+            stmt.setString(6, nuevaDescripcion);
+            stmt.setString(7, nuevosParticipantes);
 
-            int filasAfectadas = pstmt.executeUpdate();
-
-            if (filasAfectadas > 0) {
-                JOptionPane.showMessageDialog(null, "Actividad editada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al editar la actividad.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-
-            pstmt.close();
+            stmt.executeUpdate();
+            
+            JOptionPane.showMessageDialog(null, "Actividad editada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            
+            stmt.close();
             conn.close();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error al editar la actividad: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -130,6 +136,7 @@ public class verActividad extends javax.swing.JPanel {
     }
     mostrarActividad();
 }
+
     
     /**
      * This method is called from within the constructor to initialize the form.

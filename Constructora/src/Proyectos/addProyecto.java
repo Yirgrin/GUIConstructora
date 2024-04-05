@@ -23,37 +23,28 @@ public class addProyecto extends javax.swing.JPanel {
         initComponents();
     }
     
-    private void insertarProyecto() {
-        int idproyectoValue = Integer.parseInt(idProyecto.getText());
-        String codProyectoValue = codProyecto.getText();
-        String nameProyectoValue = nameProyecto.getText();
-        String descProyectoValue = descProyecto.getText();
-        Date inicioProyectoValue = inicioProyecto.getDate();
-        Date finProyectoValue = finProyecto.getDate();
-        String dataClienteValue = dataCliente.getText();
-
-        // Sentencia SQL para insertar un nuevo Proyecto
-        String sql = "INSERT INTO PROYECTOS (proyecto_id, codigo_proyecto, nombre, descripcion, fecha_inicio, fecha_finalizacion, cliente_datos) VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-        try {
-            // Obtener la conexión desde OracleDBManager
-            Connection conn = conexion.conectar();
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            // Establecer los valores de los parámetros
-            pstmt.setInt(1, idproyectoValue);
-            pstmt.setString(2, codProyectoValue);
-            pstmt.setString(3, nameProyectoValue);
-            pstmt.setString(4, descProyectoValue);
-            pstmt.setDate(5, new java.sql.Date(inicioProyectoValue.getTime()));
-            pstmt.setDate(6, new java.sql.Date(finProyectoValue.getTime()));
-            pstmt.setString(7, dataClienteValue);
-
-            // Ejecutar la inserción
-            pstmt.executeUpdate();
-            System.out.println("Proyecto insertado correctamente.");
-            conexion.desconectar();
+    public static void insertarProyecto(int codPresupuesto, String nombre, String descProyecto, Date inicioProyecto, Date finProyecto, String dataCliente) {
+        OracleDBManager dbManager = new OracleDBManager();
+        try (Connection conexion = dbManager.conectar()) {
+            // Llama al procedimiento almacenado
+            String sql = "{call sp_insertar_proyecto(?, ?, ?, ?, ?, ?)}";
+            try (PreparedStatement statement = conexion.prepareCall(sql)) {
+                java.sql.Date sqlInicioProyecto = new java.sql.Date(inicioProyecto.getTime());
+                java.sql.Date sqlFinProyecto = new java.sql.Date(finProyecto.getTime());
+                statement.setInt(1, codPresupuesto);
+                statement.setString(2, nombre);
+                statement.setString(3, descProyecto);
+                statement.setDate(4, sqlInicioProyecto);
+                statement.setDate(5, sqlFinProyecto);
+                statement.setString(6, dataCliente);
+                statement.executeUpdate();
+                System.out.println("El proyecto se insertó correctamente.");
+            }
         } catch (SQLException e) {
-            System.out.println("Error al insertar proyecto: " + e.getMessage());
+            e.printStackTrace();
+            System.out.println("Error al insertar el proyecto: " + e.getMessage());
+        } finally {
+            dbManager.desconectar();
         }
     }
     /**
@@ -65,7 +56,6 @@ public class addProyecto extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -75,9 +65,8 @@ public class addProyecto extends javax.swing.JPanel {
         finProyecto = new com.toedter.calendar.JDateChooser();
         inicioProyecto = new com.toedter.calendar.JDateChooser();
         dataCliente = new javax.swing.JTextField();
-        nameProyecto = new javax.swing.JTextField();
-        codProyecto = new javax.swing.JTextField();
-        idProyecto = new javax.swing.JTextField();
+        codPresupuesto = new javax.swing.JTextField();
+        nombre = new javax.swing.JTextField();
         Enviar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         descProyecto = new javax.swing.JTextArea();
@@ -85,10 +74,6 @@ public class addProyecto extends javax.swing.JPanel {
 
         setBackground(new java.awt.Color(102, 102, 102));
         setForeground(new java.awt.Color(255, 255, 255));
-
-        jLabel1.setFont(new java.awt.Font("Eras Medium ITC", 0, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("Identificación del Proyecto:");
 
         jLabel2.setFont(new java.awt.Font("Eras Medium ITC", 0, 18)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
@@ -121,11 +106,9 @@ public class addProyecto extends javax.swing.JPanel {
 
         dataCliente.setBackground(new java.awt.Color(187, 187, 187));
 
-        nameProyecto.setBackground(new java.awt.Color(187, 187, 187));
+        codPresupuesto.setBackground(new java.awt.Color(187, 187, 187));
 
-        codProyecto.setBackground(new java.awt.Color(187, 187, 187));
-
-        idProyecto.setBackground(new java.awt.Color(187, 187, 187));
+        nombre.setBackground(new java.awt.Color(187, 187, 187));
 
         Enviar.setBackground(new java.awt.Color(57, 57, 57));
         Enviar.setFont(new java.awt.Font("Eras Medium ITC", 1, 18)); // NOI18N
@@ -156,27 +139,23 @@ public class addProyecto extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(127, 127, 127)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel3)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jLabel5)
-                                    .addComponent(jLabel6)
-                                    .addComponent(jLabel7)
-                                    .addComponent(jLabel4))
-                                .addGap(108, 108, 108)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(finProyecto, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(inicioProyecto, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(dataCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(Enviar, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                                        .addComponent(idProyecto, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
-                                        .addComponent(codProyecto, javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(nameProyecto, javax.swing.GroupLayout.Alignment.LEADING))))))
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel7)
+                            .addComponent(jLabel4))
+                        .addGap(108, 108, 108)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(finProyecto, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(inicioProyecto, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(Enviar, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
+                                .addComponent(nombre, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(codPresupuesto, javax.swing.GroupLayout.Alignment.LEADING))
+                            .addComponent(dataCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(275, 275, 275)
                         .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -187,52 +166,44 @@ public class addProyecto extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGap(16, 16, 16)
                 .addComponent(jLabel8)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(idProyecto, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(codProyecto, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(nombre, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(15, 15, 15)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(nameProyecto, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(jLabel2)
+                    .addComponent(codPresupuesto, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel5)
+                    .addComponent(inicioProyecto, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(finProyecto, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(inicioProyecto, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addGap(28, 28, 28)))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(finProyecto, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(12, 12, 12)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(dataCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(72, 72, 72))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(222, 222, 222)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(Enviar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(16, 16, 16))
+                        .addComponent(dataCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
+                        .addComponent(Enviar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(31, 31, 31))))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void EnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EnviarActionPerformed
-        insertarProyecto();
-        nameProyecto.setText("");
+        insertarProyecto(Integer.parseInt(codPresupuesto.getText()), nombre.getText(), descProyecto.getText(), inicioProyecto.getDate(), finProyecto.getDate(), dataCliente.getText());
+        codPresupuesto.setText("");
         descProyecto.setText("");
-        idProyecto.setText("");
-        codProyecto.setText("");
+        nombre.setText("");
         dataCliente.setText("");
         inicioProyecto.setDate(new Date());
         finProyecto.setDate(new Date());
@@ -241,13 +212,11 @@ public class addProyecto extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Enviar;
-    private javax.swing.JTextField codProyecto;
+    private javax.swing.JTextField codPresupuesto;
     private javax.swing.JTextField dataCliente;
     private javax.swing.JTextArea descProyecto;
     private com.toedter.calendar.JDateChooser finProyecto;
-    private javax.swing.JTextField idProyecto;
     private com.toedter.calendar.JDateChooser inicioProyecto;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -256,6 +225,6 @@ public class addProyecto extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField nameProyecto;
+    private javax.swing.JTextField nombre;
     // End of variables declaration//GEN-END:variables
 }

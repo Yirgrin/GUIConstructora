@@ -11,6 +11,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.GridLayout;
 import java.util.Date;
+import oracle.jdbc.OracleTypes;
 
 /**
  *
@@ -26,20 +27,25 @@ public class verAlquiler extends javax.swing.JPanel {
     }
     
     public void mostrarAlquileres() {
-    // Sentencia SQL para obtener todos los alquileres
-    String sql = "SELECT alquiler_id, maquina_id, codigo_proveedor, direccion, telefono_contacto, fecha_alquiler, fecha_devolucion FROM Alquileres";
+    // Sentencia SQL para llamar al procedimiento almacenado
+    String sql = "{call sp_obtener_alquiler(?)}";
 
     try {
         // Obtener la conexión desde OracleDBManager
         Connection conn = conexion.conectar();
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery(sql);
+        CallableStatement stmt = conn.prepareCall(sql);
 
         // Crear un modelo de tabla para la jTable1
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         // Limpiar la tabla antes de agregar los datos
         model.setRowCount(0);
 
+        // Parámetro de salida para los resultados del procedimiento almacenado
+        stmt.registerOutParameter(1, OracleTypes.CURSOR);
+        // Ejecutar el procedimiento almacenado
+        stmt.execute();
+        // Obtener el cursor de salida
+        ResultSet rs = (ResultSet) stmt.getObject(1);
         // Llenar la tabla con los resultados de la consulta
         while (rs.next()) {
             Object[] row = new Object[7];
@@ -48,6 +54,11 @@ public class verAlquiler extends javax.swing.JPanel {
             }
             model.addRow(row);
         }
+        // Cerrar recursos
+        rs.close();
+        stmt.close();
+        conexion.desconectar();
+
     } catch (SQLException e) {
         System.out.println("Error al mostrar alquileres: " + e.getMessage());
     }
@@ -60,16 +71,12 @@ public class verAlquiler extends javax.swing.JPanel {
         alquilerId = ((BigDecimal) jTable1.getValueAt(selectedRow, 0)).intValue();
         try {
             Connection conn = conexion.conectar();
-            String sql = "DELETE FROM Alquileres WHERE alquiler_id = ?";
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, alquilerId);
-            int filasAfectadas = pstmt.executeUpdate();
-            if (filasAfectadas > 0) {
-                JOptionPane.showMessageDialog(null, "Alquiler eliminado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(null, "El alquiler no existe o ya ha sido eliminado.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-            pstmt.close();
+            String sql = "{call sp_eliminar_alquiler(?)}";
+            CallableStatement stmt = conn.prepareCall(sql);
+            stmt.setInt(1, alquilerId);
+            stmt.executeUpdate();
+            JOptionPane.showMessageDialog(null, "Alquiler eliminado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            stmt.close();
             conn.close();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error al eliminar el alquiler: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -79,7 +86,9 @@ public class verAlquiler extends javax.swing.JPanel {
     }
     mostrarAlquileres();
 }
-
+    /*
+    FALTA DE EDITAR
+    */
     public void editAlquiler() {
     int selectedRow = jTable1.getSelectedRow();
 

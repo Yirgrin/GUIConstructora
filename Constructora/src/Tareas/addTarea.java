@@ -24,34 +24,27 @@ public class addTarea extends javax.swing.JPanel {
         initComponents();
     }
 
-    private void insertarTarea() {
-    int asignacionIdValue = Integer.parseInt(idTarea.getText());
-    int empleadoIdValue = Integer.parseInt(idEmpleado.getText());
-    int proyectoIdValue = Integer.parseInt(idProyecto.getText());
-    Date fechaVencimientoValue = dateTarea.getDate();
-    String descripcionValue = descTarea.getText();
+    public static void insertarTarea(String idEmpleado, String idProyecto, Date fechaVencimiento, String descripcion) {
+    OracleDBManager dbManager = new OracleDBManager();
+    try (Connection conexion = dbManager.conectar()) {
+        // Sentencia SQL para insertar una nueva asignación
+        String sql = "INSERT INTO Asignaciones (asignacion_id, empleado_id, proyecto_id, fecha_vencimiento, descripcion) VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement pstmt = conexion.prepareStatement(sql)) {
+            // Establecer los valores de los parámetros
+            pstmt.setInt(1, Integer.parseInt(idTarea));
+            pstmt.setInt(2, Integer.parseInt(idEmpleado));
+            pstmt.setInt(3, Integer.parseInt(idProyecto));
+            pstmt.setDate(4, new java.sql.Date(fechaVencimiento.getTime()));
+            pstmt.setString(5, descripcion);
 
-    // Sentencia SQL para insertar una nueva asignación
-    String sql = "INSERT INTO Asignaciones (asignacion_id, empleado_id, proyecto_id, fecha_vencimiento, descripcion) VALUES (?, ?, ?, ?, ?)";
-
-    try {
-        // Obtener la conexión desde OracleDBManager
-        Connection conn = conexion.conectar();
-        PreparedStatement pstmt = conn.prepareStatement(sql);
-
-        // Establecer los valores de los parámetros
-        pstmt.setInt(1, asignacionIdValue);
-        pstmt.setInt(2, empleadoIdValue);
-        pstmt.setInt(3, proyectoIdValue);
-        pstmt.setDate(4, new java.sql.Date(fechaVencimientoValue.getTime()));
-        pstmt.setString(5, descripcionValue);
-
-        // Ejecutar la inserción
-        pstmt.executeUpdate();
-        System.out.println("Asignación insertada correctamente.");
-        conexion.desconectar();
+            // Ejecutar la inserción
+            pstmt.executeUpdate();
+            System.out.println("Asignación insertada correctamente.");
+        }
     } catch (SQLException e) {
         System.out.println("Error al insertar asignación: " + e.getMessage());
+    } finally {
+        dbManager.desconectar();
     }
 }
     /**
@@ -64,7 +57,6 @@ public class addTarea extends javax.swing.JPanel {
     private void initComponents() {
 
         content = new javax.swing.JPanel();
-        jLabel13 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
@@ -72,17 +64,12 @@ public class addTarea extends javax.swing.JPanel {
         dateTarea = new com.toedter.calendar.JDateChooser();
         idProyecto = new javax.swing.JTextField();
         idEmpleado = new javax.swing.JTextField();
-        idTarea = new javax.swing.JTextField();
         Enviar = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         descTarea = new javax.swing.JTextArea();
         jLabel18 = new javax.swing.JLabel();
 
         content.setBackground(new java.awt.Color(102, 102, 102));
-
-        jLabel13.setFont(new java.awt.Font("Eras Medium ITC", 0, 18)); // NOI18N
-        jLabel13.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel13.setText("Identificación de la Tarea:");
 
         jLabel14.setFont(new java.awt.Font("Eras Medium ITC", 0, 18)); // NOI18N
         jLabel14.setForeground(new java.awt.Color(255, 255, 255));
@@ -105,8 +92,6 @@ public class addTarea extends javax.swing.JPanel {
         idProyecto.setBackground(new java.awt.Color(187, 187, 187));
 
         idEmpleado.setBackground(new java.awt.Color(187, 187, 187));
-
-        idTarea.setBackground(new java.awt.Color(187, 187, 187));
 
         Enviar.setBackground(new java.awt.Color(57, 57, 57));
         Enviar.setFont(new java.awt.Font("Eras Medium ITC", 1, 18)); // NOI18N
@@ -137,14 +122,12 @@ public class addTarea extends javax.swing.JPanel {
                 .addGap(110, 110, 110)
                 .addGroup(contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel14)
-                    .addComponent(jLabel13)
                     .addComponent(jLabel15)
                     .addComponent(jLabel16)
                     .addComponent(jLabel17))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 100, Short.MAX_VALUE)
                 .addGroup(contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(idEmpleado)
-                    .addComponent(idTarea)
                     .addComponent(dateTarea, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(idProyecto)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE))
@@ -163,11 +146,7 @@ public class addTarea extends javax.swing.JPanel {
             .addGroup(contentLayout.createSequentialGroup()
                 .addContainerGap(44, Short.MAX_VALUE)
                 .addComponent(jLabel18)
-                .addGap(38, 38, 38)
-                .addGroup(contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel13)
-                    .addComponent(idTarea, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(87, 87, 87)
                 .addGroup(contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(idEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel14))
@@ -214,8 +193,6 @@ public class addTarea extends javax.swing.JPanel {
     private javax.swing.JTextArea descTarea;
     private javax.swing.JTextField idEmpleado;
     private javax.swing.JTextField idProyecto;
-    private javax.swing.JTextField idTarea;
-    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;

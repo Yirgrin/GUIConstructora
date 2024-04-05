@@ -22,41 +22,35 @@ public class addAlquiler extends javax.swing.JPanel {
     public addAlquiler() {
         initComponents();
     }
-    
-    private void insertarAlquiler() {
-        int idAlquilerValue = Integer.parseInt(idAlquiler.getText());
-    int idMaquinaValue = Integer.parseInt(idMaquina.getText());
-    String codProveedorValue = codProveedor.getText();
-    String direccionValue = direccion.getText();
-    String telefonoValue = telefono.getText();
-    Date fechaAlquilerValue = dateAlquiler.getDate();
-    Date fechaDevolucionValue = dateDevolucion.getDate();
-
-    // Sentencia SQL para insertar un nuevo alquiler
-    String sql = "INSERT INTO Alquileres (alquiler_id, maquina_id, codigo_proveedor, direccion, telefono_contacto, fecha_alquiler, fecha_devolucion) VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-    try {
-        // Obtener la conexión desde OracleDBManager
-        Connection conn = conexion.conectar();
-        PreparedStatement pstmt = conn.prepareStatement(sql);
-   
-        // Establecer los valores de los parámetros
-        pstmt.setInt(1, idAlquilerValue);
-        pstmt.setInt(2, idMaquinaValue);
-        pstmt.setString(3, codProveedorValue);
-        pstmt.setString(4, direccionValue);
-        pstmt.setString(5, telefonoValue);
-        pstmt.setDate(6, new java.sql.Date(fechaAlquilerValue.getTime()));
-        pstmt.setDate(7, new java.sql.Date(fechaDevolucionValue.getTime()));
-
-        // Ejecutar la inserción
-        pstmt.executeUpdate();
-        System.out.println("Alquiler insertado correctamente.");
-        conexion.desconectar();
-    } catch (SQLException e) {
-        System.out.println("Error al insertar alquiler: " + e.getMessage());
+    /*
+    FALTA DE EDITAR
+    YA QUE NO ESTA FUNCIONANDO POR LA FOREIGN KEY
+    */
+    public static void insertarAlquiler(int idMaquina, String codProveedorValue, String direccionValue, String telefonoValue, Date fechaAlquilerValue, Date fechaDevolucionValue) {
+        OracleDBManager dbManager = new OracleDBManager(); 
+        try (Connection conexion = dbManager.conectar()) {
+            // Llama al procedimiento almacenado
+            String sql = "{call sp_insertar_alquiler(?, ?, ?, ?, ?, ?)}";
+            try (PreparedStatement statement = conexion.prepareCall(sql)) {
+                java.sql.Date sqlFechaAlquiler = new java.sql.Date(fechaAlquilerValue.getTime());
+                java.sql.Date sqlFechaDevolucion = new java.sql.Date(fechaDevolucionValue.getTime());
+                statement.setInt(1, idMaquina);
+                statement.setString(2, codProveedorValue);
+                statement.setString(3, direccionValue);
+                statement.setString(4, telefonoValue);
+                statement.setDate(5, sqlFechaAlquiler);
+                statement.setDate(6, sqlFechaDevolucion);
+                statement.executeUpdate();
+                System.out.println("El alquiler se insertó correctamente.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Error al insertar el alquiler: " + e.getMessage());
+        } finally {
+            dbManager.desconectar();
+        }
     }
-}
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -66,7 +60,6 @@ public class addAlquiler extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -79,15 +72,10 @@ public class addAlquiler extends javax.swing.JPanel {
         direccion = new javax.swing.JTextField();
         codProveedor = new javax.swing.JTextField();
         idMaquina = new javax.swing.JTextField();
-        idAlquiler = new javax.swing.JTextField();
         Enviar = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(102, 102, 102));
-
-        jLabel1.setFont(new java.awt.Font("Eras Medium ITC", 0, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("Identificación del Alquiler:");
 
         jLabel2.setFont(new java.awt.Font("Eras Medium ITC", 0, 18)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
@@ -125,8 +113,6 @@ public class addAlquiler extends javax.swing.JPanel {
 
         idMaquina.setBackground(new java.awt.Color(187, 187, 187));
 
-        idAlquiler.setBackground(new java.awt.Color(187, 187, 187));
-
         Enviar.setBackground(new java.awt.Color(57, 57, 57));
         Enviar.setFont(new java.awt.Font("Eras Medium ITC", 1, 18)); // NOI18N
         Enviar.setForeground(new java.awt.Color(255, 255, 255));
@@ -156,27 +142,21 @@ public class addAlquiler extends javax.swing.JPanel {
                         .addComponent(Enviar, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(121, 121, 121)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel7))
+                        .addGap(45, 45, 45)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(68, 68, 68)
-                                .addComponent(idAlquiler, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jLabel3)
-                                    .addComponent(jLabel4)
-                                    .addComponent(jLabel5)
-                                    .addComponent(jLabel6)
-                                    .addComponent(jLabel7))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(idMaquina, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(codProveedor, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(direccion, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(telefono, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(dateAlquiler, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(dateDevolucion, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                            .addComponent(idMaquina, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(codProveedor, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(direccion, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(telefono, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(dateAlquiler, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(dateDevolucion, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(172, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -184,11 +164,7 @@ public class addAlquiler extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addComponent(jLabel8)
-                .addGap(25, 25, 25)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(idAlquiler, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(75, 75, 75)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(idMaquina, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
@@ -219,10 +195,9 @@ public class addAlquiler extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void EnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EnviarActionPerformed
-        insertarAlquiler();
+        insertarAlquiler(Integer.parseInt(idMaquina.getText()), codProveedor.getText(), direccion.getText(), telefono.getText(), dateAlquiler.getDate(), dateDevolucion.getDate());
         codProveedor.setText("");
         direccion.setText("");
-        idAlquiler.setText("");
         idMaquina.setText("");
         telefono.setText("");
         dateAlquiler.setDate(new Date());
@@ -236,9 +211,7 @@ public class addAlquiler extends javax.swing.JPanel {
     private com.toedter.calendar.JDateChooser dateAlquiler;
     private com.toedter.calendar.JDateChooser dateDevolucion;
     private javax.swing.JTextField direccion;
-    private javax.swing.JTextField idAlquiler;
     private javax.swing.JTextField idMaquina;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
