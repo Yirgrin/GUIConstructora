@@ -1,14 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Modelos;
 
 /**
  *
  * @author prisi
  */
-
 import java.util.Date;
 public class UsuariosModelo {
      private int usuarioId;
@@ -18,7 +13,7 @@ public class UsuariosModelo {
     private String correoElectronico;
     private String cargo;
     private Date fechaContratacion;
-
+    
     public UsuariosModelo(int usuarioId, String nombre, String apellidos, String telefono, String correoElectronico, String cargo, Date fechaContratacion) {
         this.usuarioId = usuarioId;
         this.nombre = nombre;
@@ -27,7 +22,7 @@ public class UsuariosModelo {
         this.correoElectronico = correoElectronico;
         this.cargo = cargo;
         this.fechaContratacion = fechaContratacion;
-    }
+}
 
     public int getUsuarioId() {
         return usuarioId;

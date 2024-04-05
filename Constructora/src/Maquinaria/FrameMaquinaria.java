@@ -198,8 +198,8 @@ public class FrameMaquinaria extends javax.swing.JFrame implements ActionListene
     }//GEN-LAST:event_EliminarActionPerformed
 
     private void VerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VerActionPerformed
-       
-        
+       VerListaMaquinas p2= new VerListaMaquinas();
+       ShowPanel(p2);   
     }//GEN-LAST:event_VerActionPerformed
 
     private void EditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarActionPerformed

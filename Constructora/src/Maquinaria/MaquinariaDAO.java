@@ -1,13 +1,17 @@
 package Maquinaria;
 import ConexionBD.OracleDBManager;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import oracle.jdbc.OracleTypes;
 
 
 public class MaquinariaDAO {
+    private static final OracleDBManager dbManager = new OracleDBManager();
+    
     public static void insertarMaquina(String nombre, String descripcion, double precio, int unidadesTotales) {
-        OracleDBManager dbManager = new OracleDBManager();
         try (Connection conexion = dbManager.conectar()) {
             String sql = "{call sp_insertar_maquina(?, ?, ?, ?)}";
             try (PreparedStatement statement = conexion.prepareCall(sql)) {
@@ -26,4 +30,30 @@ public class MaquinariaDAO {
             dbManager.desconectar();
         }
     }
+
+    public ResultSet obtenerMaquinas() {
+        Connection conexion = dbManager.conectar();
+        try {
+            // Llama al procedimiento almacenado y registra el parámetro de salida para el cursor de resultados
+            CallableStatement statement = conexion.prepareCall("{call sp_mostrar_maquinas(?)}");
+            statement.registerOutParameter(1, OracleTypes.CURSOR);
+            statement.execute();
+
+            // Obtiene el cursor de resultados del procedimiento almacenado
+            ResultSet resultSet = (ResultSet) statement.getObject(1);
+
+            // Comprueba si hay un conjunto de resultados disponible
+            if (resultSet != null) {
+                System.out.println("La sentencia se ejecutó correctamente.");
+                return resultSet;
+            } else {
+                System.out.println("No se encontraron resultados.");
+                return null;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al ejecutar la sentencia: " + e.getMessage());
+            return null;
+        }
+    }
+
 }

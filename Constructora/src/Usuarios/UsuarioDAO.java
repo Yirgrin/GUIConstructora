@@ -5,13 +5,9 @@ import ConexionBD.OracleDBManager;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.CallableStatement;
-import Modelos.UsuariosModelo;
 import java.util.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.table.DefaultTableModel;
 import oracle.jdbc.OracleTypes;
 
 public class UsuarioDAO {
