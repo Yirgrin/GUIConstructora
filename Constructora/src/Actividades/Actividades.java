@@ -208,8 +208,7 @@ public class Actividades extends javax.swing.JFrame implements ActionListener{
         content.add(p3,BorderLayout.CENTER);
         content.validate();
         content.repaint(); 
-        p3.mostrarActividad();
-        
+        p3.mostrarActividad();  
     }//GEN-LAST:event_VerActionPerformed
 
     private void EditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarActionPerformed

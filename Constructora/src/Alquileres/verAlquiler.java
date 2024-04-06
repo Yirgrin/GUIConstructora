@@ -27,42 +27,37 @@ public class verAlquiler extends javax.swing.JPanel {
     }
     
     public void mostrarAlquileres() {
-    // Sentencia SQL para llamar al procedimiento almacenado
     String sql = "{call sp_obtener_alquiler(?)}";
 
-    try {
-        // Obtener la conexión desde OracleDBManager
-        Connection conn = conexion.conectar();
-        CallableStatement stmt = conn.prepareCall(sql);
+    try (Connection conn = conexion.conectar();
+         CallableStatement stmt = conn.prepareCall(sql)) {
 
-        // Crear un modelo de tabla para la jTable1
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        // Limpiar la tabla antes de agregar los datos
         model.setRowCount(0);
 
-        // Parámetro de salida para los resultados del procedimiento almacenado
         stmt.registerOutParameter(1, OracleTypes.CURSOR);
-        // Ejecutar el procedimiento almacenado
         stmt.execute();
-        // Obtener el cursor de salida
+
         ResultSet rs = (ResultSet) stmt.getObject(1);
-        // Llenar la tabla con los resultados de la consulta
-        while (rs.next()) {
-            Object[] row = new Object[7];
-            for (int i = 0; i < 7; i++) {
-                row[i] = rs.getObject(i + 1);
+        if (rs != null) { // Verificar si el cursor de salida no es nulo
+            while (rs.next()) {
+                Object[] row = new Object[7];
+                for (int i = 0; i < 7; i++) { // Cambiar de <= a <
+                    row[i] = rs.getObject(i + 1);
+                }
+                model.addRow(row);
             }
-            model.addRow(row);
+            rs.close();
         }
-        // Cerrar recursos
-        rs.close();
-        stmt.close();
-        conexion.desconectar();
 
     } catch (SQLException e) {
         System.out.println("Error al mostrar alquileres: " + e.getMessage());
+    } finally {
+        conexion.desconectar();
     }
 }
+
+
 
     public void borrarAlquileres() {
     int selectedRow = jTable1.getSelectedRow();
@@ -86,9 +81,6 @@ public class verAlquiler extends javax.swing.JPanel {
     }
     mostrarAlquileres();
 }
-    /*
-    FALTA DE EDITAR
-    */
     public void editAlquiler() {
     int selectedRow = jTable1.getSelectedRow();
 
@@ -99,9 +91,9 @@ public class verAlquiler extends javax.swing.JPanel {
         String nuevoCodigoProveedor = JOptionPane.showInputDialog(null, "Nuevo Código de Proveedor:", "Editar Alquiler", JOptionPane.QUESTION_MESSAGE);
         String nuevaDireccion = JOptionPane.showInputDialog(null, "Nueva Dirección:", "Editar Alquiler", JOptionPane.QUESTION_MESSAGE);
         String nuevoTelefono = JOptionPane.showInputDialog(null, "Nuevo Teléfono de Contacto:", "Editar Alquiler", JOptionPane.QUESTION_MESSAGE);
-        JPanel panelAlquiler = new JPanel(new GridLayout(2, 2));
         JDateChooser dateAlquiler = new JDateChooser();
         JDateChooser dateDevolucion = new JDateChooser();
+        JPanel panelAlquiler = new JPanel(new GridLayout(2, 2));
         panelAlquiler.add(new JLabel("Nueva Fecha de Alquiler:"));
         panelAlquiler.add(dateAlquiler);
         panelAlquiler.add(new JLabel("Nueva Fecha de Devolución:"));
@@ -112,25 +104,21 @@ public class verAlquiler extends javax.swing.JPanel {
 
         try {
             Connection conn = conexion.conectar();
-            String sql = "UPDATE Alquileres SET maquina_id = ?, codigo_proveedor = ?, direccion = ?, telefono_contacto = ?, fecha_alquiler = ?, fecha_devolucion = ? WHERE alquiler_id = ?";
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, nuevoMaquinaId);
-            pstmt.setString(2, nuevoCodigoProveedor);
-            pstmt.setString(3, nuevaDireccion);
-            pstmt.setString(4, nuevoTelefono);
-            pstmt.setDate(5, new java.sql.Date(fechaAlquilerUtil.getTime()));
-            pstmt.setDate(6, new java.sql.Date(fechaDevolucionUtil.getTime()));
-            pstmt.setInt(7, alquilerId);
+            String sql = "{call sp_actualizar_alquiler(?, ?, ?, ?, ?, ?, ?)}";
+            CallableStatement stmt = conn.prepareCall(sql);
+            stmt.setInt(1, alquilerId);
+            stmt.setString(2, nuevoMaquinaId);
+            stmt.setString(3, nuevoCodigoProveedor);
+            stmt.setString(4, nuevaDireccion);
+            stmt.setString(5, nuevoTelefono);
+            stmt.setDate(6, new java.sql.Date(fechaAlquilerUtil.getTime()));
+            stmt.setDate(7, new java.sql.Date(fechaDevolucionUtil.getTime()));
+
+            stmt.executeUpdate();
             
-            int filasAfectadas = pstmt.executeUpdate();
+            JOptionPane.showMessageDialog(null, "Alquiler editado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             
-            if (filasAfectadas > 0) {
-                JOptionPane.showMessageDialog(null, "Alquiler editado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al editar el alquiler.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-            
-            pstmt.close();
+            stmt.close();
             conn.close();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error al editar el alquiler: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -140,6 +128,7 @@ public class verAlquiler extends javax.swing.JPanel {
     }
     mostrarAlquileres();
 }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -152,6 +141,7 @@ public class verAlquiler extends javax.swing.JPanel {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jLabel2 = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(102, 102, 102));
 
@@ -165,27 +155,55 @@ public class verAlquiler extends javax.swing.JPanel {
                 {null, null, null, null, null, null, null}
             },
             new String [] {
-                "ID Alquiler", "ID Maquina", "Código de Proveedor", "Dirección", "Telefóno", "Fecha de Alquiler", "Fecha de Devolución"
+                "ID Alquiler", "ID Maquina", "Código de Proveedor", "Dirección", "Telefóno", "Fecha Alquiler", "Fecha Devolución"
             }
         ));
         jScrollPane1.setViewportView(jTable1);
+        if (jTable1.getColumnModel().getColumnCount() > 0) {
+            jTable1.getColumnModel().getColumn(0).setResizable(false);
+            jTable1.getColumnModel().getColumn(0).setPreferredWidth(12);
+            jTable1.getColumnModel().getColumn(1).setResizable(false);
+            jTable1.getColumnModel().getColumn(1).setPreferredWidth(12);
+            jTable1.getColumnModel().getColumn(2).setResizable(false);
+            jTable1.getColumnModel().getColumn(2).setPreferredWidth(35);
+            jTable1.getColumnModel().getColumn(3).setPreferredWidth(50);
+            jTable1.getColumnModel().getColumn(4).setResizable(false);
+            jTable1.getColumnModel().getColumn(4).setPreferredWidth(35);
+            jTable1.getColumnModel().getColumn(5).setResizable(false);
+            jTable1.getColumnModel().getColumn(5).setPreferredWidth(30);
+            jTable1.getColumnModel().getColumn(6).setResizable(false);
+            jTable1.getColumnModel().getColumn(6).setPreferredWidth(30);
+        }
+
+        jLabel2.setFont(new java.awt.Font("Eras Medium ITC", 1, 24)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2.setText("Alquileres");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 790, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(272, 272, 272)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 785, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 493, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables

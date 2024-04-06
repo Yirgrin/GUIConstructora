@@ -11,6 +11,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.GridLayout;
 import java.util.Date;
+import oracle.jdbc.OracleTypes;
 
 /**
  *
@@ -34,50 +35,57 @@ public class verProyecto extends javax.swing.JPanel {
     }
     
     public void mostrarProyecto() {
-        // Sentencia SQL para obtener todos los proyectos
-        String sql = "SELECT proyecto_id, codigo_proyecto, nombre, descripcion, fecha_inicio, fecha_finalizacion, cliente_datos FROM PROYECTOS";
+    // Sentencia SQL para llamar al procedimiento almacenado
+    String sql = "{call sp_obtener_proyecto(?)}";
 
-        try {
-            // Obtener la conexión desde OracleDBManager
-            Connection conn = conexion.conectar();
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
+    try {
+        // Obtener la conexión desde OracleDBManager
+        Connection conn = conexion.conectar();
+        CallableStatement stmt = conn.prepareCall(sql);
 
-            // Crear un modelo de tabla para la jTable1
-            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-            // Limpiar la tabla antes de agregar los datos
-            model.setRowCount(0);
+        // Crear un modelo de tabla para la jTable1
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        // Limpiar la tabla antes de agregar los datos
+        model.setRowCount(0);
 
-            // Llenar la tabla con los resultados de la consulta
-            while (rs.next()) {
-                Object[] row = new Object[7];
-                for (int i = 0; i < 7; i++) {
-                    row[i] = rs.getObject(i + 1);
-                }
-                model.addRow(row);
+        // Parámetro de salida para los resultados del procedimiento almacenado
+        stmt.registerOutParameter(1, OracleTypes.CURSOR);
+        // Ejecutar el procedimiento almacenado
+        stmt.execute();
+        // Obtener el cursor de salida
+        ResultSet rs = (ResultSet) stmt.getObject(1);
+        // Llenar la tabla con los resultados de la consulta
+        while (rs.next()) {
+            Object[] row = new Object[7];
+            for (int i = 0; i < 7; i++) {
+                row[i] = rs.getObject(i + 1);
             }
-        } catch (SQLException e) {
-            System.out.println("Error al mostrar proyectos: " + e.getMessage());
+            model.addRow(row);
         }
+        // Cerrar recursos
+        rs.close();
+        stmt.close();
+        conexion.desconectar();
+
+    } catch (SQLException e) {
+        System.out.println("Error al mostrar proyectos: " + e.getMessage());
     }
+}
+
     
-    public void borrarProyecto(){
+    public void borrarProyecto() {
     int selectedRow = jTable1.getSelectedRow();
     int proyectoId;
     if (selectedRow != -1) {
          proyectoId = ((BigDecimal) jTable1.getValueAt(selectedRow, 0)).intValue();
         try {
             Connection conn = conexion.conectar();
-            String sql = "DELETE FROM PROYECTOS WHERE PROYECTO_ID = ?";
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, proyectoId);
-            int filasAfectadas = pstmt.executeUpdate();
-            if (filasAfectadas > 0) {
-                JOptionPane.showMessageDialog(null, "Proyecto eliminado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(null, "El Proyecto no existe o ya ha sido eliminado.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-            pstmt.close();
+            String sql = "{call sp_eliminar_proyecto(?)}";
+            CallableStatement stmt = conn.prepareCall(sql);
+            stmt.setInt(1, proyectoId);
+            stmt.executeUpdate();
+            JOptionPane.showMessageDialog(null, "Proyecto eliminado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            stmt.close();
             conn.close();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error al eliminar el Proyecto: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -86,14 +94,14 @@ public class verProyecto extends javax.swing.JPanel {
         JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para eliminar.", "Error", JOptionPane.ERROR_MESSAGE);
     }
     mostrarProyecto();
-    }
+}
+
     
-    public void editProyecto(){
+    public void editProyecto() {
     int selectedRow = jTable1.getSelectedRow();
     if (selectedRow != -1) {
         int proyectoId = ((BigDecimal) jTable1.getValueAt(selectedRow, 0)).intValue();
-
-        String nuevoCodigoProyecto = JOptionPane.showInputDialog(null, "Nuevo Código de Proyecto:", "Editar Proyecto", JOptionPane.QUESTION_MESSAGE);
+        int nuevoCodigoPresupuesto= Integer.parseInt(JOptionPane.showInputDialog(null, "Nuevo Código de Presupuesto:", "Editar Proyecto", JOptionPane.QUESTION_MESSAGE));
         String nuevoNombre = JOptionPane.showInputDialog(null, "Nuevo Nombre:", "Editar Proyecto", JOptionPane.QUESTION_MESSAGE);
         String nuevaDescripcion = JOptionPane.showInputDialog(null, "Nueva Descripción:", "Editar Proyecto", JOptionPane.QUESTION_MESSAGE);
         JPanel panelInicio = new JPanel(new GridLayout(2, 2));
@@ -113,25 +121,21 @@ public class verProyecto extends javax.swing.JPanel {
 
         try {
             Connection conn = conexion.conectar();
-            String sql = "UPDATE Proyectos SET codigo_proyecto = ?, nombre = ?, descripcion = ?, fecha_inicio = ?, fecha_finalizacion = ?, cliente_datos = ? WHERE proyecto_id = ?";
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, nuevoCodigoProyecto);
-            pstmt.setString(2, nuevoNombre);
-            pstmt.setString(3, nuevaDescripcion);
-            pstmt.setDate(4, nuevaFechaInicio);
-            pstmt.setDate(5, nuevaFechaFinalizacion);
-            pstmt.setString(6, nuevoClienteDatos);
-            pstmt.setInt(7, proyectoId);
+            String sql = "{call sp_actualizar_proyecto(?, ?, ?, ?, ?, ?, ?)}";
+            CallableStatement stmt = conn.prepareCall(sql);
+            stmt.setInt(1, proyectoId);
+            stmt.setInt(2, nuevoCodigoPresupuesto); 
+            stmt.setString(3, nuevoNombre);
+            stmt.setString(4, nuevaDescripcion);
+            stmt.setDate(5, nuevaFechaInicio);
+            stmt.setDate(6, nuevaFechaFinalizacion);
+            stmt.setString(7, nuevoClienteDatos);
 
-            int filasAfectadas = pstmt.executeUpdate();
+            stmt.executeUpdate();
 
-            if (filasAfectadas > 0) {
-                JOptionPane.showMessageDialog(null, "Proyecto editado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al editar el proyecto.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
+            JOptionPane.showMessageDialog(null, "Proyecto editado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
 
-            pstmt.close();
+            stmt.close();
             conn.close();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error al editar el proyecto: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -141,6 +145,7 @@ public class verProyecto extends javax.swing.JPanel {
     }
     mostrarProyecto();
 }
+
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -153,6 +158,7 @@ public class verProyecto extends javax.swing.JPanel {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jLabel2 = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(102, 102, 102));
 
@@ -170,23 +176,49 @@ public class verProyecto extends javax.swing.JPanel {
             }
         ));
         jScrollPane1.setViewportView(jTable1);
+        if (jTable1.getColumnModel().getColumnCount() > 0) {
+            jTable1.getColumnModel().getColumn(0).setResizable(false);
+            jTable1.getColumnModel().getColumn(0).setPreferredWidth(12);
+            jTable1.getColumnModel().getColumn(1).setResizable(false);
+            jTable1.getColumnModel().getColumn(1).setPreferredWidth(15);
+            jTable1.getColumnModel().getColumn(2).setPreferredWidth(30);
+            jTable1.getColumnModel().getColumn(3).setPreferredWidth(100);
+            jTable1.getColumnModel().getColumn(4).setResizable(false);
+            jTable1.getColumnModel().getColumn(4).setPreferredWidth(30);
+            jTable1.getColumnModel().getColumn(5).setResizable(false);
+            jTable1.getColumnModel().getColumn(5).setPreferredWidth(30);
+            jTable1.getColumnModel().getColumn(6).setResizable(false);
+            jTable1.getColumnModel().getColumn(6).setPreferredWidth(50);
+        }
+
+        jLabel2.setFont(new java.awt.Font("Eras Medium ITC", 1, 24)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2.setText("Proyectos");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 790, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jScrollPane1)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(318, Short.MAX_VALUE)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(250, 250, 250))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addComponent(jLabel2)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
