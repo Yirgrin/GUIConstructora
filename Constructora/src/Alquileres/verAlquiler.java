@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
+
 package Alquileres;
 import ConexionBD.OracleDBManager;
 import com.toedter.calendar.JDateChooser;
@@ -19,12 +16,24 @@ import oracle.jdbc.OracleTypes;
  */
 public class verAlquiler extends javax.swing.JPanel {
     OracleDBManager conexion = new OracleDBManager();
-    /**
-     * Creates new form verAlquiler
-     */
+    DefaultTableModel modelo = new DefaultTableModel();
+    
     public verAlquiler() {
         initComponents();
+        
+        // Crear el modelo de tabla y configurarlo para la tabla  
+        modelo = new DefaultTableModel();
+        jtable.setModel(modelo);
+        modelo.addColumn("ID");
+        modelo.addColumn("Máquina");
+        modelo.addColumn("Proveedor");
+        modelo.addColumn("Dirección");
+        modelo.addColumn("Teléfono");
+        modelo.addColumn("Fecha Alquiler");
+        modelo.addColumn("Fecha Devolución");
+
     }
+
     
     public void mostrarAlquileres() {
     String sql = "{call sp_obtener_alquiler(?)}";
@@ -32,7 +41,7 @@ public class verAlquiler extends javax.swing.JPanel {
     try (Connection conn = conexion.conectar();
          CallableStatement stmt = conn.prepareCall(sql)) {
 
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        DefaultTableModel model = (DefaultTableModel) jtable.getModel();
         model.setRowCount(0);
 
         stmt.registerOutParameter(1, OracleTypes.CURSOR);
@@ -60,10 +69,10 @@ public class verAlquiler extends javax.swing.JPanel {
 
 
     public void borrarAlquileres() {
-    int selectedRow = jTable1.getSelectedRow();
+    int selectedRow = jtable.getSelectedRow();
     int alquilerId;
     if (selectedRow != -1) {
-        alquilerId = ((BigDecimal) jTable1.getValueAt(selectedRow, 0)).intValue();
+        alquilerId = ((BigDecimal) jtable.getValueAt(selectedRow, 0)).intValue();
         try {
             Connection conn = conexion.conectar();
             String sql = "{call sp_eliminar_alquiler(?)}";
@@ -82,10 +91,10 @@ public class verAlquiler extends javax.swing.JPanel {
     mostrarAlquileres();
 }
     public void editAlquiler() {
-    int selectedRow = jTable1.getSelectedRow();
+    int selectedRow = jtable.getSelectedRow();
 
     if (selectedRow != -1) {
-        int alquilerId = ((BigDecimal) jTable1.getValueAt(selectedRow, 0)).intValue();
+        int alquilerId = ((BigDecimal) jtable.getValueAt(selectedRow, 0)).intValue();
 
         String nuevoMaquinaId = JOptionPane.showInputDialog(null, "Nuevo ID de Máquina:", "Editar Alquiler", JOptionPane.QUESTION_MESSAGE);
         String nuevoCodigoProveedor = JOptionPane.showInputDialog(null, "Nuevo Código de Proveedor:", "Editar Alquiler", JOptionPane.QUESTION_MESSAGE);
@@ -139,65 +148,53 @@ public class verAlquiler extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jtable = new javax.swing.JTable();
 
         setBackground(new java.awt.Color(102, 102, 102));
-
-        jTable1.setBackground(new java.awt.Color(102, 102, 102));
-        jTable1.setForeground(new java.awt.Color(255, 255, 255));
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
-            },
-            new String [] {
-                "ID Alquiler", "ID Maquina", "Código de Proveedor", "Dirección", "Telefóno", "Fecha Alquiler", "Fecha Devolución"
-            }
-        ));
-        jScrollPane1.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(0).setResizable(false);
-            jTable1.getColumnModel().getColumn(0).setPreferredWidth(12);
-            jTable1.getColumnModel().getColumn(1).setResizable(false);
-            jTable1.getColumnModel().getColumn(1).setPreferredWidth(12);
-            jTable1.getColumnModel().getColumn(2).setResizable(false);
-            jTable1.getColumnModel().getColumn(2).setPreferredWidth(35);
-            jTable1.getColumnModel().getColumn(3).setPreferredWidth(50);
-            jTable1.getColumnModel().getColumn(4).setResizable(false);
-            jTable1.getColumnModel().getColumn(4).setPreferredWidth(35);
-            jTable1.getColumnModel().getColumn(5).setResizable(false);
-            jTable1.getColumnModel().getColumn(5).setPreferredWidth(30);
-            jTable1.getColumnModel().getColumn(6).setResizable(false);
-            jTable1.getColumnModel().getColumn(6).setPreferredWidth(30);
-        }
 
         jLabel2.setFont(new java.awt.Font("Eras Medium ITC", 1, 24)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Alquileres");
 
+        jtable.setFont(new java.awt.Font("Eras Medium ITC", 0, 17)); // NOI18N
+        jtable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        jtable.setShowGrid(true);
+        jScrollPane1.setViewportView(jtable);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(272, 272, 272)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(301, Short.MAX_VALUE)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 785, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(282, 282, 282))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 780, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
+            .addGroup(layout.createSequentialGroup()
+                .addGap(16, 16, 16)
                 .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 493, Short.MAX_VALUE))
+                .addContainerGap(478, Short.MAX_VALUE))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(57, 57, 57)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(41, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -205,6 +202,6 @@ public class verAlquiler extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable jtable;
     // End of variables declaration//GEN-END:variables
 }

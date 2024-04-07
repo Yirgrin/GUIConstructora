@@ -11,11 +11,12 @@ import javax.swing.JPanel;
  */
 public class FramePresupuestos extends javax.swing.JFrame implements ActionListener{
 
+    VerListaPresupuestos p2 = new VerListaPresupuestos();
     
     public FramePresupuestos() {
         initComponents();
         this.setLocationRelativeTo(null);
-
+        this.p2=p2; 
     }
 
     /**
@@ -195,12 +196,13 @@ public class FramePresupuestos extends javax.swing.JFrame implements ActionListe
     }//GEN-LAST:event_AgregarActionPerformed
 
     private void EliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EliminarActionPerformed
-        
+        p2.eliminarDatos();
+        p2.actualizarDatos();
     }//GEN-LAST:event_EliminarActionPerformed
 
     private void VerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VerActionPerformed
-        
-        
+        ShowPanel(p2);   
+        p2.actualizarDatos();
     }//GEN-LAST:event_VerActionPerformed
 
     private void EditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarActionPerformed

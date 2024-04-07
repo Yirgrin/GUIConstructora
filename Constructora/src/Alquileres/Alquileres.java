@@ -1,6 +1,5 @@
 package Alquileres;
 import Visual.*;
-import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -194,12 +193,7 @@ public class Alquileres extends javax.swing.JFrame implements ActionListener{
     }//GEN-LAST:event_EliminarActionPerformed
 
     private void VerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VerActionPerformed
-        p3.setSize(760, 367);
-        p3.setLocation(0, 0);
-        content.removeAll();
-        content.add(p3,BorderLayout.CENTER);
-        content.validate();
-        content.repaint(); 
+        ShowPanel(p3);
         p3.mostrarAlquileres(); 
     }//GEN-LAST:event_VerActionPerformed
 

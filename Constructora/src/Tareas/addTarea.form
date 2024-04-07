@@ -55,12 +55,10 @@
                   <EmptySpace pref="100" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="1" max="-2" attributes="0">
                       <Component id="Enviar" pref="220" max="32767" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="idEmpleado" alignment="0" max="32767" attributes="0"/>
-                          <Component id="dateTarea" alignment="0" max="32767" attributes="0"/>
-                          <Component id="idProyecto" alignment="0" max="32767" attributes="0"/>
-                          <Component id="jScrollPane3" alignment="0" pref="220" max="32767" attributes="0"/>
-                      </Group>
+                      <Component id="idEmpleado" alignment="0" max="32767" attributes="0"/>
+                      <Component id="dateTarea" alignment="0" max="32767" attributes="0"/>
+                      <Component id="idProyecto" alignment="0" max="32767" attributes="0"/>
+                      <Component id="jScrollPane3" alignment="0" pref="220" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="132" max="-2" attributes="0"/>
               </Group>
@@ -71,7 +69,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace pref="30" max="32767" attributes="0"/>
                   <Component id="jLabel18" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jLabel14" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="idEmpleado" alignment="3" min="-2" pref="37" max="-2" attributes="0"/>
@@ -91,7 +89,7 @@
                       <Component id="jLabel17" min="-2" pref="43" max="-2" attributes="0"/>
                       <Component id="jScrollPane3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace min="-2" pref="111" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="84" max="-2" attributes="0"/>
                   <Component id="Enviar" min="-2" pref="50" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
               </Group>

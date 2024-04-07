@@ -1,10 +1,12 @@
 
 package Maquinaria;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -21,14 +23,16 @@ public class VerListaMaquinas extends javax.swing.JPanel {
         // Crear el modelo de tabla y configurarlo para la tabla  
         modelo = new DefaultTableModel();
         tablaDatos.setModel(modelo);
+        modelo.addColumn("ID");
         modelo.addColumn("Máquina");
         modelo.addColumn("Descripcion");
+        modelo.addColumn("Precio");
         modelo.addColumn("Unidades");
         
         actualizarDatos();
     }
 
-    private void actualizarDatos() {
+    public void actualizarDatos() {
         ResultSet resultSet = maquinariaDAO.obtenerMaquinas();
         if (resultSet != null) {
             try {
@@ -37,10 +41,12 @@ public class VerListaMaquinas extends javax.swing.JPanel {
 
                 // Llenar la tabla con los resultados de la consulta
                 while (resultSet.next()) {
-                    Object[] row = new Object[3]; // 4 columnas en total
-                    row[0] = resultSet.getObject(2); // Nombre
-                    row[1] = resultSet.getObject(3); // Descripcion
-                    row[2] = resultSet.getObject(5); // Unidades
+                    Object[] row = new Object[5]; // 4 columnas en total
+                    row[0] = resultSet.getObject(1); // ID
+                    row[1] = resultSet.getObject(2); // Nombre
+                    row[2] = resultSet.getObject(3); // Descripcion
+                    row[3] = resultSet.getObject(4); // Precio
+                    row[4] = resultSet.getObject(5); // Unidades
                     modelo.addRow(row);
                 }
             } catch (SQLException ex) {
@@ -55,6 +61,19 @@ public class VerListaMaquinas extends javax.swing.JPanel {
         }  
     }
     
+    public void eliminarDatos() {
+        tablaDatos.requestFocus();
+        int filaSeleccionada = tablaDatos.getSelectedRow();   
+        int row;
+        if (filaSeleccionada != -1) {
+            row = ((BigDecimal) tablaDatos.getValueAt(filaSeleccionada, 0)).intValue();
+            maquinariaDAO.eliminarMaquina(row);
+            JOptionPane.showMessageDialog(null, "Máquina eliminado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para eliminar.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -103,7 +122,7 @@ public class VerListaMaquinas extends javax.swing.JPanel {
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(67, Short.MAX_VALUE))
+                .addContainerGap(37, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -114,9 +133,7 @@ public class VerListaMaquinas extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(CentralFrame1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(CentralFrame1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 

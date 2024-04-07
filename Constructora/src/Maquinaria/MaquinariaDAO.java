@@ -56,4 +56,14 @@ public class MaquinariaDAO {
         }
     }
 
+    public void eliminarMaquina(int usuarioId) {
+        try (Connection connection = dbManager.conectar();
+            CallableStatement statement = connection.prepareCall("{call sp_eliminar_maquina(?)}")) {
+            statement.setInt(1, usuarioId);
+            statement.execute();
+            System.out.println("Maquina eliminado exitosamente.");
+        } catch (SQLException e) {
+            System.out.println("Error al eliminar maquina: " + e.getMessage());
+        }
+    }
 }

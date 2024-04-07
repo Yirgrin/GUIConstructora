@@ -12,9 +12,10 @@ import oracle.jdbc.OracleTypes;
 
 public class UsuarioDAO {
 
+    private static final OracleDBManager dbManager = new OracleDBManager();
+    
     // Inserta un usuario utilizando el procedimiento almacenado
-    public static void insertarUsuario(int usuarioId, String nombre, String apellidos, String telefono, String correoElectronico, String cargo, Date fechaContratacion) {
-        OracleDBManager dbManager = new OracleDBManager();
+    public static void insertarUsuario(int usuarioId, String nombre, String apellidos, String telefono, String correoElectronico, String cargo, Date fechaContratacion) {   
         try (Connection conexion = dbManager.conectar()) {
             // Llama al procedimiento almacenado
             String sql = "{call sp_insertar_usuario(?, ?, ?, ?, ?, ?, ?)}";
@@ -28,7 +29,7 @@ public class UsuarioDAO {
                 statement.setString(6, cargo);
                 statement.setDate(7, sqlFechaContratacion);
                 statement.executeUpdate();
-                System.out.println("La sentencia se ejecutó correctamente.");
+                System.out.println("La sentencia se ejecuto correctamente.1");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -37,8 +38,7 @@ public class UsuarioDAO {
             dbManager.desconectar();
         }
     }
-    
-    
+        
    public ResultSet obtenerUsuarios() {
     OracleDBManager dbManager = new OracleDBManager();
     Connection conexion = dbManager.conectar();
@@ -53,7 +53,7 @@ public class UsuarioDAO {
         
         // Comprueba si hay un conjunto de resultados disponible
         if (resultSet != null) {
-            System.out.println("La sentencia se ejecutó correctamente.");
+            System.out.println("La sentencia se ejecuto correctamente.2");
             return resultSet;
         } else {
             System.out.println("No se encontraron resultados.");
@@ -64,7 +64,17 @@ public class UsuarioDAO {
         return null;
     }
 }
-
+   
+   public void eliminarUsuario(int usuarioId) {
+        try (Connection connection = dbManager.conectar();
+            CallableStatement statement = connection.prepareCall("{call sp_eliminar_usuario(?)}")) {
+            statement.setInt(1, usuarioId);
+            statement.execute();
+            System.out.println("Usuario eliminado exitosamente.");
+        } catch (SQLException e) {
+            System.out.println("Error al eliminar el usuario: " + e.getMessage());
+        }
+    }
 }
 
 

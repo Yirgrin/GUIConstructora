@@ -20,11 +20,22 @@ import oracle.jdbc.OracleTypes;
 public class verActividad extends javax.swing.JPanel {
     OracleDBManager conexion = new OracleDBManager();
     JDateChooser dateActividad = new JDateChooser();
+    DefaultTableModel modelo = new DefaultTableModel();
     /**
      * Creates new form verActividad
      */
     public verActividad() {
         initComponents();
+        // Crear el modelo de tabla y configurarlo para la tabla  
+        modelo = new DefaultTableModel();
+        jtable.setModel(modelo);
+        modelo.addColumn("ID");
+        modelo.addColumn("Nombre");
+        modelo.addColumn("Fecha");
+        modelo.addColumn("Hora");
+        modelo.addColumn("Ubicación");
+        modelo.addColumn("Descripción");
+        modelo.addColumn("Participantes");
         dateActividad.setDateFormatString("yyyy-MM-dd");
     }
     
@@ -38,7 +49,7 @@ public class verActividad extends javax.swing.JPanel {
         CallableStatement stmt = conn.prepareCall(sql);
 
         // Crear un modelo de tabla para la jTable1
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        DefaultTableModel model = (DefaultTableModel) jtable.getModel();
         // Limpiar la tabla antes de agregar los datos
         model.setRowCount(0);
 
@@ -68,10 +79,10 @@ public class verActividad extends javax.swing.JPanel {
 
  
     public void borrarActividad() {
-    int selectedRow = jTable1.getSelectedRow();
+    int selectedRow = jtable.getSelectedRow();
     int actividadId;
     if (selectedRow != -1) {
-        actividadId = ((BigDecimal) jTable1.getValueAt(selectedRow, 0)).intValue();
+        actividadId = ((BigDecimal) jtable.getValueAt(selectedRow, 0)).intValue();
         try {
             Connection conn = conexion.conectar();
             String sql = "{call sp_eliminar_actividad(?)}";
@@ -93,9 +104,9 @@ public class verActividad extends javax.swing.JPanel {
     
     public void editActividad() {
     dateActividad.setDateFormatString("yyyy-MM-dd");
-    int selectedRow = jTable1.getSelectedRow();
+    int selectedRow = jtable.getSelectedRow();
     if (selectedRow != -1) {
-        int actividadId = ((BigDecimal) jTable1.getValueAt(selectedRow, 0)).intValue();
+        int actividadId = ((BigDecimal) jtable.getValueAt(selectedRow, 0)).intValue();
 
         String nuevoNombre = JOptionPane.showInputDialog(null, "Nuevo Nombre:", "Editar Actividad", JOptionPane.QUESTION_MESSAGE);
         JPanel panelFecha = new JPanel(new GridLayout(2, 2));
@@ -147,44 +158,28 @@ public class verActividad extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jtable = new javax.swing.JTable();
 
         setBackground(new java.awt.Color(102, 102, 102));
         setPreferredSize(new java.awt.Dimension(772, 547));
 
-        jTable1.setBackground(new java.awt.Color(102, 102, 102));
-        jTable1.setForeground(new java.awt.Color(255, 255, 255));
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
-            },
-            new String [] {
-                "Id Actividad", "Nombre", "Fecha", "Hora", "Ubicación", "Descripción", "Participantes"
-            }
-        ));
-        jScrollPane1.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(0).setResizable(false);
-            jTable1.getColumnModel().getColumn(0).setPreferredWidth(20);
-            jTable1.getColumnModel().getColumn(1).setPreferredWidth(50);
-            jTable1.getColumnModel().getColumn(2).setResizable(false);
-            jTable1.getColumnModel().getColumn(2).setPreferredWidth(30);
-            jTable1.getColumnModel().getColumn(3).setResizable(false);
-            jTable1.getColumnModel().getColumn(3).setPreferredWidth(20);
-            jTable1.getColumnModel().getColumn(4).setResizable(false);
-            jTable1.getColumnModel().getColumn(4).setPreferredWidth(50);
-            jTable1.getColumnModel().getColumn(5).setPreferredWidth(100);
-            jTable1.getColumnModel().getColumn(6).setPreferredWidth(50);
-        }
-
         jLabel2.setFont(new java.awt.Font("Eras Medium ITC", 1, 24)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Actividades");
+
+        jtable.setFont(new java.awt.Font("Eras Medium ITC", 0, 17)); // NOI18N
+        jtable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        jtable.setShowGrid(true);
+        jScrollPane1.setViewportView(jtable);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -194,7 +189,10 @@ public class verActividad extends javax.swing.JPanel {
                 .addContainerGap(276, Short.MAX_VALUE)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(287, 287, 287))
-            .addComponent(jScrollPane1)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 748, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -202,7 +200,8 @@ public class verActividad extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 501, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(58, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -210,6 +209,6 @@ public class verActividad extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable jtable;
     // End of variables declaration//GEN-END:variables
 }

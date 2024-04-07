@@ -1,15 +1,18 @@
 
 package Presupuestos;
 import ConexionBD.OracleDBManager;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import oracle.jdbc.OracleTypes;
 
 
 public class PresupuestoDAO {
+    private static final OracleDBManager dbManager = new OracleDBManager();
     
     public static void insertarPresupuesto(int totalMateriales, int manoDeObra, String otrosGastos) {
-        OracleDBManager dbManager = new OracleDBManager();
         try (Connection conexion = dbManager.conectar()) {
             String sql = "{call sp_insertar_presupuesto(?, ?, ?)}";
             try (PreparedStatement statement = conexion.prepareCall(sql)) {
@@ -27,4 +30,41 @@ public class PresupuestoDAO {
             dbManager.desconectar();
         }
     }
+    
+    public ResultSet obtenerPresupuestos() {
+    Connection conexion = dbManager.conectar();
+    try {
+        // Llama al procedimiento almacenado y registra el parámetro de salida para el cursor de resultados
+        CallableStatement statement = conexion.prepareCall("{call sp_mostrar_presupuestos(?)}");
+        statement.registerOutParameter(1, OracleTypes.CURSOR);
+        statement.execute();
+        
+        // Obtiene el cursor de resultados del procedimiento almacenado
+        ResultSet resultSet = (ResultSet) statement.getObject(1);
+        
+        // Comprueba si hay un conjunto de resultados disponible
+        if (resultSet != null) {
+            System.out.println("La sentencia se ejecuto correctamente.");
+            return resultSet;
+        } else {
+            System.out.println("No se encontraron resultados.");
+            return null;
+        }
+    } catch (SQLException e) {
+        System.out.println("Error al ejecutar la sentencia: " + e.getMessage());
+        return null;
+    }
 }
+    
+    public void eliminarPresupuesto(int usuarioId) {
+        try (Connection connection = dbManager.conectar();
+            CallableStatement statement = connection.prepareCall("{call sp_eliminar_presupuesto(?)}")) {
+            statement.setInt(1, usuarioId);
+            statement.execute();
+            System.out.println("presupuesto eliminado exitosamente.");
+        } catch (SQLException e) {
+            System.out.println("Error al eliminar el presupuesto: " + e.getMessage());
+        }
+    }
+}
+
