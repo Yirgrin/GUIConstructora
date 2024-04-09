@@ -38,7 +38,6 @@ public class addProyecto extends javax.swing.JPanel {
                 statement.setDate(5, sqlFinProyecto);
                 statement.setString(6, dataCliente);
                 statement.executeUpdate();
-                System.out.println("El proyecto se insertó correctamente.");
             }
         } catch (SQLException e) {
             e.printStackTrace();

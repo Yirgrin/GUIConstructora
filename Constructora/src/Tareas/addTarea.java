@@ -35,7 +35,6 @@ public class addTarea extends javax.swing.JPanel {
             statement.setDate(3, new java.sql.Date(fechaVencimiento.getTime()));
             statement.setString(4, descripcion);
             statement.executeUpdate();
-            System.out.println("Asignación insertada correctamente.");
         }
     } catch (SQLException e) {
         System.out.println("Error al insertar asignación: " + e.getMessage());

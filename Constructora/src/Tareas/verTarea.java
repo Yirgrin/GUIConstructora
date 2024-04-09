@@ -33,8 +33,6 @@ public class verTarea extends javax.swing.JPanel {
         modelo.addColumn("ID Proyecto");
         modelo.addColumn("Fecha Vencimiento");
         modelo.addColumn("Descripción");
-        modelo.addColumn("Fecha Devolución");
-        dateTarea.setDateFormatString("yyyy-MM-dd");
     }
     
     public void mostrarTarea() {
@@ -51,18 +49,12 @@ public class verTarea extends javax.swing.JPanel {
         // Limpiar la tabla antes de agregar los datos
         model.setRowCount(0);
 
-        // Parámetro de entrada para el procedimiento almacenado
-        stmt.setInt(1, 0); // Si se desea obtener todas las asignaciones, se puede pasar un valor arbitrario o incluso null
-
         // Parámetro de salida para los resultados del procedimiento almacenado
-        stmt.registerOutParameter(2, OracleTypes.CURSOR);
-
+        stmt.registerOutParameter(1, OracleTypes.CURSOR);
         // Ejecutar el procedimiento almacenado
         stmt.execute();
-
         // Obtener el cursor de salida
-        ResultSet rs = (ResultSet) stmt.getObject(2);
-
+        ResultSet rs = (ResultSet) stmt.getObject(1);
         // Llenar la tabla con los resultados de la consulta
         while (rs.next()) {
             Object[] row = new Object[5];
@@ -71,7 +63,6 @@ public class verTarea extends javax.swing.JPanel {
             }
             model.addRow(row);
         }
-
         // Cerrar recursos
         rs.close();
         stmt.close();
@@ -82,6 +73,7 @@ public class verTarea extends javax.swing.JPanel {
     }
 }
 
+
     
     public void borrarTarea(){
     int selectedRow = jTable1.getSelectedRow();
@@ -90,16 +82,16 @@ public class verTarea extends javax.swing.JPanel {
         asignacionId = ((BigDecimal) jTable1.getValueAt(selectedRow, 0)).intValue();
         try {
             Connection conn = conexion.conectar();
-            String sql = "DELETE FROM Asignaciones WHERE asignacion_id = ?";
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, asignacionId);
-            int filasAfectadas = pstmt.executeUpdate();
+            String sql = "{call sp_eliminar_asignacion(?)}";
+            CallableStatement stmt = conn.prepareCall(sql);
+            stmt.setInt(1, asignacionId);
+            int filasAfectadas = stmt.executeUpdate();
             if (filasAfectadas > 0) {
                 JOptionPane.showMessageDialog(null, "Asignación eliminada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 JOptionPane.showMessageDialog(null, "La asignación no existe o ya ha sido eliminada.", "Error", JOptionPane.ERROR_MESSAGE);
             }
-            pstmt.close();
+            stmt.close();
             conn.close();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error al eliminar la asignación: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -109,6 +101,7 @@ public class verTarea extends javax.swing.JPanel {
     }
     mostrarTarea();
 }
+
     
     public void editTarea(){
     int selectedRow = jTable1.getSelectedRow();
@@ -128,23 +121,19 @@ public class verTarea extends javax.swing.JPanel {
 
         try {
             Connection conn = conexion.conectar();
-            String sql = "UPDATE Asignaciones SET empleado_id = ?, proyecto_id = ?, fecha_vencimiento = ?, descripcion = ? WHERE asignacion_id = ?";
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, nuevoIdEmpleado);
-            pstmt.setString(2, nuevoIdProyecto);
-            pstmt.setDate(3, nuevaFechaTarea);
-            pstmt.setString(4, nuevaDescripcion);
-            pstmt.setInt(5, asignacionId);
+            String sql = "{call sp_actualizar_asignacion(?, ?, ?, ?, ?)}";
+            CallableStatement stmt = conn.prepareCall(sql);
+            stmt.setInt(1, asignacionId);
+            stmt.setString(2, nuevoIdEmpleado);
+            stmt.setString(3, nuevoIdProyecto);
+            stmt.setDate(4, nuevaFechaTarea);
+            stmt.setString(5, nuevaDescripcion);
 
-            int filasAfectadas = pstmt.executeUpdate();
-
-            if (filasAfectadas > 0) {
-                JOptionPane.showMessageDialog(null, "Asignación editada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al editar la asignación.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-
-            pstmt.close();
+            stmt.executeUpdate();
+            
+            JOptionPane.showMessageDialog(null, "Asignación editada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            
+            stmt.close();
             conn.close();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error al editar la asignación: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -154,6 +143,7 @@ public class verTarea extends javax.swing.JPanel {
     }
     mostrarTarea();
 }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

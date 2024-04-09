@@ -35,7 +35,6 @@ public class addActividades extends javax.swing.JPanel {
             statement.setString(5, descripcion);
             statement.setString(6, participantes);
             statement.executeUpdate();
-            System.out.println("La actividad se insertó correctamente.");
         }
     } catch (SQLException e) {
         e.printStackTrace();

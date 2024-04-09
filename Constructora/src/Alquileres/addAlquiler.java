@@ -41,7 +41,6 @@ public class addAlquiler extends javax.swing.JPanel {
                 statement.setDate(5, sqlFechaAlquiler);
                 statement.setDate(6, sqlFechaDevolucion);
                 statement.executeUpdate();
-                System.out.println("El alquiler se insertó correctamente.");
             }
         } catch (SQLException e) {
             e.printStackTrace();
