@@ -42,9 +42,7 @@ public class verProyecto extends javax.swing.JPanel {
         modelo.addColumn("Descripción");
         modelo.addColumn("Fecha Inicio");
         modelo.addColumn("Fecha Fin");
-        modelo.addColumn("Datos Cliente");
-        
-        
+        modelo.addColumn("Datos Cliente");  
     }
     
     public void mostrarProyecto() {
@@ -85,7 +83,6 @@ public class verProyecto extends javax.swing.JPanel {
     }
 }
 
-    
     public void borrarProyecto() {
     int selectedRow = jTable1.getSelectedRow();
     int proyectoId;
@@ -109,7 +106,6 @@ public class verProyecto extends javax.swing.JPanel {
     mostrarProyecto();
 }
 
-    
     public void editProyecto() {
     int selectedRow = jTable1.getSelectedRow();
     if (selectedRow != -1) {
@@ -159,7 +155,6 @@ public class verProyecto extends javax.swing.JPanel {
     mostrarProyecto();
 }
 
-    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -172,6 +167,7 @@ public class verProyecto extends javax.swing.JPanel {
         jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        Detalles = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(102, 102, 102));
 
@@ -191,36 +187,69 @@ public class verProyecto extends javax.swing.JPanel {
         jTable1.setShowGrid(true);
         jScrollPane1.setViewportView(jTable1);
 
+        Detalles.setBackground(new java.awt.Color(57, 57, 57));
+        Detalles.setFont(new java.awt.Font("Eras Medium ITC", 0, 16)); // NOI18N
+        Detalles.setForeground(new java.awt.Color(255, 255, 255));
+        Detalles.setText("Ver Detalles");
+        Detalles.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DetallesActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 773, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 24, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(326, Short.MAX_VALUE)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(250, 250, 250))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 773, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(250, 250, 250))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(Detalles)
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(19, 19, 19)
                 .addComponent(jLabel2)
-                .addContainerGap(475, Short.MAX_VALUE))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(59, 59, 59)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(39, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 411, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(Detalles)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void DetallesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DetallesActionPerformed
+        int selectedRow = jTable1.getSelectedRow();
+        int actividadId = ((BigDecimal) jTable1.getValueAt(selectedRow, 0)).intValue();
+        int codProyecto = ((BigDecimal) jTable1.getValueAt(selectedRow, 1)).intValue();
+        String nombre = (String) jTable1.getValueAt(selectedRow, 2);
+        String descripcion = (String) jTable1.getValueAt(selectedRow, 3);
+        Date fechaInicio = (Date) jTable1.getValueAt(selectedRow, 4);
+        Date fechaFin = (Date) jTable1.getValueAt(selectedRow, 5);
+        String datosCliente = (String) jTable1.getValueAt(selectedRow, 6);
+        
+        String s = "Identificación: " + actividadId
+        + "\nCódigo Proyecto: " + codProyecto
+        + "\nNombre: " + nombre
+        + "\nDescripción: " + descripcion
+        + "\nFecha Inicio: " + fechaInicio
+        + "\nFecha Fin: " + fechaFin
+        + "\nDatos Cliente: " + datosCliente;
+        JOptionPane.showMessageDialog(null, s, "Detalles", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_DetallesActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Detalles;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;

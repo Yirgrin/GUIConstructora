@@ -9,6 +9,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import com.toedter.calendar.JDateChooser;
 import java.awt.GridLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
 import java.util.Date;
 import oracle.jdbc.OracleTypes;
@@ -77,7 +79,6 @@ public class verActividad extends javax.swing.JPanel {
     }
 }
 
- 
     public void borrarActividad() {
     int selectedRow = jtable.getSelectedRow();
     int actividadId;
@@ -100,8 +101,7 @@ public class verActividad extends javax.swing.JPanel {
     }
     mostrarActividad();
 }
-
-    
+ 
     public void editActividad() {
     dateActividad.setDateFormatString("yyyy-MM-dd");
     int selectedRow = jtable.getSelectedRow();
@@ -161,6 +161,7 @@ public class verActividad extends javax.swing.JPanel {
         jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jtable = new javax.swing.JTable();
+        Detalles = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(102, 102, 102));
         setPreferredSize(new java.awt.Dimension(772, 547));
@@ -181,18 +182,32 @@ public class verActividad extends javax.swing.JPanel {
         jtable.setShowGrid(true);
         jScrollPane1.setViewportView(jtable);
 
+        Detalles.setBackground(new java.awt.Color(57, 57, 57));
+        Detalles.setFont(new java.awt.Font("Eras Medium ITC", 0, 16)); // NOI18N
+        Detalles.setForeground(new java.awt.Color(255, 255, 255));
+        Detalles.setText("Ver Detalles");
+        Detalles.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DetallesActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(276, Short.MAX_VALUE)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(287, 287, 287))
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 748, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(278, 278, 278)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 12, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 748, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Detalles, javax.swing.GroupLayout.Alignment.TRAILING))))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -201,12 +216,34 @@ public class verActividad extends javax.swing.JPanel {
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(58, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
+                .addComponent(Detalles)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void DetallesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DetallesActionPerformed
+        int selectedRow = jtable.getSelectedRow();
+        int actividadId = ((BigDecimal) jtable.getValueAt(selectedRow, 0)).intValue();
+        String nombre = (String) jtable.getValueAt(selectedRow, 1);
+        Date fecha = (Date) jtable.getValueAt(selectedRow, 2);
+        String hora = (String) jtable.getValueAt(selectedRow, 3);
+        String ubicacion = (String) jtable.getValueAt(selectedRow, 4);
+        String descripcion = (String) jtable.getValueAt(selectedRow, 5);
+        String participantes = (String) jtable.getValueAt(selectedRow, 6);
+        String s = "Identificación: " + actividadId 
+                + "\nNombre: " + nombre
+                + "\nFecha: " + fecha
+                + "\nHora: " + hora
+                + "\nUbicación: " + ubicacion
+                + "\nDescripción: " + descripcion 
+                + "\nParticipantes: " + participantes;
+        JOptionPane.showMessageDialog(null, s, "Detalles", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_DetallesActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Detalles;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jtable;

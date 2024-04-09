@@ -156,6 +156,7 @@ public class verTarea extends javax.swing.JPanel {
         jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        Detalles = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(102, 102, 102));
 
@@ -175,6 +176,16 @@ public class verTarea extends javax.swing.JPanel {
         jTable1.setShowGrid(true);
         jScrollPane1.setViewportView(jTable1);
 
+        Detalles.setBackground(new java.awt.Color(57, 57, 57));
+        Detalles.setFont(new java.awt.Font("Eras Medium ITC", 0, 16)); // NOI18N
+        Detalles.setForeground(new java.awt.Color(255, 255, 255));
+        Detalles.setText("Ver Detalles");
+        Detalles.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DetallesActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -187,7 +198,10 @@ public class verTarea extends javax.swing.JPanel {
                         .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(269, 269, 269))))
+                        .addGap(269, 269, 269))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(Detalles)
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -195,13 +209,32 @@ public class verTarea extends javax.swing.JPanel {
                 .addGap(12, 12, 12)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(52, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(Detalles)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void DetallesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DetallesActionPerformed
+        int selectedRow = jTable1.getSelectedRow();
+        int actividadId = ((BigDecimal) jTable1.getValueAt(selectedRow, 0)).intValue();
+        int idEmpleado = ((BigDecimal) jTable1.getValueAt(selectedRow, 1)).intValue();
+        int idProyecto = ((BigDecimal) jTable1.getValueAt(selectedRow, 2)).intValue();
+        Date fechaVencimiento = (Date) jTable1.getValueAt(selectedRow, 3);
+        String descripcion = (String) jTable1.getValueAt(selectedRow, 4);
+        
+        String s = "Identificación: " + actividadId
+        + "\nID Empleado: " + idEmpleado
+        + "\nID Proyecto: " + idProyecto
+        + "\nFecha Vencimiento: " + fechaVencimiento
+        + "\nDescripción: " + descripcion;
+        JOptionPane.showMessageDialog(null, s, "Detalles", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_DetallesActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Detalles;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;

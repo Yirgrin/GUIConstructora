@@ -1,17 +1,19 @@
 
 package Usuarios;
 
+import ConexionBD.OracleDBManager;
+import com.sun.jdi.connect.spi.Connection;
 import java.math.BigDecimal;
 import javax.swing.table.DefaultTableModel;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
+import oracle.jdbc.OracleTypes;
 
 public class VerListaUsuarios extends javax.swing.JPanel {
-    
+    OracleDBManager conexion = new OracleDBManager();
     private final UsuarioDAO usuarioDAO = new UsuarioDAO();
     DefaultTableModel modelo = new DefaultTableModel();
     
@@ -80,6 +82,7 @@ public class VerListaUsuarios extends javax.swing.JPanel {
         jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaClientes = new javax.swing.JTable();
+        Detalles = new javax.swing.JButton();
 
         CentralFrame1.setBackground(new java.awt.Color(102, 102, 102));
         CentralFrame1.setRequestFocusEnabled(false);
@@ -101,18 +104,35 @@ public class VerListaUsuarios extends javax.swing.JPanel {
         tablaClientes.setShowGrid(true);
         jScrollPane1.setViewportView(tablaClientes);
 
+        Detalles.setBackground(new java.awt.Color(57, 57, 57));
+        Detalles.setFont(new java.awt.Font("Eras Medium ITC", 0, 16)); // NOI18N
+        Detalles.setForeground(new java.awt.Color(255, 255, 255));
+        Detalles.setText("Ver Detalles");
+        Detalles.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DetallesActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout CentralFrame1Layout = new javax.swing.GroupLayout(CentralFrame1);
         CentralFrame1.setLayout(CentralFrame1Layout);
         CentralFrame1Layout.setHorizontalGroup(
             CentralFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(CentralFrame1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 748, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(27, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CentralFrame1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(255, 255, 255))
+                .addGroup(CentralFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(CentralFrame1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 748, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(27, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CentralFrame1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(CentralFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CentralFrame1Layout.createSequentialGroup()
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(255, 255, 255))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CentralFrame1Layout.createSequentialGroup()
+                                .addComponent(Detalles)
+                                .addContainerGap())))))
         );
         CentralFrame1Layout.setVerticalGroup(
             CentralFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -120,8 +140,10 @@ public class VerListaUsuarios extends javax.swing.JPanel {
                 .addGap(16, 16, 16)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(44, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 422, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(Detalles)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -140,9 +162,59 @@ public class VerListaUsuarios extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void DetallesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DetallesActionPerformed
+        int selectedRow = tablaClientes.getSelectedRow();
+        int usuarioId = ((BigDecimal) tablaClientes.getValueAt(selectedRow, 0)).intValue();
+        String sql = "{ call sp_mostrar_usuario_por_id(?, ?) }";
+        try {
+            java.sql.Connection conn = conexion.conectar();
+             CallableStatement stmt = conn.prepareCall(sql);
+            // Llamar al procedimiento almacenado sp_mostrar_usuario_por_id
+            CallableStatement cs = conn.prepareCall("{ call sp_mostrar_usuario_por_id(?, ?) }");
+            cs.setInt(1, usuarioId);
+            cs.registerOutParameter(2, OracleTypes.CURSOR);
+            cs.execute();
+
+            // Obtener los resultados del cursor
+            ResultSet rs = (ResultSet) cs.getObject(2);
+            if (rs.next()) {
+                // Obtener los datos del usuario
+                String nombre = rs.getString("nombre");
+                String apellidos = rs.getString("apellidos");
+                String telefono = rs.getString("telefono");
+                String correoElectronico = rs.getString("correo_electronico");
+                String cargo = rs.getString("cargo");
+                Date fechaContratacion = rs.getDate("fecha_contratacion");
+
+                // Construir el mensaje
+                String mensaje = "ID de Usuario: " + usuarioId +
+                    "\nNombre: " + nombre +
+                    "\nApellidos: " + apellidos +
+                    "\nTeléfono: " + telefono +
+                    "\nCorreo Electrónico: " + correoElectronico +
+                    "\nCargo: " + cargo +
+                    "\nFecha de Contratación: " + fechaContratacion;
+
+                // Mostrar los detalles del usuario en un JOptionPane
+                JOptionPane.showMessageDialog(null, mensaje, "Detalles del Usuario", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(null, "No se encontró ningún usuario con el ID especificado.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+            // Cerrar la conexión y liberar los recursos
+            rs.close();
+            cs.close();
+            conn.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al ejecutar el procedimiento almacenado.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_DetallesActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel CentralFrame1;
+    private javax.swing.JButton Detalles;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     public javax.swing.JTable tablaClientes;
