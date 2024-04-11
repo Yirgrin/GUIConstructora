@@ -3,13 +3,18 @@ package Usuarios;
 
 import ConexionBD.OracleDBManager;
 import com.sun.jdi.connect.spi.Connection;
+import com.toedter.calendar.JDateChooser;
+import java.awt.GridLayout;
 import java.math.BigDecimal;
 import javax.swing.table.DefaultTableModel;
 import java.sql.*;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import oracle.jdbc.OracleTypes;
 
 public class VerListaUsuarios extends javax.swing.JPanel {
@@ -71,7 +76,34 @@ public class VerListaUsuarios extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para eliminar.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-
+    
+   public void editarDatos() {
+        tablaClientes.requestFocus();
+        int filaSeleccionada = tablaClientes.getSelectedRow();   
+        int row;
+        if (filaSeleccionada != -1) {
+            row = ((BigDecimal) tablaClientes.getValueAt(filaSeleccionada, 0)).intValue();
+            
+            String nuevoNombre = JOptionPane.showInputDialog(null, "Nombre:", "Editar Usuario", JOptionPane.QUESTION_MESSAGE);
+            String nuevoApellido = JOptionPane.showInputDialog(null, "Apellido:", "Editar Usuario", JOptionPane.QUESTION_MESSAGE);
+            String nuevoTelefono = JOptionPane.showInputDialog(null, "Número de teléfono:", "Editar Usuario", JOptionPane.QUESTION_MESSAGE);
+            String nuevoCorreo = JOptionPane.showInputDialog(null, "Correo electrónico:", "Editar Usuario", JOptionPane.QUESTION_MESSAGE);
+            String nuevoCargo = JOptionPane.showInputDialog(null, "Cargo desarrollado:", "Editar Usuario", JOptionPane.QUESTION_MESSAGE);
+            
+            JPanel panelUsuario = new JPanel(new GridLayout(2, 2));
+            panelUsuario.add(new JLabel("Fecha de contratación:"));
+            JDateChooser dateContratacion = new JDateChooser();
+            panelUsuario.add(dateContratacion);
+            JOptionPane.showConfirmDialog(null, panelUsuario, "Editar Usuario", JOptionPane.OK_CANCEL_OPTION);
+            
+            Date fechaContratacion = dateContratacion.getDate();
+            usuarioDAO.editarUsuario(row, nuevoNombre, nuevoApellido, nuevoTelefono, nuevoCorreo, nuevoCargo, fechaContratacion);
+            JOptionPane.showMessageDialog(null, "Usuario editado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para editar.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+ 
     
     
     @SuppressWarnings("unchecked")
@@ -121,29 +153,26 @@ public class VerListaUsuarios extends javax.swing.JPanel {
             .addGroup(CentralFrame1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(CentralFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(CentralFrame1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 748, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(27, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CentralFrame1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(CentralFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CentralFrame1Layout.createSequentialGroup()
-                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(255, 255, 255))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CentralFrame1Layout.createSequentialGroup()
-                                .addComponent(Detalles)
-                                .addContainerGap())))))
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(255, 255, 255))
+                    .addGroup(CentralFrame1Layout.createSequentialGroup()
+                        .addGroup(CentralFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(Detalles)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 748, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(31, Short.MAX_VALUE))))
         );
         CentralFrame1Layout.setVerticalGroup(
             CentralFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(CentralFrame1Layout.createSequentialGroup()
-                .addGap(16, 16, 16)
+                .addContainerGap()
                 .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 422, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 412, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(Detalles)
-                .addContainerGap())
+                .addGap(24, 24, 24))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -156,9 +185,7 @@ public class VerListaUsuarios extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(CentralFrame1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(CentralFrame1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 

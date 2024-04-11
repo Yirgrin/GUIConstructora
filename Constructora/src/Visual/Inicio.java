@@ -36,7 +36,6 @@ public class Inicio extends javax.swing.JFrame {
         btnvolver = new javax.swing.JButton();
         btnlistaEntrenadores = new javax.swing.JButton();
         btnvolver1 = new javax.swing.JButton();
-        btndesplegar = new javax.swing.JButton();
 
         CentralFrame.setBackground(new java.awt.Color(102, 102, 102));
         CentralFrame.setRequestFocusEnabled(false);
@@ -194,30 +193,6 @@ public class Inicio extends javax.swing.JFrame {
             }
         });
 
-        btndesplegar.setBackground(new java.awt.Color(57, 57, 57));
-        btndesplegar.setFont(new java.awt.Font("Eras Medium ITC", 0, 16)); // NOI18N
-        btndesplegar.setForeground(new java.awt.Color(255, 255, 255));
-        btndesplegar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/return-down-back-outline.png"))); // NOI18N
-        btndesplegar.setText(" Volver                                    ");
-        btndesplegar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btndesplegar.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        btndesplegar.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
-        btndesplegar.addContainerListener(new java.awt.event.ContainerAdapter() {
-            public void componentAdded(java.awt.event.ContainerEvent evt) {
-                btndesplegarComponentAdded(evt);
-            }
-        });
-        btndesplegar.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btndesplegarMouseClicked(evt);
-            }
-        });
-        btndesplegar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnVolverActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout panelMenuLayout = new javax.swing.GroupLayout(panelMenu);
         panelMenu.setLayout(panelMenuLayout);
         panelMenuLayout.setHorizontalGroup(
@@ -232,8 +207,7 @@ public class Inicio extends javax.swing.JFrame {
                     .addComponent(btnvender, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnlistaEntrenadores, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnvolver, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnvolver1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btndesplegar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnvolver1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         panelMenuLayout.setVerticalGroup(
@@ -255,9 +229,7 @@ public class Inicio extends javax.swing.JFrame {
                 .addComponent(btnvolver, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnvolver1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btndesplegar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(62, Short.MAX_VALUE))
         );
 
         btnlistaEntrenadores.getAccessibleContext().setAccessibleName("Actividades");
@@ -296,18 +268,6 @@ public class Inicio extends javax.swing.JFrame {
     private void btnvolver2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnvolver2ActionPerformed
        
     }//GEN-LAST:event_btnvolver2ActionPerformed
-
-    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
-
-    }//GEN-LAST:event_btnVolverActionPerformed
-
-    private void btndesplegarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btndesplegarMouseClicked
-
-    }//GEN-LAST:event_btndesplegarMouseClicked
-
-    private void btndesplegarComponentAdded(java.awt.event.ContainerEvent evt) {//GEN-FIRST:event_btndesplegarComponentAdded
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btndesplegarComponentAdded
 
     private void btnTareasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTareasActionPerformed
         this.dispose();
@@ -367,7 +327,6 @@ public class Inicio extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel CentralFrame;
     private javax.swing.JButton btnagendar;
-    private javax.swing.JButton btndesplegar;
     private javax.swing.JButton btninscribir;
     private javax.swing.JButton btnlistaEntrenadores;
     private javax.swing.JButton btnlistaclientes;

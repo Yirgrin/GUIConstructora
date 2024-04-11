@@ -2,6 +2,7 @@
 package Usuarios;
 
 import ConexionBD.OracleDBManager;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.CallableStatement;
@@ -73,6 +74,24 @@ public class UsuarioDAO {
             System.out.println("Usuario eliminado exitosamente.");
         } catch (SQLException e) {
             System.out.println("Error al eliminar el usuario: " + e.getMessage());
+        }
+    }
+   
+   public void editarUsuario(int usuarioId, String nombre, String apellidos, String telefono, String correoElectronico, String cargo, Date fechaContratacion) {
+        try (Connection connection = dbManager.conectar();
+            CallableStatement statement = connection.prepareCall("{call sp_actualizar_usuario(?, ?, ?, ?, ?, ?, ?)}")) {
+            java.sql.Date sqlFechaContratacion = new java.sql.Date(fechaContratacion.getTime());
+            statement.setInt(1, usuarioId);
+            statement.setString(2, nombre);
+            statement.setString(3, apellidos);
+            statement.setString(4, telefono);
+            statement.setString(5, correoElectronico);
+            statement.setString(6, cargo);
+            statement.setDate(7, sqlFechaContratacion);
+            statement.executeUpdate();
+            System.out.println("Usuario editado exitosamente.");
+        } catch (SQLException e) {
+            System.out.println("Error al editadar el usuario: " + e.getMessage());
         }
     }
 }
