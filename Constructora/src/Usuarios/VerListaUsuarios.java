@@ -2,7 +2,6 @@
 package Usuarios;
 
 import ConexionBD.OracleDBManager;
-import com.sun.jdi.connect.spi.Connection;
 import com.toedter.calendar.JDateChooser;
 import java.awt.GridLayout;
 import java.math.BigDecimal;
@@ -14,7 +13,6 @@ import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import oracle.jdbc.OracleTypes;
 
 public class VerListaUsuarios extends javax.swing.JPanel {
@@ -32,8 +30,7 @@ public class VerListaUsuarios extends javax.swing.JPanel {
         modelo.addColumn("Apellido");
         modelo.addColumn("Teléfono");
 
-        actualizarDatos();
-        
+        actualizarDatos();  
     }
 
     public void actualizarDatos() {
@@ -104,8 +101,7 @@ public class VerListaUsuarios extends javax.swing.JPanel {
         }
     }
  
-    
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

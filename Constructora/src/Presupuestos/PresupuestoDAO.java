@@ -66,5 +66,25 @@ public class PresupuestoDAO {
             System.out.println("Error al eliminar el presupuesto: " + e.getMessage());
         }
     }
+    
+    public void editarPresupuesto(int idPresupuesto, int totalMateriales, int manoDeObra, String otrosGastos) {
+        try (Connection conexion = dbManager.conectar()) {
+            String sql = "{call sp_actualizar_presupuesto(?, ?, ?, ?)}";
+            try (PreparedStatement statement = conexion.prepareCall(sql)) {
+                statement.setInt(1, idPresupuesto);
+                statement.setInt(2, totalMateriales);
+                statement.setInt(3, manoDeObra);
+                statement.setString(4, otrosGastos);
+                
+                statement.executeUpdate();
+                System.out.println("El presupuesto se ha editado correctamente.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Error al editar el presupuesto: " + e.getMessage());
+        } finally {
+            dbManager.desconectar();
+        }
+    }
 }
 

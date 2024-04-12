@@ -72,6 +72,26 @@ public class PlanillaDAO {
             System.out.println("Error al eliminar la Planilla: " + e.getMessage());
         }
     }
+    
+    public static void editarPlanilla(int planillaId, int usuarioId, Date FechInicio, Date FechFin, int horasSemanales, int salarioHora) {
+        try (Connection connection = dbManager.conectar();
+            CallableStatement statement = connection.prepareCall("{call sp_actualizar_planilla(?, ?, ?, ?, ?, ?)}")) {
+            java.sql.Date sqlfechaInicio = new java.sql.Date(FechInicio.getTime());
+            java.sql.Date sqlfechaFin = new java.sql.Date(FechFin.getTime());
+            statement.setInt(1, planillaId);
+            statement.setInt(2, usuarioId);
+            statement.setDate(3, sqlfechaInicio);
+            statement.setDate(4, sqlfechaFin);
+            statement.setInt(5, horasSemanales);
+            statement.setInt(6, salarioHora);
+            statement.executeUpdate();
+            System.out.println("Planilla editado exitosamente.");
+        } catch (SQLException e) {
+            System.out.println("Error al editadar la planilla: " + e.getMessage());
+        }
+    }
+    
+    
 }
 
 

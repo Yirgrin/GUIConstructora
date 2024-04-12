@@ -22,12 +22,7 @@ public class verProyecto extends javax.swing.JPanel {
     JDateChooser dateInicio = new JDateChooser();
     JDateChooser dateFinalizacion = new JDateChooser();
     DefaultTableModel modelo = new DefaultTableModel();
-    
-    
-    
-    /**
-     * Creates new form verProyecto
-     */
+
     public verProyecto() {
         initComponents();
         dateInicio.setDateFormatString("yyyy-MM-dd");

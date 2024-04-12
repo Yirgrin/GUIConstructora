@@ -1,12 +1,14 @@
 
 package Maquinaria;
 
+import java.awt.GridLayout;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -71,6 +73,26 @@ public class VerListaMaquinas extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, "Máquina eliminado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
         } else {
             JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para eliminar.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    
+    public void editarDatos() {
+        tablaDatos.requestFocus();
+        int filaSeleccionada = tablaDatos.getSelectedRow();   
+        int row;
+        if (filaSeleccionada != -1) {
+            row = ((BigDecimal) tablaDatos.getValueAt(filaSeleccionada, 0)).intValue();
+            
+            String nuevoNombre = JOptionPane.showInputDialog(null, "Nombre Máquina:", "Editar Máquina", JOptionPane.QUESTION_MESSAGE);
+            String nuevoDescripcion = JOptionPane.showInputDialog(null, "Descripción:", "Editar Máquina", JOptionPane.QUESTION_MESSAGE);
+            int nuevoPrecio= Integer.parseInt(JOptionPane.showInputDialog(null, "Precio:", "Editar Máquina", JOptionPane.QUESTION_MESSAGE));
+            int unidadesTotales = Integer.parseInt(JOptionPane.showInputDialog(null, "Unidades Totales:", "Editar Máquina", JOptionPane.QUESTION_MESSAGE));
+
+            MaquinariaDAO.editarMaquina(row, nuevoNombre, nuevoDescripcion, nuevoPrecio, unidadesTotales);
+            JOptionPane.showMessageDialog(null, "Máquina editada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para editar.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 

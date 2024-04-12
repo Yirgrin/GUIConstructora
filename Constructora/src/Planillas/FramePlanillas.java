@@ -203,7 +203,8 @@ public class FramePlanillas extends javax.swing.JFrame implements ActionListener
     }//GEN-LAST:event_VerActionPerformed
 
     private void EditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarActionPerformed
-       
+        p2.editarDatos();
+        p2.actualizarDatos();
     }//GEN-LAST:event_EditarActionPerformed
 
     private void VolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VolverActionPerformed

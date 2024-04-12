@@ -33,8 +33,7 @@ public class verAlquiler extends javax.swing.JPanel {
         modelo.addColumn("Fecha Devolución");
 
     }
-
-    
+   
     public void mostrarAlquileres() {
     String sql = "{call sp_obtener_alquiler(?)}";
 
@@ -66,8 +65,6 @@ public class verAlquiler extends javax.swing.JPanel {
     }
 }
 
-
-
     public void borrarAlquileres() {
     int selectedRow = jtable.getSelectedRow();
     int alquilerId;
@@ -96,16 +93,16 @@ public class verAlquiler extends javax.swing.JPanel {
     if (selectedRow != -1) {
         int alquilerId = ((BigDecimal) jtable.getValueAt(selectedRow, 0)).intValue();
 
-        String nuevoMaquinaId = JOptionPane.showInputDialog(null, "Nuevo ID de Máquina:", "Editar Alquiler", JOptionPane.QUESTION_MESSAGE);
-        String nuevoCodigoProveedor = JOptionPane.showInputDialog(null, "Nuevo Código de Proveedor:", "Editar Alquiler", JOptionPane.QUESTION_MESSAGE);
-        String nuevaDireccion = JOptionPane.showInputDialog(null, "Nueva Dirección:", "Editar Alquiler", JOptionPane.QUESTION_MESSAGE);
-        String nuevoTelefono = JOptionPane.showInputDialog(null, "Nuevo Teléfono de Contacto:", "Editar Alquiler", JOptionPane.QUESTION_MESSAGE);
+        String nuevoMaquinaId = JOptionPane.showInputDialog(null, "ID de Máquina:", "Editar Alquiler", JOptionPane.QUESTION_MESSAGE);
+        String nuevoCodigoProveedor = JOptionPane.showInputDialog(null, "Código de Proveedor:", "Editar Alquiler", JOptionPane.QUESTION_MESSAGE);
+        String nuevaDireccion = JOptionPane.showInputDialog(null, "Dirección:", "Editar Alquiler", JOptionPane.QUESTION_MESSAGE);
+        String nuevoTelefono = JOptionPane.showInputDialog(null, "Teléfono de Contacto:", "Editar Alquiler", JOptionPane.QUESTION_MESSAGE);
         JDateChooser dateAlquiler = new JDateChooser();
         JDateChooser dateDevolucion = new JDateChooser();
         JPanel panelAlquiler = new JPanel(new GridLayout(2, 2));
-        panelAlquiler.add(new JLabel("Nueva Fecha de Alquiler:"));
+        panelAlquiler.add(new JLabel("Fecha de Alquiler:"));
         panelAlquiler.add(dateAlquiler);
-        panelAlquiler.add(new JLabel("Nueva Fecha de Devolución:"));
+        panelAlquiler.add(new JLabel("echa de Devolución:"));
         panelAlquiler.add(dateDevolucion);
         JOptionPane.showConfirmDialog(null, panelAlquiler, "Editar Alquiler", JOptionPane.OK_CANCEL_OPTION);
         Date fechaAlquilerUtil = dateAlquiler.getDate();

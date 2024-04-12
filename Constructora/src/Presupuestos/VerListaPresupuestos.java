@@ -1,21 +1,21 @@
 
 package Presupuestos;
 
-import Planillas.PlanillaDAO;
-import Planillas.VerListaPlanillas;
+import java.awt.GridLayout;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author prisi
  */
-public class VerListaPresupuestos extends javax.swing.JPanel {
+public final class VerListaPresupuestos extends javax.swing.JPanel {
     private final PresupuestoDAO presupuestosDAO = new PresupuestoDAO();
     DefaultTableModel modelo = new DefaultTableModel();
     
@@ -74,6 +74,23 @@ public class VerListaPresupuestos extends javax.swing.JPanel {
         }
     }
 
+    public void editarDatos() {
+        tablaDatos.requestFocus();
+        int filaSeleccionada = tablaDatos.getSelectedRow();   
+        int row;
+        if (filaSeleccionada != -1) {
+            row = ((BigDecimal) tablaDatos.getValueAt(filaSeleccionada, 0)).intValue();
+            
+            int CostoMateriales = Integer.parseInt(JOptionPane.showInputDialog(null, "Costo Materiales:", "Editar Presupuesto", JOptionPane.QUESTION_MESSAGE));
+            int ManoObra = Integer.parseInt(JOptionPane.showInputDialog(null, "Costo mano de obra:", "Editar Presupuesto", JOptionPane.QUESTION_MESSAGE));
+            String nuevoOtrosGastos = JOptionPane.showInputDialog(null, "Otros Gastos:", "Editar Presupuesto", JOptionPane.QUESTION_MESSAGE);
+            
+            presupuestosDAO.editarPresupuesto(row, CostoMateriales, ManoObra, nuevoOtrosGastos);
+            JOptionPane.showMessageDialog(null, "Presupuesto editada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para editar.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

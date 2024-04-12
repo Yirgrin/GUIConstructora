@@ -108,15 +108,15 @@ public class verActividad extends javax.swing.JPanel {
     if (selectedRow != -1) {
         int actividadId = ((BigDecimal) jtable.getValueAt(selectedRow, 0)).intValue();
 
-        String nuevoNombre = JOptionPane.showInputDialog(null, "Nuevo Nombre:", "Editar Actividad", JOptionPane.QUESTION_MESSAGE);
+        String nuevoNombre = JOptionPane.showInputDialog(null, "Nombre:", "Editar Actividad", JOptionPane.QUESTION_MESSAGE);
         JPanel panelFecha = new JPanel(new GridLayout(2, 2));
-        panelFecha.add(new JLabel("Nueva Fecha:"));
+        panelFecha.add(new JLabel("Fecha:"));
         panelFecha.add(dateActividad);
         JOptionPane.showConfirmDialog(null, panelFecha, "Editar Actividad", JOptionPane.OK_CANCEL_OPTION);
-        String nuevaHora = JOptionPane.showInputDialog(null, "Nueva Hora (HH:mm):", "Editar Actividad", JOptionPane.QUESTION_MESSAGE);
-        String nuevaUbicacion = JOptionPane.showInputDialog(null, "Nueva Ubicación:", "Editar Actividad", JOptionPane.QUESTION_MESSAGE);
-        String nuevaDescripcion = JOptionPane.showInputDialog(null, "Nueva Descripción:", "Editar Actividad", JOptionPane.QUESTION_MESSAGE);
-        String nuevosParticipantes = JOptionPane.showInputDialog(null, "Nuevos Participantes:", "Editar Actividad", JOptionPane.QUESTION_MESSAGE);
+        String nuevaHora = JOptionPane.showInputDialog(null, "Hora (HH:mm):", "Editar Actividad", JOptionPane.QUESTION_MESSAGE);
+        String nuevaUbicacion = JOptionPane.showInputDialog(null, "Ubicación:", "Editar Actividad", JOptionPane.QUESTION_MESSAGE);
+        String nuevaDescripcion = JOptionPane.showInputDialog(null, "Descripción:", "Editar Actividad", JOptionPane.QUESTION_MESSAGE);
+        String nuevosParticipantes = JOptionPane.showInputDialog(null, "Participantes:", "Editar Actividad", JOptionPane.QUESTION_MESSAGE);
         
         Date fechaUtil = dateActividad.getDate();
         java.sql.Date nuevaFecha = new java.sql.Date(fechaUtil.getTime());

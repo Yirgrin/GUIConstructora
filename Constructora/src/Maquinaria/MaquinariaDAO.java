@@ -56,14 +56,35 @@ public class MaquinariaDAO {
         }
     }
 
-    public void eliminarMaquina(int usuarioId) {
+    public void eliminarMaquina(int maquinaId) {
         try (Connection connection = dbManager.conectar();
             CallableStatement statement = connection.prepareCall("{call sp_eliminar_maquina(?)}")) {
-            statement.setInt(1, usuarioId);
+            statement.setInt(1, maquinaId);
             statement.execute();
             System.out.println("Maquina eliminado exitosamente.");
         } catch (SQLException e) {
             System.out.println("Error al eliminar maquina: " + e.getMessage());
+        }
+    }
+    
+     public static void editarMaquina(int maquinaId, String nombre, String descripcion, double precio, int unidadesTotales) {
+        try (Connection conexion = dbManager.conectar()) {
+            String sql = "{call sp_actualizar_maquina(?, ?, ?, ?, ?)}";
+            try (PreparedStatement statement = conexion.prepareCall(sql)) {
+                statement.setInt(1, maquinaId);
+                statement.setString(2, nombre);
+                statement.setString(3, descripcion);
+                statement.setDouble(4, precio);
+                statement.setInt(5, unidadesTotales);
+                
+                statement.executeUpdate();
+                System.out.println("La máquina se edito correctamente.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Error al editar la máquina: " + e.getMessage());
+        } finally {
+            dbManager.desconectar();
         }
     }
 }
