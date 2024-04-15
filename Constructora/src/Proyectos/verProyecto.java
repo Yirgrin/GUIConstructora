@@ -10,6 +10,7 @@ import java.sql.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.GridLayout;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import oracle.jdbc.OracleTypes;
 
@@ -32,12 +33,12 @@ public class verProyecto extends javax.swing.JPanel {
         modelo = new DefaultTableModel();
         jTable1.setModel(modelo);
         modelo.addColumn("ID");
-        modelo.addColumn("Cod Proyecto");
+
         modelo.addColumn("Nombre");
         modelo.addColumn("Descripción");
         modelo.addColumn("Fecha Inicio");
         modelo.addColumn("Fecha Fin");
-        modelo.addColumn("Datos Cliente");  
+ 
     }
     
     public void mostrarProyecto() {
@@ -60,16 +61,20 @@ public class verProyecto extends javax.swing.JPanel {
         stmt.execute();
         // Obtener el cursor de salida
         ResultSet rs = (ResultSet) stmt.getObject(1);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         // Llenar la tabla con los resultados de la consulta
-        while (rs.next()) {
-            Object[] row = new Object[7];
-            for (int i = 0; i < 7; i++) {
-                row[i] = rs.getObject(i + 1);
+        if (rs != null) {
+            while (rs.next()) {
+                Object[] row = new Object[5]; 
+                row[0] = rs.getObject(1); 
+                row[1] = rs.getObject(3);
+                row[2] = rs.getObject(4);     
+                row[3] = dateFormat.format(rs.getDate(5));
+                row[4] = dateFormat.format(rs.getDate(6));
+                model.addRow(row);
             }
-            model.addRow(row);
+            rs.close();
         }
-        // Cerrar recursos
-        rs.close();
         stmt.close();
         conexion.desconectar();
 
@@ -105,18 +110,18 @@ public class verProyecto extends javax.swing.JPanel {
     int selectedRow = jTable1.getSelectedRow();
     if (selectedRow != -1) {
         int proyectoId = ((BigDecimal) jTable1.getValueAt(selectedRow, 0)).intValue();
-        int nuevoCodigoPresupuesto= Integer.parseInt(JOptionPane.showInputDialog(null, "Nuevo Código de Presupuesto:", "Editar Proyecto", JOptionPane.QUESTION_MESSAGE));
-        String nuevoNombre = JOptionPane.showInputDialog(null, "Nuevo Nombre:", "Editar Proyecto", JOptionPane.QUESTION_MESSAGE);
-        String nuevaDescripcion = JOptionPane.showInputDialog(null, "Nueva Descripción:", "Editar Proyecto", JOptionPane.QUESTION_MESSAGE);
+        int nuevoCodigoPresupuesto= Integer.parseInt(JOptionPane.showInputDialog(null, "Código de Presupuesto:", "Editar Proyecto", JOptionPane.QUESTION_MESSAGE));
+        String nuevoNombre = JOptionPane.showInputDialog(null, "Nombre:", "Editar Proyecto", JOptionPane.QUESTION_MESSAGE);
+        String nuevaDescripcion = JOptionPane.showInputDialog(null, "Descripción:", "Editar Proyecto", JOptionPane.QUESTION_MESSAGE);
         JPanel panelInicio = new JPanel(new GridLayout(2, 2));
-        panelInicio.add(new JLabel("Nueva Fecha de Inicio:"));
+        panelInicio.add(new JLabel("Fecha de Inicio:"));
         panelInicio.add(dateInicio);
         JOptionPane.showConfirmDialog(null, panelInicio, "Editar Proyecto", JOptionPane.OK_CANCEL_OPTION);
         JPanel panelFinalizacion = new JPanel(new GridLayout(2, 2));
-        panelFinalizacion.add(new JLabel("Nueva Fecha de Finalización:"));
+        panelFinalizacion.add(new JLabel("Fecha de Finalización:"));
         panelFinalizacion.add(dateFinalizacion);
         JOptionPane.showConfirmDialog(null, panelFinalizacion, "Editar Proyecto",JOptionPane.OK_CANCEL_OPTION);
-        String nuevoClienteDatos = JOptionPane.showInputDialog(null, "Nuevos Datos del Cliente:", "Editar Proyecto", JOptionPane.QUESTION_MESSAGE);
+        String nuevoClienteDatos = JOptionPane.showInputDialog(null, "Datos del Cliente:", "Editar Proyecto", JOptionPane.QUESTION_MESSAGE);
         Date fechaInicioUtil = dateInicio.getDate();
         Date fechaFinalizacionUtil = dateFinalizacion.getDate();
              
@@ -197,17 +202,20 @@ public class verProyecto extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 773, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 24, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(250, 250, 250))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(Detalles)
-                        .addContainerGap())))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 324, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(250, 250, 250))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(Detalles)
+                                .addContainerGap())))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 767, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -223,23 +231,55 @@ public class verProyecto extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void DetallesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DetallesActionPerformed
-        int selectedRow = jTable1.getSelectedRow();
-        int actividadId = ((BigDecimal) jTable1.getValueAt(selectedRow, 0)).intValue();
-        int codProyecto = ((BigDecimal) jTable1.getValueAt(selectedRow, 1)).intValue();
-        String nombre = (String) jTable1.getValueAt(selectedRow, 2);
-        String descripcion = (String) jTable1.getValueAt(selectedRow, 3);
-        Date fechaInicio = (Date) jTable1.getValueAt(selectedRow, 4);
-        Date fechaFin = (Date) jTable1.getValueAt(selectedRow, 5);
-        String datosCliente = (String) jTable1.getValueAt(selectedRow, 6);
-        
-        String s = "Identificación: " + actividadId
-        + "\nCódigo Proyecto: " + codProyecto
-        + "\nNombre: " + nombre
-        + "\nDescripción: " + descripcion
-        + "\nFecha Inicio: " + fechaInicio
-        + "\nFecha Fin: " + fechaFin
-        + "\nDatos Cliente: " + datosCliente;
-        JOptionPane.showMessageDialog(null, s, "Detalles", JOptionPane.INFORMATION_MESSAGE);
+        int selectedRow = jTable1.getSelectedRow();         
+        int proyecto_id = ((BigDecimal) jTable1.getValueAt(selectedRow, 0)).intValue();
+
+        String sql = "{ call sp_proyecto_id(?, ?) }";
+        try {
+            // Obtener la conexión desde OracleDBManager
+            Connection conn = conexion.conectar();
+            CallableStatement stmt = conn.prepareCall(sql);
+
+            // Configurar los parámetros del procedimiento almacenado
+            stmt.setInt(1, proyecto_id);
+            stmt.registerOutParameter(2, OracleTypes.CURSOR);
+
+            // Ejecutar el procedimiento almacenado
+            stmt.execute();
+            // Obtener los resultados del cursor
+            ResultSet rs = (ResultSet) stmt.getObject(2);
+            if (rs.next()) {
+                // Obtener los datos del proyecto
+                int presupuesto_id = rs.getInt("presupuesto_id");
+                String nombre = rs.getString("nombre");
+                String descripcion = rs.getString("descripcion");
+                Date fechaInicio = rs.getDate("fecha_inicio");
+                Date fechaFin = rs.getDate("fecha_finalizacion");
+                String cliente_datos = rs.getString("cliente_datos");
+
+                // Construir el mensaje
+                String mensaje = "ID de Proyecto: " + proyecto_id
+                    + "\nPresupuesto asociado: " + presupuesto_id
+                    + "\nNombre: " + nombre
+                    + "\nDescripción: " + descripcion
+                    + "\nFecha Inicio: " + fechaInicio
+                    + "\nFecha Fin: " + fechaFin
+                    + "\nDatos Cliente: " + cliente_datos;
+
+                // Mostrar los detalles del proyecto en un JOptionPane
+                JOptionPane.showMessageDialog(null, mensaje, "Detalles del Proyecto", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(null, "No se encontró ningún proyecto con el ID especificado.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+            // Cerrar la conexión y liberar los recursos
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al ejecutar el procedimiento almacenado.", "Error", JOptionPane.ERROR_MESSAGE);
+        } 
     }//GEN-LAST:event_DetallesActionPerformed
 
 

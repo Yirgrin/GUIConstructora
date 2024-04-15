@@ -1,10 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
+
 package Planillas;
 
-import Maquinaria.VerListaMaquinas;
 import com.toedter.calendar.JDateChooser;
 import java.awt.GridLayout;
 import java.math.BigDecimal;
@@ -52,12 +48,8 @@ public class VerListaPlanillas extends javax.swing.JPanel {
                     Object[] row = new Object[6]; // 4 columnas en total
                     row[0] = resultSet.getObject(1); // ID
                     row[1] = resultSet.getObject(2); // Id user
-                    // Obtener las fechas del ResultSet
-                    Date fechaIngreso = resultSet.getDate(3); // fecha ingreso
-                    Date fechaFin = resultSet.getDate(4); // fecha fin
-                    // Formatear las fechas
-                    row[2] = dateFormat.format(fechaIngreso); // fecha ingreso formateada
-                    row[3] = dateFormat.format(fechaFin); // fecha fin formateada
+                    row[2] = dateFormat.format(resultSet.getDate(3)); // fecha ingreso formateada
+                    row[3] = dateFormat.format(resultSet.getDate(4)); // fecha fin formateada
                     row[4] = resultSet.getObject(5); // horas sem
                     row[5] = resultSet.getObject(6); // salario hora
                     modelo.addRow(row);

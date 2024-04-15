@@ -1,6 +1,7 @@
 package ConexionBD;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 /**
  *
@@ -34,5 +35,9 @@ public class OracleDBManager {
         } catch (SQLException e) {
             System.out.print("Error al cerrar la conexión: " + e.getMessage());
         }
+    }
+
+    public PreparedStatement prepareStatement(String sql) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

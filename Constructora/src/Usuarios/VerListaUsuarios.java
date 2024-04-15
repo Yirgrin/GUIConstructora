@@ -190,16 +190,17 @@ public class VerListaUsuarios extends javax.swing.JPanel {
         int usuarioId = ((BigDecimal) tablaClientes.getValueAt(selectedRow, 0)).intValue();
         String sql = "{ call sp_mostrar_usuario_por_id(?, ?) }";
         try {
+            // Obtener la conexión desde OracleDBManager
             java.sql.Connection conn = conexion.conectar();
-             CallableStatement stmt = conn.prepareCall(sql);
-            // Llamar al procedimiento almacenado sp_mostrar_usuario_por_id
-            CallableStatement cs = conn.prepareCall("{ call sp_mostrar_usuario_por_id(?, ?) }");
-            cs.setInt(1, usuarioId);
-            cs.registerOutParameter(2, OracleTypes.CURSOR);
-            cs.execute();
+            CallableStatement stmt = conn.prepareCall(sql);
+            stmt.setInt(1, usuarioId);
+            stmt.registerOutParameter(2, OracleTypes.CURSOR);
+
+            // Ejecutar el procedimiento almacenado
+            stmt.execute();
 
             // Obtener los resultados del cursor
-            ResultSet rs = (ResultSet) cs.getObject(2);
+            ResultSet rs = (ResultSet) stmt.getObject(2);
             if (rs.next()) {
                 // Obtener los datos del usuario
                 String nombre = rs.getString("nombre");
@@ -226,7 +227,7 @@ public class VerListaUsuarios extends javax.swing.JPanel {
 
             // Cerrar la conexión y liberar los recursos
             rs.close();
-            cs.close();
+            stmt.close();
             conn.close();
         } catch (SQLException ex) {
             ex.printStackTrace();

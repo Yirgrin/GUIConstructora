@@ -1,6 +1,7 @@
 
 package Planillas;
 import ConexionBD.OracleDBManager;
+import java.beans.Statement;
 import java.sql.CallableStatement;
 
 import java.sql.Connection;
@@ -40,27 +41,27 @@ public class PlanillaDAO {
     public ResultSet obtenerPlanillas() {
     Connection conexion = dbManager.conectar();
     try {
-        // Llama al procedimiento almacenado y registra el parámetro de salida para el cursor de resultados
-        CallableStatement statement = conexion.prepareCall("{call sp_mostrar_planillas(?)}");
-        statement.registerOutParameter(1, OracleTypes.CURSOR);
-        statement.execute();
+        // Crea una consulta SQL para seleccionar datos de la vista
+        String sql = "SELECT * FROM vw_vista_planillas";
         
-        // Obtiene el cursor de resultados del procedimiento almacenado
-        ResultSet resultSet = (ResultSet) statement.getObject(1);
+        // Crea un PreparedStatement para ejecutar la consulta
+        PreparedStatement statement = conexion.prepareStatement(sql);
+        ResultSet resultSet = statement.executeQuery();
         
-        // Comprueba si hay un conjunto de resultados disponible
         if (resultSet != null) {
-            System.out.println("La sentencia se ejecuto correctamente.");
+            System.out.println("La consulta se ejecutó correctamente.");
             return resultSet;
         } else {
             System.out.println("No se encontraron resultados.");
             return null;
         }
     } catch (SQLException e) {
-        System.out.println("Error al ejecutar la sentencia: " + e.getMessage());
+        System.out.println("Error al ejecutar la consulta: " + e.getMessage());
         return null;
     }
 }
+
+
 
     public void eliminaPlanilla(int usuarioId) {
         try (Connection connection = dbManager.conectar();
