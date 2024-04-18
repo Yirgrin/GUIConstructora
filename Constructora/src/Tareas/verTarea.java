@@ -32,6 +32,7 @@ public class verTarea extends javax.swing.JPanel {
         modelo.addColumn("Proyecto");
         modelo.addColumn("Fecha Vencimiento");
         modelo.addColumn("Descripción");
+        modelo.addColumn("Estado");
     }
     
     public void mostrarTarea() {  
@@ -46,13 +47,14 @@ public class verTarea extends javax.swing.JPanel {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         while (rs.next()) {
-            Object[] row = new Object[5]; 
+            Object[] row = new Object[6]; 
                 row[0] = rs.getObject(1); 
                 row[1] = rs.getObject(2);
                 row[2] = rs.getObject(3);
                 row[3] = dateFormat.format(rs.getDate(4));
                 row[4] = rs.getObject(5);
-
+                row[5] = rs.getObject(6);
+                
                 model.addRow(row);
         }
     } catch (SQLException e) {

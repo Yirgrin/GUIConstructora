@@ -234,37 +234,41 @@ public class verProyecto extends javax.swing.JPanel {
         int selectedRow = jTable1.getSelectedRow();         
         int proyecto_id = ((BigDecimal) jTable1.getValueAt(selectedRow, 0)).intValue();
 
-        String sql = "{ call sp_proyecto_id(?, ?) }";
+        String sql = "SELECT * FROM vw_proyectos_asignaciones WHERE proyecto_id = ?";
         try {
             // Obtener la conexión desde OracleDBManager
             Connection conn = conexion.conectar();
-            CallableStatement stmt = conn.prepareCall(sql);
+            PreparedStatement stmt = conn.prepareStatement(sql);
 
-            // Configurar los parámetros del procedimiento almacenado
+            // Configurar el parámetro
             stmt.setInt(1, proyecto_id);
-            stmt.registerOutParameter(2, OracleTypes.CURSOR);
 
-            // Ejecutar el procedimiento almacenado
-            stmt.execute();
-            // Obtener los resultados del cursor
-            ResultSet rs = (ResultSet) stmt.getObject(2);
+            // Ejecutar la consulta
+            ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 // Obtener los datos del proyecto
                 int presupuesto_id = rs.getInt("presupuesto_id");
-                String nombre = rs.getString("nombre");
+                String nombre = rs.getString("nombre_proyecto");
                 String descripcion = rs.getString("descripcion");
                 Date fechaInicio = rs.getDate("fecha_inicio");
                 Date fechaFin = rs.getDate("fecha_finalizacion");
                 String cliente_datos = rs.getString("cliente_datos");
+                int total_asignaciones = rs.getInt("cantidad_asignaciones");
+                int total_presupuesto = rs.getInt("total_presupuesto");
 
                 // Construir el mensaje
-                String mensaje = "ID de Proyecto: " + proyecto_id
-                    + "\nPresupuesto asociado: " + presupuesto_id
+                String mensaje = "ID de Proyecto: " + proyecto_id 
+                    + "\n"    
                     + "\nNombre: " + nombre
                     + "\nDescripción: " + descripcion
                     + "\nFecha Inicio: " + fechaInicio
                     + "\nFecha Fin: " + fechaFin
-                    + "\nDatos Cliente: " + cliente_datos;
+                    + "\nDatos del cliente: " + cliente_datos
+                    + "\n" 
+                    + "\nTotal de asignaciones del proyecto: " + total_asignaciones
+                    + "\n" 
+                    + "\nCódigo de presupuesto asociado: " + presupuesto_id
+                    + "\nTotal del presupuesto: " + total_presupuesto + " colones. ";
 
                 // Mostrar los detalles del proyecto en un JOptionPane
                 JOptionPane.showMessageDialog(null, mensaje, "Detalles del Proyecto", JOptionPane.INFORMATION_MESSAGE);
@@ -278,7 +282,7 @@ public class verProyecto extends javax.swing.JPanel {
             conn.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Error al ejecutar el procedimiento almacenado.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Error al ejecutar la consulta SQL.", "Error", JOptionPane.ERROR_MESSAGE);
         } 
     }//GEN-LAST:event_DetallesActionPerformed
 

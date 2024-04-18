@@ -184,7 +184,15 @@ public class AddPresupuesto extends javax.swing.JPanel {
         // Obtener los datos de los campos
         int totalMateriales = Integer.parseInt(txtTotalMateriales.getText());
         int manoDeObra = Integer.parseInt(txtManoObra.getText());
-        String otrosGastos = txtOtrosGastos.getText();
+        int otrosGastos;
+        try {
+            otrosGastos = Integer.parseInt(txtOtrosGastos.getText());
+        } catch (NumberFormatException e) {
+            // Si no se puede convertir a entero, se asigna un valor predeterminado (en este caso, 0)
+            otrosGastos = 0;
+        }
+
+
 
         // Llamar al método del DAO para insertar el presupuesto
         PresupuestoDAO.insertarPresupuesto(totalMateriales, manoDeObra, otrosGastos);

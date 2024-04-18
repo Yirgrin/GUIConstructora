@@ -9,6 +9,7 @@ import java.sql.CallableStatement;
 import java.util.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import oracle.jdbc.OracleTypes;
 
 public class UsuarioDAO {
@@ -30,7 +31,6 @@ public class UsuarioDAO {
                 statement.setString(6, cargo);
                 statement.setDate(7, sqlFechaContratacion);
                 statement.executeUpdate();
-                System.out.println("La sentencia se ejecuto correctamente.1");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -54,7 +54,6 @@ public class UsuarioDAO {
         
         // Comprueba si hay un conjunto de resultados disponible
         if (resultSet != null) {
-            System.out.println("La sentencia se ejecuto correctamente.2");
             return resultSet;
         } else {
             System.out.println("No se encontraron resultados.");
@@ -71,7 +70,6 @@ public class UsuarioDAO {
             CallableStatement statement = connection.prepareCall("{call sp_eliminar_usuario(?)}")) {
             statement.setInt(1, usuarioId);
             statement.execute();
-            System.out.println("Usuario eliminado exitosamente.");
         } catch (SQLException e) {
             System.out.println("Error al eliminar el usuario: " + e.getMessage());
         }
@@ -89,11 +87,27 @@ public class UsuarioDAO {
             statement.setString(6, cargo);
             statement.setDate(7, sqlFechaContratacion);
             statement.executeUpdate();
-            System.out.println("Usuario editado exitosamente.");
         } catch (SQLException e) {
             System.out.println("Error al editadar el usuario: " + e.getMessage());
         }
     }
+
+   public static String CalcAntiguedad(int usuarioId) {
+        String antiguedad = null;
+        try (Connection conexion = dbManager.conectar();
+             CallableStatement statement = conexion.prepareCall("{ ? = call fn_calcular_tiempo_trabajo(?) }")) {
+
+            statement.registerOutParameter(1, Types.VARCHAR); // El tipo de retorno de la función es VARCHAR2
+            statement.setInt(2, usuarioId);
+            statement.execute();
+
+            antiguedad = statement.getString(1); // Recuperar el valor de retorno como String
+        } catch (SQLException e) {
+            System.out.println("Error al calcular la antigüedad: " + e.getMessage());
+        }
+        return antiguedad;
+    }
+
 }
 
 

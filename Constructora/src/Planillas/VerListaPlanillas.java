@@ -6,6 +6,7 @@ import java.awt.GridLayout;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
@@ -73,6 +74,7 @@ public class VerListaPlanillas extends javax.swing.JPanel {
         jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaDatos = new javax.swing.JTable();
+        CalcularSalario = new javax.swing.JButton();
 
         CentralFrame1.setBackground(new java.awt.Color(102, 102, 102));
         CentralFrame1.setRequestFocusEnabled(false);
@@ -93,18 +95,35 @@ public class VerListaPlanillas extends javax.swing.JPanel {
         tablaDatos.setShowGrid(true);
         jScrollPane1.setViewportView(tablaDatos);
 
+        CalcularSalario.setBackground(new java.awt.Color(57, 57, 57));
+        CalcularSalario.setFont(new java.awt.Font("Eras Medium ITC", 0, 16)); // NOI18N
+        CalcularSalario.setForeground(new java.awt.Color(255, 255, 255));
+        CalcularSalario.setText("Calcular Salario");
+        CalcularSalario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CalcularSalarioActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout CentralFrame1Layout = new javax.swing.GroupLayout(CentralFrame1);
         CentralFrame1.setLayout(CentralFrame1Layout);
         CentralFrame1Layout.setHorizontalGroup(
             CentralFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(CentralFrame1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 748, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CentralFrame1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(255, 255, 255))
+                .addGroup(CentralFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(CentralFrame1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 748, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CentralFrame1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(CentralFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CentralFrame1Layout.createSequentialGroup()
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(255, 255, 255))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CentralFrame1Layout.createSequentialGroup()
+                                .addComponent(CalcularSalario)
+                                .addGap(21, 21, 21))))))
         );
         CentralFrame1Layout.setVerticalGroup(
             CentralFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -112,8 +131,10 @@ public class VerListaPlanillas extends javax.swing.JPanel {
                 .addGap(16, 16, 16)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(41, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(CalcularSalario)
+                .addContainerGap(50, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -128,6 +149,42 @@ public class VerListaPlanillas extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void CalcularSalarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CalcularSalarioActionPerformed
+                                     
+        tablaDatos.requestFocus();
+        int filaSeleccionada = tablaDatos.getSelectedRow();           
+        if (filaSeleccionada != -1) {
+             int usuarioId = ((BigDecimal) tablaDatos.getValueAt(filaSeleccionada, 0)).intValue();
+
+            // Llama al método del DAO para calcular el salario semanal
+            int salarioSemanal = planillaDAO.CalcularPlanilla(usuarioId);
+            
+            String empleado = (String) tablaDatos.getValueAt(filaSeleccionada, 1);
+            String fechaInicioStr = (String) tablaDatos.getValueAt(filaSeleccionada, 2); // Obtiene la fecha como String
+            String fechaFincioStr = (String) tablaDatos.getValueAt(filaSeleccionada, 3); // Obtiene la fecha como String
+            Date fechaIni = null;
+            Date fechaFin = null;
+            try {
+               fechaIni = new SimpleDateFormat("yyyy-MM-dd").parse(fechaInicioStr);
+               fechaFin = new SimpleDateFormat("yyyy-MM-dd").parse(fechaFincioStr);
+            } catch (ParseException ex) {
+            }
+            SimpleDateFormat dateFormatOutput = new SimpleDateFormat("dd-MM-yyyy");
+            String fechaIniForm= dateFormatOutput.format(fechaIni); 
+            String fechaFinForm = dateFormatOutput.format(fechaFin); 
+
+            String s = "Cálculo de salario semanal" +
+                    "\nCorrespondiente al empleado: " + empleado 
+                    + "\nDesde el: " + fechaIniForm
+                    + "\nHasta el: " + fechaFinForm
+                    + "\nPor un total de: " + salarioSemanal + " colones";
+            JOptionPane.showMessageDialog(null, s, "Detalles", JOptionPane.INFORMATION_MESSAGE);
+
+        } else {
+            JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para calcular el salario.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_CalcularSalarioActionPerformed
+
     public void eliminarDatos() {
         tablaDatos.requestFocus();
         int filaSeleccionada = tablaDatos.getSelectedRow();   
@@ -140,7 +197,6 @@ public class VerListaPlanillas extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para eliminar.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
     
     public void editarDatos() {
         tablaDatos.requestFocus();
@@ -171,8 +227,9 @@ public class VerListaPlanillas extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para editar.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton CalcularSalario;
     private javax.swing.JPanel CentralFrame1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;

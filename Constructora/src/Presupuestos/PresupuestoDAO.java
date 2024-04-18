@@ -6,22 +6,22 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import oracle.jdbc.OracleTypes;
 
 
 public class PresupuestoDAO {
     private static final OracleDBManager dbManager = new OracleDBManager();
     
-    public static void insertarPresupuesto(int totalMateriales, int manoDeObra, String otrosGastos) {
+    public static void insertarPresupuesto(int totalMateriales, int manoDeObra, int otrosGastos) {
         try (Connection conexion = dbManager.conectar()) {
             String sql = "{call sp_insertar_presupuesto(?, ?, ?)}";
             try (PreparedStatement statement = conexion.prepareCall(sql)) {
                 statement.setInt(1, totalMateriales);
                 statement.setInt(2, manoDeObra);
-                statement.setString(3, otrosGastos);
+                statement.setInt(3, otrosGastos);
                 
                 statement.executeUpdate();
-                System.out.println("El presupuesto se ha insertado correctamente.");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -44,7 +44,6 @@ public class PresupuestoDAO {
         
         // Comprueba si hay un conjunto de resultados disponible
         if (resultSet != null) {
-            System.out.println("La sentencia se ejecuto correctamente.");
             return resultSet;
         } else {
             System.out.println("No se encontraron resultados.");
@@ -61,23 +60,21 @@ public class PresupuestoDAO {
             CallableStatement statement = connection.prepareCall("{call sp_eliminar_presupuesto(?)}")) {
             statement.setInt(1, usuarioId);
             statement.execute();
-            System.out.println("presupuesto eliminado exitosamente.");
         } catch (SQLException e) {
             System.out.println("Error al eliminar el presupuesto: " + e.getMessage());
         }
     }
     
-    public void editarPresupuesto(int idPresupuesto, int totalMateriales, int manoDeObra, String otrosGastos) {
+    public void editarPresupuesto(int idPresupuesto, int totalMateriales, int manoDeObra, int otrosGastos) {
         try (Connection conexion = dbManager.conectar()) {
             String sql = "{call sp_actualizar_presupuesto(?, ?, ?, ?)}";
             try (PreparedStatement statement = conexion.prepareCall(sql)) {
                 statement.setInt(1, idPresupuesto);
                 statement.setInt(2, totalMateriales);
                 statement.setInt(3, manoDeObra);
-                statement.setString(4, otrosGastos);
+                statement.setInt(4, otrosGastos);
                 
                 statement.executeUpdate();
-                System.out.println("El presupuesto se ha editado correctamente.");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -86,5 +83,36 @@ public class PresupuestoDAO {
             dbManager.desconectar();
         }
     }
+
+    public static int CalcularPresupuesto(int idPresupuesto) {
+        int totalPresupuesto = 0;
+        try (Connection conexion = dbManager.conectar();
+             CallableStatement statement = conexion.prepareCall("{ ? = call fn_total_gastos_presupuesto(?) }")) {
+
+            statement.registerOutParameter(1, Types.NUMERIC);
+            statement.setInt(2, idPresupuesto);
+            statement.execute();
+
+            totalPresupuesto = statement.getInt(1);
+        } catch (SQLException e) {
+            System.out.println("Error al calcular el salario semanal: " + e.getMessage());
+        }
+        return totalPresupuesto;
+    }
+
+    public static ResultSet MontoMaxMin() {
+        Connection conexion = dbManager.conectar();
+        try {
+            String sql = "SELECT tipo, presupuesto_id, monto_total, proyecto FROM vw_presupuesto_monto_mayor_menor";
+            PreparedStatement statement = conexion.prepareStatement(sql);
+            return statement.executeQuery();
+        } catch (SQLException e) {
+            System.out.println("Error al ejecutar la consulta: " + e.getMessage());
+            // Si ocurre un error, devuelve null
+            return null;
+        }
+    }
+
 }
+
 

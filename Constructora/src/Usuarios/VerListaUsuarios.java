@@ -111,6 +111,7 @@ public class VerListaUsuarios extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaClientes = new javax.swing.JTable();
         Detalles = new javax.swing.JButton();
+        antEmpleado = new javax.swing.JButton();
 
         CentralFrame1.setBackground(new java.awt.Color(102, 102, 102));
         CentralFrame1.setRequestFocusEnabled(false);
@@ -142,6 +143,16 @@ public class VerListaUsuarios extends javax.swing.JPanel {
             }
         });
 
+        antEmpleado.setBackground(new java.awt.Color(57, 57, 57));
+        antEmpleado.setFont(new java.awt.Font("Eras Medium ITC", 0, 16)); // NOI18N
+        antEmpleado.setForeground(new java.awt.Color(255, 255, 255));
+        antEmpleado.setText("Antiguedad de empleado");
+        antEmpleado.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                antEmpleadoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout CentralFrame1Layout = new javax.swing.GroupLayout(CentralFrame1);
         CentralFrame1.setLayout(CentralFrame1Layout);
         CentralFrame1Layout.setHorizontalGroup(
@@ -155,7 +166,10 @@ public class VerListaUsuarios extends javax.swing.JPanel {
                         .addGap(255, 255, 255))
                     .addGroup(CentralFrame1Layout.createSequentialGroup()
                         .addGroup(CentralFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(Detalles)
+                            .addGroup(CentralFrame1Layout.createSequentialGroup()
+                                .addComponent(antEmpleado)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(Detalles))
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 748, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap(31, Short.MAX_VALUE))))
         );
@@ -167,7 +181,9 @@ public class VerListaUsuarios extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 412, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
-                .addComponent(Detalles)
+                .addGroup(CentralFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Detalles)
+                    .addComponent(antEmpleado))
                 .addGap(24, 24, 24))
         );
 
@@ -235,10 +251,30 @@ public class VerListaUsuarios extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_DetallesActionPerformed
 
+    private void antEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_antEmpleadoActionPerformed
+        
+        tablaClientes.requestFocus();
+        int filaSeleccionada = tablaClientes.getSelectedRow();
+        if (filaSeleccionada != -1) {
+            int usuarioId = ((BigDecimal) tablaClientes.getValueAt(filaSeleccionada, 0)).intValue();
+
+            // Llama al método del DAO para calcular el salario semanal
+            String antiguedad = UsuarioDAO.CalcAntiguedad(usuarioId);
+
+            
+            String s = "Antiguedad del empleado en la empresa: " + antiguedad;
+            JOptionPane.showMessageDialog(null, s, "Detalles", JOptionPane.INFORMATION_MESSAGE);
+
+        } else {
+            JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para calcular el salario.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_antEmpleadoActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel CentralFrame1;
     private javax.swing.JButton Detalles;
+    private javax.swing.JButton antEmpleado;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     public javax.swing.JTable tablaClientes;

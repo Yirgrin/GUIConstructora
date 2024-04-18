@@ -21,7 +21,6 @@ public class MaquinariaDAO {
                 statement.setInt(4, unidadesTotales);
                 
                 statement.executeUpdate();
-                System.out.println("La máquina se insertó correctamente.");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -44,7 +43,6 @@ public class MaquinariaDAO {
 
             // Comprueba si hay un conjunto de resultados disponible
             if (resultSet != null) {
-                System.out.println("La sentencia se ejecutó correctamente.");
                 return resultSet;
             } else {
                 System.out.println("No se encontraron resultados.");
@@ -61,7 +59,6 @@ public class MaquinariaDAO {
             CallableStatement statement = connection.prepareCall("{call sp_eliminar_maquina(?)}")) {
             statement.setInt(1, maquinaId);
             statement.execute();
-            System.out.println("Maquina eliminado exitosamente.");
         } catch (SQLException e) {
             System.out.println("Error al eliminar maquina: " + e.getMessage());
         }
@@ -78,7 +75,6 @@ public class MaquinariaDAO {
                 statement.setInt(5, unidadesTotales);
                 
                 statement.executeUpdate();
-                System.out.println("La máquina se edito correctamente.");
             }
         } catch (SQLException e) {
             e.printStackTrace();
