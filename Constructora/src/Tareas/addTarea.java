@@ -15,7 +15,6 @@ import java.util.Date;
  * @author prisi
  */
 public class addTarea extends javax.swing.JPanel {
-    OracleDBManager conexion = new OracleDBManager();
 
     /**
      * Creates new form AddTareaa
@@ -24,16 +23,17 @@ public class addTarea extends javax.swing.JPanel {
         initComponents();
     }
 
-    public static void insertarTarea(String idEmpleado, String idProyecto, Date fechaVencimiento, String descripcion) {
+    public static void insertarTarea(String idEmpleado, String idProyecto, Date fechaVencimiento, String descripcion, String estado) {
     OracleDBManager dbManager = new OracleDBManager();
     try (Connection conexion = dbManager.conectar()) {
         // Llama al procedimiento almacenado
-        String sql = "{call sp_insertar_asignacion(?, ?, ?, ?)}";
+        String sql = "{call sp_insertar_asignacion(?, ?, ?, ?, ?)}";
         try (PreparedStatement statement = conexion.prepareCall(sql)) {
             statement.setInt(1, Integer.parseInt(idEmpleado));
             statement.setInt(2, Integer.parseInt(idProyecto));
             statement.setDate(3, new java.sql.Date(fechaVencimiento.getTime()));
             statement.setString(4, descripcion);
+            statement.setString(4, estado);
             statement.executeUpdate();
         }
     } catch (SQLException e) {
@@ -64,6 +64,8 @@ public class addTarea extends javax.swing.JPanel {
         jScrollPane3 = new javax.swing.JScrollPane();
         descTarea = new javax.swing.JTextArea();
         jLabel18 = new javax.swing.JLabel();
+        jLabel19 = new javax.swing.JLabel();
+        estado = new javax.swing.JTextField();
 
         content.setBackground(new java.awt.Color(102, 102, 102));
 
@@ -110,6 +112,12 @@ public class addTarea extends javax.swing.JPanel {
         jLabel18.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel18.setText("Nueva Tarea");
 
+        jLabel19.setFont(new java.awt.Font("Eras Medium ITC", 0, 18)); // NOI18N
+        jLabel19.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel19.setText("Estado:");
+
+        estado.setBackground(new java.awt.Color(187, 187, 187));
+
         javax.swing.GroupLayout contentLayout = new javax.swing.GroupLayout(content);
         content.setLayout(contentLayout);
         contentLayout.setHorizontalGroup(
@@ -118,20 +126,23 @@ public class addTarea extends javax.swing.JPanel {
                 .addGap(268, 268, 268)
                 .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, contentLayout.createSequentialGroup()
+            .addGroup(contentLayout.createSequentialGroup()
                 .addGap(110, 110, 110)
                 .addGroup(contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel14)
                     .addComponent(jLabel15)
                     .addComponent(jLabel16)
-                    .addComponent(jLabel17))
+                    .addComponent(jLabel17)
+                    .addComponent(jLabel19))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 100, Short.MAX_VALUE)
-                .addGroup(contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(Enviar, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
-                    .addComponent(idEmpleado, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(dateTarea, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(idProyecto, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE))
+                .addGroup(contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(estado, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
+                    .addGroup(contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(Enviar, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
+                        .addComponent(idEmpleado, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(dateTarea, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(idProyecto, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)))
                 .addGap(132, 132, 132))
         );
         contentLayout.setVerticalGroup(
@@ -155,7 +166,14 @@ public class addTarea extends javax.swing.JPanel {
                 .addGroup(contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(84, 84, 84)
+                .addGroup(contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(contentLayout.createSequentialGroup()
+                        .addGap(16, 16, 16)
+                        .addComponent(jLabel19))
+                    .addGroup(contentLayout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(estado, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(29, 29, 29)
                 .addComponent(Enviar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(36, 36, 36))
         );
@@ -175,11 +193,12 @@ public class addTarea extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void EnviarEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EnviarEnviarActionPerformed
-        insertarTarea(idEmpleado.getText(), idProyecto.getText(), dateTarea.getDate(), descTarea.getText());
+        insertarTarea(idEmpleado.getText(), idProyecto.getText(), dateTarea.getDate(), descTarea.getText(), estado.getText());
         idEmpleado.setText("");
         idProyecto.setText("");
         dateTarea.setDate(new Date());
         descTarea.setText("");
+        estado.setText(" ");
     }//GEN-LAST:event_EnviarEnviarActionPerformed
 
 
@@ -188,6 +207,7 @@ public class addTarea extends javax.swing.JPanel {
     private javax.swing.JPanel content;
     private com.toedter.calendar.JDateChooser dateTarea;
     private javax.swing.JTextArea descTarea;
+    private javax.swing.JTextField estado;
     private javax.swing.JTextField idEmpleado;
     private javax.swing.JTextField idProyecto;
     private javax.swing.JLabel jLabel14;
@@ -195,6 +215,7 @@ public class addTarea extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JScrollPane jScrollPane3;
     // End of variables declaration//GEN-END:variables
 }

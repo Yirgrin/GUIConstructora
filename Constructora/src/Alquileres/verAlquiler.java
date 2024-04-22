@@ -9,6 +9,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.GridLayout;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import oracle.jdbc.OracleTypes;
 
 /**
  *
@@ -35,11 +36,19 @@ public class verAlquiler extends javax.swing.JPanel {
     }
    
 public void mostrarAlquileres() {
-    String sql = "SELECT * FROM vw_vista_alquileres";
+    String sql = "{call sp_obtener_alquiler(?)}";
 
     try (Connection conn = conexion.conectar();
-         PreparedStatement statement = conn.prepareStatement(sql);
-         ResultSet rs = statement.executeQuery()) {
+         CallableStatement stmt = conn.prepareCall(sql)) {
+
+        // Registro del parámetro de salida
+        stmt.registerOutParameter(1, OracleTypes.CURSOR);
+
+        // Ejecutar el procedimiento almacenado
+        stmt.execute();
+
+        // Obtener el cursor de salida
+        ResultSet rs = (ResultSet) stmt.getObject(1);
 
         DefaultTableModel model = (DefaultTableModel) jtable.getModel();
         model.setRowCount(0);
@@ -56,12 +65,15 @@ public void mostrarAlquileres() {
             row[6] = dateFormat.format(rs.getDate(7));
             model.addRow(row);
         }
+
+        rs.close();
     } catch (SQLException e) {
         System.out.println("Error al mostrar alquileres: " + e.getMessage());
     } finally {
         conexion.desconectar();
     }
 }
+
 
     public void borrarAlquileres() {
     int selectedRow = jtable.getSelectedRow();
@@ -88,45 +100,65 @@ public void mostrarAlquileres() {
     
     public void editAlquiler() {
     int selectedRow = jtable.getSelectedRow();
-
     if (selectedRow != -1) {
         int alquilerId = ((BigDecimal) jtable.getValueAt(selectedRow, 0)).intValue();
+        int actualMaquinaId = ((BigDecimal) jtable.getValueAt(selectedRow, 1)).intValue();
+        String actualCodigoProveedor = (String) jtable.getValueAt(selectedRow, 2);
+        String actualDireccion = (String) jtable.getValueAt(selectedRow, 3);
+        String actualTelefono = (String) jtable.getValueAt(selectedRow, 4);
 
-        String nuevoMaquinaId = JOptionPane.showInputDialog(null, "ID de Máquina:", "Editar Alquiler", JOptionPane.QUESTION_MESSAGE);
-        String nuevoCodigoProveedor = JOptionPane.showInputDialog(null, "Código de Proveedor:", "Editar Alquiler", JOptionPane.QUESTION_MESSAGE);
-        String nuevaDireccion = JOptionPane.showInputDialog(null, "Dirección:", "Editar Alquiler", JOptionPane.QUESTION_MESSAGE);
-        String nuevoTelefono = JOptionPane.showInputDialog(null, "Teléfono de Contacto:", "Editar Alquiler", JOptionPane.QUESTION_MESSAGE);
-        JDateChooser dateAlquiler = new JDateChooser();
-        JDateChooser dateDevolucion = new JDateChooser();
-        JPanel panelAlquiler = new JPanel(new GridLayout(2, 2));
+        JPanel panelAlquiler = new JPanel(new GridLayout(7, 2));
+        panelAlquiler.add(new JLabel("ID de Máquina:"));
+        JTextField maquinaIdField = new JTextField(String.valueOf(actualMaquinaId));
+        panelAlquiler.add(maquinaIdField);
+        panelAlquiler.add(new JLabel("Código de Proveedor:"));
+        JTextField codigoProveedorField = new JTextField(actualCodigoProveedor);
+        panelAlquiler.add(codigoProveedorField);
+        panelAlquiler.add(new JLabel("Dirección:"));
+        JTextField direccionField = new JTextField(actualDireccion);
+        panelAlquiler.add(direccionField);
+        panelAlquiler.add(new JLabel("Teléfono de Contacto:"));
+        JTextField telefonoField = new JTextField(actualTelefono);
+        panelAlquiler.add(telefonoField);
         panelAlquiler.add(new JLabel("Fecha de Alquiler:"));
-        panelAlquiler.add(dateAlquiler);
-        panelAlquiler.add(new JLabel("echa de Devolución:"));
-        panelAlquiler.add(dateDevolucion);
-        JOptionPane.showConfirmDialog(null, panelAlquiler, "Editar Alquiler", JOptionPane.OK_CANCEL_OPTION);
-        Date fechaAlquilerUtil = dateAlquiler.getDate();
-        Date fechaDevolucionUtil = dateDevolucion.getDate();
+        JDateChooser fechaAlquilerChooser = new JDateChooser();
+        panelAlquiler.add(fechaAlquilerChooser);
+        panelAlquiler.add(new JLabel("Fecha de Devolución:"));
+        JDateChooser fechaDevolucionChooser = new JDateChooser();
+        panelAlquiler.add(fechaDevolucionChooser);
 
-        try {
-            Connection conn = conexion.conectar();
-            String sql = "{call sp_actualizar_alquiler(?, ?, ?, ?, ?, ?, ?)}";
-            CallableStatement stmt = conn.prepareCall(sql);
-            stmt.setInt(1, alquilerId);
-            stmt.setString(2, nuevoMaquinaId);
-            stmt.setString(3, nuevoCodigoProveedor);
-            stmt.setString(4, nuevaDireccion);
-            stmt.setString(5, nuevoTelefono);
-            stmt.setDate(6, new java.sql.Date(fechaAlquilerUtil.getTime()));
-            stmt.setDate(7, new java.sql.Date(fechaDevolucionUtil.getTime()));
+        int result = JOptionPane.showConfirmDialog(null, panelAlquiler, "Editar Alquiler", JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION) {
+            int nuevoMaquinaId = Integer.parseInt(maquinaIdField.getText());
+            String nuevoCodigoProveedor = codigoProveedorField.getText();
+            String nuevaDireccion = direccionField.getText();
+            String nuevoTelefono = telefonoField.getText();
+            Date nuevaFechaAlquiler = fechaAlquilerChooser.getDate();
+            Date nuevaFechaDevolucion = fechaDevolucionChooser.getDate();
 
-            stmt.executeUpdate();
-            
-            JOptionPane.showMessageDialog(null, "Alquiler editado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-            
-            stmt.close();
-            conn.close();
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al editar el alquiler: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            try {
+                Connection conn = conexion.conectar();
+                String sql = "{call sp_actualizar_alquiler(?, ?, ?, ?, ?, ?, ?)}";
+                CallableStatement stmt = conn.prepareCall(sql);
+                stmt.setInt(1, alquilerId);
+                stmt.setInt(2, nuevoMaquinaId);
+                stmt.setString(3, nuevoCodigoProveedor);
+                stmt.setString(4, nuevaDireccion);
+                stmt.setString(5, nuevoTelefono);
+                stmt.setDate(6, new java.sql.Date(nuevaFechaAlquiler.getTime()));
+                stmt.setDate(7, new java.sql.Date(nuevaFechaDevolucion.getTime()));
+
+                stmt.executeUpdate();
+
+                JOptionPane.showMessageDialog(null, "Alquiler editado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+
+                stmt.close();
+                conn.close();
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null, "Error al editar el alquiler: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            System.out.println("El usuario canceló la edición del alquiler.");
         }
     } else {
         JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para editar.", "Error", JOptionPane.ERROR_MESSAGE);

@@ -91,46 +91,70 @@ public class verTarea extends javax.swing.JPanel {
     mostrarTarea();
 }
   
-    public void editTarea(){
+    public void editTarea() {
     int selectedRow = jTable1.getSelectedRow();
     if (selectedRow != -1) {
         int asignacionId = ((BigDecimal) jTable1.getValueAt(selectedRow, 0)).intValue();
-
-        String nuevoIdEmpleado = JOptionPane.showInputDialog(null, "Nuevo ID de Empleado:", "Editar Asignación", JOptionPane.QUESTION_MESSAGE);
-        String nuevoIdProyecto = JOptionPane.showInputDialog(null, "Nuevo ID de Proyecto:", "Editar Asignación", JOptionPane.QUESTION_MESSAGE);
-        JPanel panelFecha = new JPanel(new GridLayout(2, 2));
-        panelFecha.add(new JLabel("Nueva Fecha de Tarea:"));
-        panelFecha.add(dateTarea);
-        JOptionPane.showConfirmDialog(null, panelFecha, "Editar Asignación", JOptionPane.OK_CANCEL_OPTION);
-        String nuevaDescripcion = JOptionPane.showInputDialog(null, "Nueva Descripción:", "Editar Asignación", JOptionPane.QUESTION_MESSAGE);
+        String actualIdEmpleado = (String) jTable1.getValueAt(selectedRow, 1);
+        String actualIdProyecto = (String) jTable1.getValueAt(selectedRow, 2);
+        String actualDescripcion = (String) jTable1.getValueAt(selectedRow, 5);
+        String actualEstado = (String) jTable1.getValueAt(selectedRow, 6);
         
-        Date fechaUtil = dateTarea.getDate();
-        java.sql.Date nuevaFechaTarea = new java.sql.Date(fechaUtil.getTime());
+        JPanel panelTarea = new JPanel(new GridLayout(6, 2));
+        panelTarea.add(new JLabel("ID de Empleado:"));
+        JTextField idEmpleadoField = new JTextField(actualIdEmpleado);
+        panelTarea.add(idEmpleadoField);
+        panelTarea.add(new JLabel("ID de Proyecto:"));
+        JTextField idProyectoField = new JTextField(actualIdProyecto);
+        panelTarea.add(idProyectoField);
+        panelTarea.add(new JLabel("Fecha de Tarea:"));
+        panelTarea.add(dateTarea);
+        panelTarea.add(new JLabel("Descripción:"));
+        JTextField descripcionField = new JTextField(actualDescripcion);
+        panelTarea.add(descripcionField);
+        panelTarea.add(new JLabel("Estado:"));
+        JTextField estadoField = new JTextField(actualEstado);
+        panelTarea.add(estadoField);
+        
 
-        try {
-            Connection conn = conexion.conectar();
-            String sql = "{call sp_actualizar_asignacion(?, ?, ?, ?, ?)}";
-            CallableStatement stmt = conn.prepareCall(sql);
-            stmt.setInt(1, asignacionId);
-            stmt.setString(2, nuevoIdEmpleado);
-            stmt.setString(3, nuevoIdProyecto);
-            stmt.setDate(4, nuevaFechaTarea);
-            stmt.setString(5, nuevaDescripcion);
+        int result = JOptionPane.showConfirmDialog(null, panelTarea, "Editar Asignación", JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION) {
+            String nuevoIdEmpleado = idEmpleadoField.getText();
+            String nuevoIdProyecto = idProyectoField.getText();
+            String nuevaDescripcion = descripcionField.getText();
+            Date fechaUtil = dateTarea.getDate();
+            java.sql.Date nuevaFechaTarea = new java.sql.Date(fechaUtil.getTime());
+            String nuevoEstado = estadoField.getText();
 
-            stmt.executeUpdate();
-            
-            JOptionPane.showMessageDialog(null, "Asignación editada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-            
-            stmt.close();
-            conn.close();
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al editar la asignación: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            try {
+                Connection conn = conexion.conectar();
+                String sql = "{call sp_actualizar_asignacion(?, ?, ?, ?, ?, ?)}";
+                CallableStatement stmt = conn.prepareCall(sql);
+                stmt.setInt(1, asignacionId);
+                stmt.setString(2, nuevoIdEmpleado);
+                stmt.setString(3, nuevoIdProyecto);
+                stmt.setDate(4, nuevaFechaTarea);
+                stmt.setString(5, nuevaDescripcion);
+                stmt.setString(6, nuevoEstado);
+
+                stmt.executeUpdate();
+
+                JOptionPane.showMessageDialog(null, "Asignación editada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+
+                stmt.close();
+                conn.close();
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null, "Error al editar la asignación: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            System.out.println("El usuario canceló la edición de la tarea.");
         }
     } else {
         JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para editar.", "Error", JOptionPane.ERROR_MESSAGE);
     }
     mostrarTarea();
 }
+
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

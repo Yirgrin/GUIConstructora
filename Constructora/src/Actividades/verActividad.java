@@ -40,23 +40,17 @@ public class verActividad extends javax.swing.JPanel {
     String sql = "{call sp_obtener_actividad(?)}";
 
     try {
-        // Obtener la conexión desde OracleDBManager
         Connection conn = conexion.conectar();
         CallableStatement stmt = conn.prepareCall(sql);
 
-        // Crear un modelo de tabla para la jTable1
         DefaultTableModel model = (DefaultTableModel) jtable.getModel();
-        // Limpiar la tabla antes de agregar los datos
+
         model.setRowCount(0);
 
-        // Parámetro de salida para los resultados del procedimiento almacenado
         stmt.registerOutParameter(1, OracleTypes.CURSOR);
-        // Ejecutar el procedimiento almacenado
         stmt.execute();
-        // Obtener el cursor de salida
         ResultSet rs = (ResultSet) stmt.getObject(1);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        // Llenar la tabla con los resultados de la consulta
         if (rs != null) {
             while (rs.next()) {
                 Object[] row = new Object[7]; 
@@ -107,45 +101,72 @@ public class verActividad extends javax.swing.JPanel {
     int selectedRow = jtable.getSelectedRow();
     if (selectedRow != -1) {
         int actividadId = ((BigDecimal) jtable.getValueAt(selectedRow, 0)).intValue();
-
-        String nuevoNombre = JOptionPane.showInputDialog(null, "Nombre:", "Editar Actividad", JOptionPane.QUESTION_MESSAGE);
-        JPanel panelFecha = new JPanel(new GridLayout(2, 2));
-        panelFecha.add(new JLabel("Fecha:"));
-        panelFecha.add(dateActividad);
-        JOptionPane.showConfirmDialog(null, panelFecha, "Editar Actividad", JOptionPane.OK_CANCEL_OPTION);
-        String nuevaHora = JOptionPane.showInputDialog(null, "Hora (HH:mm):", "Editar Actividad", JOptionPane.QUESTION_MESSAGE);
-        String nuevaUbicacion = JOptionPane.showInputDialog(null, "Ubicación:", "Editar Actividad", JOptionPane.QUESTION_MESSAGE);
-        String nuevaDescripcion = JOptionPane.showInputDialog(null, "Descripción:", "Editar Actividad", JOptionPane.QUESTION_MESSAGE);
-        String nuevosParticipantes = JOptionPane.showInputDialog(null, "Participantes:", "Editar Actividad", JOptionPane.QUESTION_MESSAGE);
+        String nombre = (String) jtable.getValueAt(selectedRow, 1); 
+        String hora = (String) jtable.getValueAt(selectedRow, 3);
+        String ubicacion = (String) jtable.getValueAt(selectedRow, 4);
+        String descripcion = (String) jtable.getValueAt(selectedRow, 5); 
+        String participantes = (String) jtable.getValueAt(selectedRow, 6);
         
-        Date fechaUtil = dateActividad.getDate();
-        java.sql.Date nuevaFecha = new java.sql.Date(fechaUtil.getTime());
+        JPanel panel = new JPanel(new GridLayout(6, 2));
+            panel.add(new JLabel("Nombre:"));
+            JTextField nombreField = new JTextField(nombre);
+            panel.add(nombreField);
+            panel.add(new JLabel("Fecha:"));
+            panel.add(dateActividad);
+            panel.add(new JLabel("Hora (HH:mm):"));
+            JTextField horaField = new JTextField(hora);
+            panel.add(horaField);
+            panel.add(new JLabel("Ubicación:"));
+            JTextField ubicacionField = new JTextField(ubicacion);
+            panel.add(ubicacionField);
+            panel.add(new JLabel("Descripción:"));
+            JTextField descripcionField = new JTextField(descripcion);
+            panel.add(descripcionField);
+            panel.add(new JLabel("Participantes:"));
+            JTextField participantesField = new JTextField(participantes);
+            panel.add(participantesField);
 
-        try {
-            Connection conn = conexion.conectar();
-            String sql = "{call sp_actualizar_actividad(?, ?, ?, ?, ?, ?, ?)}";
-            CallableStatement stmt = conn.prepareCall(sql);
-            stmt.setInt(1, actividadId);
-            stmt.setString(2, nuevoNombre);
-            stmt.setDate(3, nuevaFecha);
-            stmt.setString(4, nuevaHora);
-            stmt.setString(5, nuevaUbicacion);
-            stmt.setString(6, nuevaDescripcion);
-            stmt.setString(7, nuevosParticipantes);
 
-            stmt.executeUpdate();
-            
-            JOptionPane.showMessageDialog(null, "Actividad editada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-            
-            stmt.close();
-            conn.close();
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al editar la actividad: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+
+        int result = JOptionPane.showConfirmDialog(null, panel, "Editar Actividad", JOptionPane.OK_CANCEL_OPTION);
+
+        if (result == JOptionPane.OK_OPTION) {
+            String nuevoNombre = nombreField.getText();
+            Date fechaUtil = dateActividad.getDate();
+            java.sql.Date nuevaFecha = new java.sql.Date(fechaUtil.getTime());
+            String nuevaHora = horaField.getText();
+            String nuevaUbicacion = ubicacionField.getText();
+            String nuevaDescripcion = descripcionField.getText();
+            String nuevosParticipantes = participantesField.getText();
+
+                try {
+                    Connection conn = conexion.conectar();
+                    String sql = "{call sp_actualizar_actividad(?, ?, ?, ?, ?, ?, ?)}";
+                    CallableStatement stmt = conn.prepareCall(sql);
+                    stmt.setInt(1, actividadId);
+                    stmt.setString(2, nuevoNombre);
+                    stmt.setDate(3, nuevaFecha);
+                    stmt.setString(4, nuevaHora);
+                    stmt.setString(5, nuevaUbicacion);
+                    stmt.setString(6, nuevaDescripcion);
+                    stmt.setString(7, nuevosParticipantes);
+
+                    stmt.executeUpdate();
+
+                    JOptionPane.showMessageDialog(null, "Actividad editada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+
+                    stmt.close();
+                    conn.close();
+                } catch (SQLException e) {
+                    JOptionPane.showMessageDialog(null, "Error al editar la actividad: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                System.out.println("El usuario canceló la edición de la actividad.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para editar.", "Error", JOptionPane.ERROR_MESSAGE);
         }
-    } else {
-        JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para editar.", "Error", JOptionPane.ERROR_MESSAGE);
-    }
-    mostrarActividad();
+        mostrarActividad();
 }
 
     @SuppressWarnings("unchecked")
@@ -220,7 +241,7 @@ public class verActividad extends javax.swing.JPanel {
         int selectedRow = jtable.getSelectedRow();
         int actividadId = ((BigDecimal) jtable.getValueAt(selectedRow, 0)).intValue();
         String nombre = (String) jtable.getValueAt(selectedRow, 1);
-        String fechaStr = (String) jtable.getValueAt(selectedRow, 2); // Obtiene la fecha como String
+        String fechaStr = (String) jtable.getValueAt(selectedRow, 2);
         Date fecha = null;
         try {
            fecha = new SimpleDateFormat("yyyy-MM-dd").parse(fechaStr);
