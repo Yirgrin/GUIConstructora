@@ -58,7 +58,7 @@ public class verTarea extends javax.swing.JPanel {
                 model.addRow(row);
         }
     } catch (SQLException e) {
-        System.out.println("Error al mostrar alquileres: " + e.getMessage());
+        System.out.println("Error al mostrar tareas: " + e.getMessage());
     } finally {
         conexion.desconectar();
     }
@@ -92,55 +92,76 @@ public class verTarea extends javax.swing.JPanel {
 }
   
     public void editTarea() {
+    dateTarea.setDateFormatString("yyyy-MM-dd");
     int selectedRow = jTable1.getSelectedRow();
+
     if (selectedRow != -1) {
         int asignacionId = ((BigDecimal) jTable1.getValueAt(selectedRow, 0)).intValue();
-        String actualIdEmpleado = (String) jTable1.getValueAt(selectedRow, 1);
-        String actualIdProyecto = (String) jTable1.getValueAt(selectedRow, 2);
-        String actualDescripcion = (String) jTable1.getValueAt(selectedRow, 5);
-        String actualEstado = (String) jTable1.getValueAt(selectedRow, 6);
-        
-        JPanel panelTarea = new JPanel(new GridLayout(6, 2));
-        panelTarea.add(new JLabel("ID de Empleado:"));
-        JTextField idEmpleadoField = new JTextField(actualIdEmpleado);
-        panelTarea.add(idEmpleadoField);
-        panelTarea.add(new JLabel("ID de Proyecto:"));
-        JTextField idProyectoField = new JTextField(actualIdProyecto);
-        panelTarea.add(idProyectoField);
-        panelTarea.add(new JLabel("Fecha de Tarea:"));
-        panelTarea.add(dateTarea);
-        panelTarea.add(new JLabel("Descripción:"));
-        JTextField descripcionField = new JTextField(actualDescripcion);
-        panelTarea.add(descripcionField);
-        panelTarea.add(new JLabel("Estado:"));
-        JTextField estadoField = new JTextField(actualEstado);
-        panelTarea.add(estadoField);
-        
 
-        int result = JOptionPane.showConfirmDialog(null, panelTarea, "Editar Asignación", JOptionPane.OK_CANCEL_OPTION);
+        JTextField idEmpleadoField = new JTextField();
+        JTextField idProyectoField = new JTextField();
+        JTextField descripcionField = new JTextField();
+        JDateChooser fechaTareaChooser = new JDateChooser();
+
+        try {
+            Connection conn = conexion.conectar();
+            String sql = "{call sp_obtener_asignacion_por_id(?, ?, ?, ?, ?)}";
+            CallableStatement stmt = conn.prepareCall(sql);
+            stmt.setInt(1, asignacionId);
+            stmt.registerOutParameter(2, Types.INTEGER);
+            stmt.registerOutParameter(3, Types.INTEGER);
+            stmt.registerOutParameter(4, Types.DATE);
+            stmt.registerOutParameter(5, Types.VARCHAR);
+            stmt.execute();
+
+            // Obtener los valores devueltos por el stored procedure
+            int actualIdEmpleado = stmt.getInt(2);
+            int actualIdProyecto = stmt.getInt(3);
+            Date actualFechaTarea = stmt.getDate(4);
+            String actualDescripcion = stmt.getString(5);
+
+            idEmpleadoField.setText(String.valueOf(actualIdEmpleado));
+            idProyectoField.setText(String.valueOf(actualIdProyecto));
+            descripcionField.setText(actualDescripcion);
+            fechaTareaChooser.setDate(actualFechaTarea);
+
+            stmt.close();
+            conn.close();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error al obtener la asignación: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        JPanel panel = new JPanel(new GridLayout(5, 2));
+        panel.add(new JLabel("ID de Empleado:"));
+        panel.add(idEmpleadoField);
+        panel.add(new JLabel("ID de Proyecto:"));
+        panel.add(idProyectoField);
+        panel.add(new JLabel("Fecha de Tarea:"));
+        panel.add(fechaTareaChooser);
+        panel.add(new JLabel("Descripción:"));
+        panel.add(descripcionField);
+
+        int result = JOptionPane.showConfirmDialog(null, panel, "Editar Asignación", JOptionPane.OK_CANCEL_OPTION);
+
         if (result == JOptionPane.OK_OPTION) {
-            String nuevoIdEmpleado = idEmpleadoField.getText();
-            String nuevoIdProyecto = idProyectoField.getText();
+            int nuevoIdEmpleado = Integer.parseInt(idEmpleadoField.getText());
+            int nuevoIdProyecto = Integer.parseInt(idProyectoField.getText());
             String nuevaDescripcion = descripcionField.getText();
-            Date fechaUtil = dateTarea.getDate();
-            java.sql.Date nuevaFechaTarea = new java.sql.Date(fechaUtil.getTime());
-            String nuevoEstado = estadoField.getText();
+            Date nuevaFechaTarea = fechaTareaChooser.getDate();
 
             try {
                 Connection conn = conexion.conectar();
-                String sql = "{call sp_actualizar_asignacion(?, ?, ?, ?, ?, ?)}";
+                String sql = "{call sp_actualizar_asignacion(?, ?, ?, ?, ?)}";
                 CallableStatement stmt = conn.prepareCall(sql);
                 stmt.setInt(1, asignacionId);
-                stmt.setString(2, nuevoIdEmpleado);
-                stmt.setString(3, nuevoIdProyecto);
-                stmt.setDate(4, nuevaFechaTarea);
+                stmt.setInt(2, nuevoIdEmpleado);
+                stmt.setInt(3, nuevoIdProyecto);
+                stmt.setDate(4, new java.sql.Date(nuevaFechaTarea.getTime()));
                 stmt.setString(5, nuevaDescripcion);
-                stmt.setString(6, nuevoEstado);
-
                 stmt.executeUpdate();
-
+                
                 JOptionPane.showMessageDialog(null, "Asignación editada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-
+                
                 stmt.close();
                 conn.close();
             } catch (SQLException e) {
