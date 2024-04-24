@@ -41,157 +41,157 @@ public class verProyecto extends javax.swing.JPanel {
     }
     
     public void mostrarProyecto() {
-    String sql = "{call sp_obtener_proyecto(?)}";
+        String sql = "{call sp_obtener_proyecto(?)}";
 
-    try {
-        Connection conn = conexion.conectar();
-        CallableStatement stmt = conn.prepareCall(sql);
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        model.setRowCount(0);
+        try {
+            Connection conn = conexion.conectar();
+            CallableStatement stmt = conn.prepareCall(sql);
+            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+            model.setRowCount(0);
 
-        stmt.registerOutParameter(1, OracleTypes.CURSOR);
-        stmt.execute();
-        ResultSet rs = (ResultSet) stmt.getObject(1);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        if (rs != null) {
-            while (rs.next()) {
-                Object[] row = new Object[5]; 
-                row[0] = rs.getObject(1); 
-                row[1] = rs.getObject(3);
-                row[2] = rs.getObject(4);     
-                row[3] = dateFormat.format(rs.getDate(5));
-                row[4] = dateFormat.format(rs.getDate(6));
-                model.addRow(row);
+            stmt.registerOutParameter(1, OracleTypes.CURSOR);
+            stmt.execute();
+            ResultSet rs = (ResultSet) stmt.getObject(1);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            if (rs != null) {
+                while (rs.next()) {
+                    Object[] row = new Object[5]; 
+                    row[0] = rs.getObject(1); 
+                    row[1] = rs.getObject(3);
+                    row[2] = rs.getObject(4);     
+                    row[3] = dateFormat.format(rs.getDate(5));
+                    row[4] = dateFormat.format(rs.getDate(6));
+                    model.addRow(row);
+                }
+                rs.close();
             }
-            rs.close();
-        }
-        stmt.close();
-        conexion.desconectar();
+            stmt.close();
+            conexion.desconectar();
 
-    } catch (SQLException e) {
-        System.out.println("Error al mostrar proyectos: " + e.getMessage());
+        } catch (SQLException e) {
+            System.out.println("Error al mostrar proyectos: " + e.getMessage());
+        }
     }
-}
 
     public void borrarProyecto() {
-    int selectedRow = jTable1.getSelectedRow();
-    int proyectoId;
-    if (selectedRow != -1) {
-         proyectoId = ((BigDecimal) jTable1.getValueAt(selectedRow, 0)).intValue();
-        try {
-            Connection conn = conexion.conectar();
-            String sql = "{call sp_eliminar_proyecto(?)}";
-            CallableStatement stmt = conn.prepareCall(sql);
-            stmt.setInt(1, proyectoId);
-            stmt.executeUpdate();
-            JOptionPane.showMessageDialog(null, "Proyecto eliminado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-            stmt.close();
-            conn.close();
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al eliminar el Proyecto: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    } else {
-        JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para eliminar.", "Error", JOptionPane.ERROR_MESSAGE);
-    }
-    mostrarProyecto();
-}
-
-    public void editProyecto() {
-    int selectedRow = jTable1.getSelectedRow();
-    if (selectedRow != -1) {
-        int proyectoId = ((BigDecimal) jTable1.getValueAt(selectedRow, 0)).intValue();
-
-        JTextField presupuestoIdField = new JTextField();
-        JTextField nombreField = new JTextField();
-        JTextField descripcionField = new JTextField();
-        JDateChooser fechaInicioChooser = new JDateChooser();
-        JDateChooser fechaFinalizacionChooser = new JDateChooser();
-        JTextField clienteDatosField = new JTextField();
-
-        try {
-            Connection conn = conexion.conectar();
-            String sql = "{call sp_obtener_proyecto_por_id(?, ?, ?, ?, ?, ?, ?)}";
-            CallableStatement stmt = conn.prepareCall(sql);
-            stmt.setInt(1, proyectoId);
-            stmt.registerOutParameter(2, Types.INTEGER);
-            stmt.registerOutParameter(3, Types.INTEGER);
-            stmt.registerOutParameter(4, Types.VARCHAR);
-            stmt.registerOutParameter(5, Types.VARCHAR);
-            stmt.registerOutParameter(6, Types.DATE);
-            stmt.registerOutParameter(7, Types.DATE);
-            stmt.execute();
-
-            int actualPresupuestoId = stmt.getInt(2);
-            String actualNombre = stmt.getString(3);
-            String actualDescripcion = stmt.getString(4);
-            Date actualFechaInicio = stmt.getDate(5);
-            Date actualFechaFinalizacion = stmt.getDate(6);
-            String actualClienteDatos = stmt.getString(7);
-
-            presupuestoIdField.setText(String.valueOf(actualPresupuestoId));
-            nombreField.setText(actualNombre);
-            descripcionField.setText(actualDescripcion);
-            fechaInicioChooser.setDate(actualFechaInicio);
-            fechaFinalizacionChooser.setDate(actualFechaFinalizacion);
-            clienteDatosField.setText(actualClienteDatos);
-
-            stmt.close();
-            conn.close();
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al obtener el proyecto: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
-
-        JPanel panelProyecto = new JPanel(new GridLayout(6, 2));
-        panelProyecto.add(new JLabel("Código de Presupuesto:"));
-        panelProyecto.add(presupuestoIdField);
-        panelProyecto.add(new JLabel("Nombre:"));
-        panelProyecto.add(nombreField);
-        panelProyecto.add(new JLabel("Descripción:"));
-        panelProyecto.add(descripcionField);
-        panelProyecto.add(new JLabel("Fecha de Inicio:"));
-        panelProyecto.add(fechaInicioChooser);
-        panelProyecto.add(new JLabel("Fecha de Finalización:"));
-        panelProyecto.add(fechaFinalizacionChooser);
-        panelProyecto.add(new JLabel("Datos del Cliente:"));
-        panelProyecto.add(clienteDatosField);
-
-        int result = JOptionPane.showConfirmDialog(null, panelProyecto, "Editar Proyecto", JOptionPane.OK_CANCEL_OPTION);
-        if (result == JOptionPane.OK_OPTION) {
-            int nuevoPresupuestoId = Integer.parseInt(presupuestoIdField.getText());
-            String nuevoNombre = nombreField.getText();
-            String nuevaDescripcion = descripcionField.getText();
-            Date nuevaFechaInicio = fechaInicioChooser.getDate();
-            Date nuevaFechaFinalizacion = fechaFinalizacionChooser.getDate();
-            String nuevoClienteDatos = clienteDatosField.getText();
-
+        int selectedRow = jTable1.getSelectedRow();
+        int proyectoId;
+        if (selectedRow != -1) {
+             proyectoId = ((BigDecimal) jTable1.getValueAt(selectedRow, 0)).intValue();
             try {
                 Connection conn = conexion.conectar();
-                String sql = "{call sp_actualizar_proyecto(?, ?, ?, ?, ?, ?, ?)}";
+                String sql = "{call sp_eliminar_proyecto(?)}";
                 CallableStatement stmt = conn.prepareCall(sql);
                 stmt.setInt(1, proyectoId);
-                stmt.setInt(2, nuevoPresupuestoId);
-                stmt.setString(3, nuevoNombre);
-                stmt.setString(4, nuevaDescripcion);
-                stmt.setDate(5, new java.sql.Date(nuevaFechaInicio.getTime()));
-                stmt.setDate(6, new java.sql.Date(nuevaFechaFinalizacion.getTime()));
-                stmt.setString(7, nuevoClienteDatos);
                 stmt.executeUpdate();
-
-                JOptionPane.showMessageDialog(null, "Proyecto editado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-
+                JOptionPane.showMessageDialog(null, "Proyecto eliminado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                 stmt.close();
                 conn.close();
             } catch (SQLException e) {
-                JOptionPane.showMessageDialog(null, "Error al editar el proyecto: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Error al eliminar el Proyecto: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         } else {
-            System.out.println("El usuario canceló la edición del proyecto.");
+            JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para eliminar.", "Error", JOptionPane.ERROR_MESSAGE);
         }
-    } else {
-        JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para editar.", "Error", JOptionPane.ERROR_MESSAGE);
+        mostrarProyecto();
     }
-    mostrarProyecto();
+
+    public void editProyecto() {
+        int selectedRow = jTable1.getSelectedRow();
+        if (selectedRow != -1) {
+            int proyectoId = ((BigDecimal) jTable1.getValueAt(selectedRow, 0)).intValue();
+
+            JTextField presupuestoIdField = new JTextField();
+            JTextField nombreField = new JTextField();
+            JTextField descripcionField = new JTextField();
+            JDateChooser fechaInicioChooser = new JDateChooser();
+            JDateChooser fechaFinalizacionChooser = new JDateChooser();
+            JTextField clienteDatosField = new JTextField();
+
+            try {
+                Connection conn = conexion.conectar();
+                String sql = "{call sp_obtener_proyecto_por_id(?, ?)}";
+                CallableStatement stmt = conn.prepareCall(sql);
+                stmt.setInt(1, proyectoId);
+                stmt.registerOutParameter(2, OracleTypes.CURSOR);
+                stmt.execute();
+
+                ResultSet rs = (ResultSet) stmt.getObject(2);
+                if (rs.next()) {
+                    int actualPresupuestoId = rs.getInt("presupuesto_id");
+                    String actualNombre = rs.getString("nombre");
+                    String actualDescripcion = rs.getString("descripcion");
+                    Date actualFechaInicio = rs.getDate("fecha_inicio");
+                    Date actualFechaFinalizacion = rs.getDate("fecha_finalizacion");
+                    String actualClienteDatos = rs.getString("cliente_datos");
+
+                    presupuestoIdField.setText(String.valueOf(actualPresupuestoId));
+                    nombreField.setText(actualNombre);
+                    descripcionField.setText(actualDescripcion);
+                    fechaInicioChooser.setDate(actualFechaInicio);
+                    fechaFinalizacionChooser.setDate(actualFechaFinalizacion);
+                    clienteDatosField.setText(actualClienteDatos);
+                }
+
+                rs.close();
+                stmt.close();
+                conn.close();
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null, "Error al obtener el proyecto: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+            JPanel panelProyecto = new JPanel(new GridLayout(6, 2));
+            panelProyecto.add(new JLabel("Código de Presupuesto:"));
+            panelProyecto.add(presupuestoIdField);
+            panelProyecto.add(new JLabel("Nombre:"));
+            panelProyecto.add(nombreField);
+            panelProyecto.add(new JLabel("Descripción:"));
+            panelProyecto.add(descripcionField);
+            panelProyecto.add(new JLabel("Fecha de Inicio:"));
+            panelProyecto.add(fechaInicioChooser);
+            panelProyecto.add(new JLabel("Fecha de Finalización:"));
+            panelProyecto.add(fechaFinalizacionChooser);
+            panelProyecto.add(new JLabel("Datos del Cliente:"));
+            panelProyecto.add(clienteDatosField);
+
+            int result = JOptionPane.showConfirmDialog(null, panelProyecto, "Editar Proyecto", JOptionPane.OK_CANCEL_OPTION);
+            if (result == JOptionPane.OK_OPTION) {
+                int nuevoPresupuestoId = Integer.parseInt(presupuestoIdField.getText());
+                String nuevoNombre = nombreField.getText();
+                String nuevaDescripcion = descripcionField.getText();
+                Date nuevaFechaInicio = fechaInicioChooser.getDate();
+                Date nuevaFechaFinalizacion = fechaFinalizacionChooser.getDate();
+                String nuevoClienteDatos = clienteDatosField.getText();
+
+                try {
+                    Connection conn = conexion.conectar();
+                    String sql = "{call sp_actualizar_proyecto(?, ?, ?, ?, ?, ?, ?)}";
+                    CallableStatement stmt = conn.prepareCall(sql);
+                    stmt.setInt(1, proyectoId);
+                    stmt.setInt(2, nuevoPresupuestoId);
+                    stmt.setString(3, nuevoNombre);
+                    stmt.setString(4, nuevaDescripcion);
+                    stmt.setDate(5, new java.sql.Date(nuevaFechaInicio.getTime()));
+                    stmt.setDate(6, new java.sql.Date(nuevaFechaFinalizacion.getTime()));
+                    stmt.setString(7, nuevoClienteDatos);
+                    stmt.executeUpdate();
+
+                    JOptionPane.showMessageDialog(null, "Proyecto editado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+
+                    stmt.close();
+                    conn.close();
+                } catch (SQLException e) {
+                    JOptionPane.showMessageDialog(null, "Error al editar el proyecto: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                System.out.println("El usuario canceló la edición del proyecto.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para editar.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        mostrarProyecto();
 }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -298,8 +298,7 @@ public class verProyecto extends javax.swing.JPanel {
                     mensaje.append("Estado del proyecto: ").append(estado_proyecto).append("\n");
                     mensaje.append("Duración estimada en días: ").append(duracion_en_dias).append("\n");
                     mensaje.append("Datos del cliente: ").append(cliente_datos).append("\n");
-                    mensaje.append("\nCódigo de presupuesto asociado: ").append(presupuesto_id).append("\n\n");
-
+                    mensaje.append("\nCódigo de presupuesto asociado: ").append(presupuesto_id).append("\n");
                     mensaje.append("Suma del Presupuesto: ").append(suma_presupuesto).append("\n\n");
 
                     do {

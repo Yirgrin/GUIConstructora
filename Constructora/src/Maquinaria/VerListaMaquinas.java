@@ -7,9 +7,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.JTextField;
 
 /**
  *
@@ -80,17 +82,47 @@ public class VerListaMaquinas extends javax.swing.JPanel {
     public void editarDatos() {
         tablaDatos.requestFocus();
         int filaSeleccionada = tablaDatos.getSelectedRow();   
-        int row;
         if (filaSeleccionada != -1) {
-            row = ((BigDecimal) tablaDatos.getValueAt(filaSeleccionada, 0)).intValue();
-            
-            String nuevoNombre = JOptionPane.showInputDialog(null, "Nombre Máquina:", "Editar Máquina", JOptionPane.QUESTION_MESSAGE);
-            String nuevoDescripcion = JOptionPane.showInputDialog(null, "Descripción:", "Editar Máquina", JOptionPane.QUESTION_MESSAGE);
-            int nuevoPrecio= Integer.parseInt(JOptionPane.showInputDialog(null, "Precio:", "Editar Máquina", JOptionPane.QUESTION_MESSAGE));
-            int unidadesTotales = Integer.parseInt(JOptionPane.showInputDialog(null, "Unidades Totales:", "Editar Máquina", JOptionPane.QUESTION_MESSAGE));
+            int row = ((BigDecimal) tablaDatos.getValueAt(filaSeleccionada, 0)).intValue();
 
-            MaquinariaDAO.editarMaquina(row, nuevoNombre, nuevoDescripcion, nuevoPrecio, unidadesTotales);
-            JOptionPane.showMessageDialog(null, "Máquina editada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            String nombreMaquina = (String) tablaDatos.getValueAt(filaSeleccionada, 1);
+            String descripcion = (String) tablaDatos.getValueAt(filaSeleccionada, 2);
+            int precio = ((BigDecimal) tablaDatos.getValueAt(filaSeleccionada, 3)).intValue();
+            int unidadesTotales = ((BigDecimal) tablaDatos.getValueAt(filaSeleccionada, 4)).intValue();
+
+            JTextField nombreField = new JTextField(nombreMaquina);
+            JTextField descripcionField = new JTextField(descripcion);
+            JTextField precioField = new JTextField(String.valueOf(precio));
+            JTextField unidadesField = new JTextField(String.valueOf(unidadesTotales));
+
+            JPanel panelMaquina = new JPanel(new GridLayout(4, 2));
+            panelMaquina.add(new JLabel("Nombre Máquina:"));
+            panelMaquina.add(nombreField);
+            panelMaquina.add(new JLabel("Descripción:"));
+            panelMaquina.add(descripcionField);
+            panelMaquina.add(new JLabel("Precio:"));
+            panelMaquina.add(precioField);
+            panelMaquina.add(new JLabel("Unidades Totales:"));
+            panelMaquina.add(unidadesField);
+
+            int result = JOptionPane.showConfirmDialog(null, panelMaquina, "Editar Máquina", JOptionPane.OK_CANCEL_OPTION);
+
+            if (result == JOptionPane.OK_OPTION) {
+                try {
+                    String nuevoNombre = nombreField.getText();
+                    String nuevaDescripcion = descripcionField.getText();
+                    int nuevoPrecio = Integer.parseInt(precioField.getText());
+                    int nuevasUnidades = Integer.parseInt(unidadesField.getText());
+
+                    // Llamar al método para editar la máquina
+                    MaquinariaDAO.editarMaquina(row, nuevoNombre, nuevaDescripcion, nuevoPrecio, nuevasUnidades);
+                    JOptionPane.showMessageDialog(null, "Máquina editada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(null, "Por favor, ingrese números válidos.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                System.out.println("El usuario canceló la edición de la máquina.");
+            }
         } else {
             JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para editar.", "Error", JOptionPane.ERROR_MESSAGE);
         }

@@ -7,6 +7,7 @@ import java.sql.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.GridLayout;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import oracle.jdbc.OracleTypes;
@@ -74,8 +75,7 @@ public void mostrarAlquileres() {
     }
 }
 
-
-    public void borrarAlquileres() {
+public void borrarAlquileres() {
     int selectedRow = jtable.getSelectedRow();
     int alquilerId;
     if (selectedRow != -1) {
@@ -98,7 +98,7 @@ public void mostrarAlquileres() {
     mostrarAlquileres();
 }
     
-    public void editAlquiler() {
+public void editAlquiler() {
     int selectedRow = jtable.getSelectedRow();
     if (selectedRow != -1) {
         int alquilerId = ((BigDecimal) jtable.getValueAt(selectedRow, 0)).intValue();
@@ -106,7 +106,14 @@ public void mostrarAlquileres() {
         String actualCodigoProveedor = (String) jtable.getValueAt(selectedRow, 2);
         String actualDireccion = (String) jtable.getValueAt(selectedRow, 3);
         String actualTelefono = (String) jtable.getValueAt(selectedRow, 4);
+        String strFechaAlquiler = (String) jtable.getValueAt(selectedRow, 5);
+        String strFechaDevolucion = (String) jtable.getValueAt(selectedRow, 6);
 
+        // Crear JDateChooser y configurarlo con la fecha correspondiente
+        JDateChooser fechaAlquilerChooser = new JDateChooser(parseFecha(strFechaAlquiler));
+        JDateChooser fechaDevolucionChooser = new JDateChooser(parseFecha(strFechaDevolucion));
+
+        // Crear el panel para mostrar los datos y las fechas
         JPanel panelAlquiler = new JPanel(new GridLayout(7, 2));
         panelAlquiler.add(new JLabel("ID de Máquina:"));
         JTextField maquinaIdField = new JTextField(String.valueOf(actualMaquinaId));
@@ -121,12 +128,11 @@ public void mostrarAlquileres() {
         JTextField telefonoField = new JTextField(actualTelefono);
         panelAlquiler.add(telefonoField);
         panelAlquiler.add(new JLabel("Fecha de Alquiler:"));
-        JDateChooser fechaAlquilerChooser = new JDateChooser();
         panelAlquiler.add(fechaAlquilerChooser);
         panelAlquiler.add(new JLabel("Fecha de Devolución:"));
-        JDateChooser fechaDevolucionChooser = new JDateChooser();
         panelAlquiler.add(fechaDevolucionChooser);
 
+        // Mostrar el diálogo de edición
         int result = JOptionPane.showConfirmDialog(null, panelAlquiler, "Editar Alquiler", JOptionPane.OK_CANCEL_OPTION);
         if (result == JOptionPane.OK_OPTION) {
             int nuevoMaquinaId = Integer.parseInt(maquinaIdField.getText());
@@ -136,24 +142,21 @@ public void mostrarAlquileres() {
             Date nuevaFechaAlquiler = fechaAlquilerChooser.getDate();
             Date nuevaFechaDevolucion = fechaDevolucionChooser.getDate();
 
-            try {
-                Connection conn = conexion.conectar();
+            // Realizar la actualización en la base de datos
+            try (Connection conn = conexion.conectar()) {
                 String sql = "{call sp_actualizar_alquiler(?, ?, ?, ?, ?, ?, ?)}";
-                CallableStatement stmt = conn.prepareCall(sql);
-                stmt.setInt(1, alquilerId);
-                stmt.setInt(2, nuevoMaquinaId);
-                stmt.setString(3, nuevoCodigoProveedor);
-                stmt.setString(4, nuevaDireccion);
-                stmt.setString(5, nuevoTelefono);
-                stmt.setDate(6, new java.sql.Date(nuevaFechaAlquiler.getTime()));
-                stmt.setDate(7, new java.sql.Date(nuevaFechaDevolucion.getTime()));
+                try (CallableStatement stmt = conn.prepareCall(sql)) {
+                    stmt.setInt(1, alquilerId);
+                    stmt.setInt(2, nuevoMaquinaId);
+                    stmt.setString(3, nuevoCodigoProveedor);
+                    stmt.setString(4, nuevaDireccion);
+                    stmt.setString(5, nuevoTelefono);
+                    stmt.setDate(6, new java.sql.Date(nuevaFechaAlquiler.getTime()));
+                    stmt.setDate(7, new java.sql.Date(nuevaFechaDevolucion.getTime()));
 
-                stmt.executeUpdate();
-
-                JOptionPane.showMessageDialog(null, "Alquiler editado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-
-                stmt.close();
-                conn.close();
+                    stmt.executeUpdate();
+                    JOptionPane.showMessageDialog(null, "Alquiler editado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                }
             } catch (SQLException e) {
                 JOptionPane.showMessageDialog(null, "Error al editar el alquiler: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -164,6 +167,16 @@ public void mostrarAlquileres() {
         JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para editar.", "Error", JOptionPane.ERROR_MESSAGE);
     }
     mostrarAlquileres();
+}
+
+// Método para convertir la fecha de String a Date
+private Date parseFecha(String strFecha) {
+    try {
+        return new SimpleDateFormat("yyyy-MM-dd").parse(strFecha);
+    } catch (ParseException e) {
+        e.printStackTrace();
+        return null;
+    }
 }
 
     @SuppressWarnings("unchecked")

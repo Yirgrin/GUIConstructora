@@ -1,13 +1,16 @@
 
 package Presupuestos;
 
+import java.awt.GridLayout;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -76,16 +79,45 @@ public final class VerListaPresupuestos extends javax.swing.JPanel {
     public void editarDatos() {
         tablaDatos.requestFocus();
         int filaSeleccionada = tablaDatos.getSelectedRow();   
-        int row;
         if (filaSeleccionada != -1) {
-            row = ((BigDecimal) tablaDatos.getValueAt(filaSeleccionada, 0)).intValue();
-            
-            int CostoMateriales = Integer.parseInt(JOptionPane.showInputDialog(null, "Costo Materiales:", "Editar Presupuesto", JOptionPane.QUESTION_MESSAGE));
-            int ManoObra = Integer.parseInt(JOptionPane.showInputDialog(null, "Costo mano de obra:", "Editar Presupuesto", JOptionPane.QUESTION_MESSAGE));
-            int nuevoOtrosGastos = Integer.parseInt(JOptionPane.showInputDialog(null, "Otros Gastos:", "Editar Presupuesto", JOptionPane.QUESTION_MESSAGE));
-            
-            presupuestosDAO.editarPresupuesto(row, CostoMateriales, ManoObra, nuevoOtrosGastos);
-            JOptionPane.showMessageDialog(null, "Presupuesto editada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            int row = ((BigDecimal) tablaDatos.getValueAt(filaSeleccionada, 0)).intValue();
+
+            // Obtener los datos actuales de la fila seleccionada en la tabla
+            int costoMateriales = ((BigDecimal) tablaDatos.getValueAt(filaSeleccionada, 1)).intValue();
+            int manoObra = ((BigDecimal) tablaDatos.getValueAt(filaSeleccionada, 2)).intValue();
+            int otrosGastos = ((BigDecimal) tablaDatos.getValueAt(filaSeleccionada, 3)).intValue();
+
+            // Crear y mostrar el panel de edición
+            JTextField costoMaterialesField = new JTextField(String.valueOf(costoMateriales));
+            JTextField manoObraField = new JTextField(String.valueOf(manoObra));
+            JTextField otrosGastosField = new JTextField(String.valueOf(otrosGastos));
+
+            JPanel panelPresupuesto = new JPanel(new GridLayout(3, 2));
+            panelPresupuesto.add(new JLabel("Costo Materiales:"));
+            panelPresupuesto.add(costoMaterialesField);
+            panelPresupuesto.add(new JLabel("Costo Mano de Obra:"));
+            panelPresupuesto.add(manoObraField);
+            panelPresupuesto.add(new JLabel("Otros Gastos:"));
+            panelPresupuesto.add(otrosGastosField);
+
+            int result = JOptionPane.showConfirmDialog(null, panelPresupuesto, "Editar Presupuesto", JOptionPane.OK_CANCEL_OPTION);
+
+            if (result == JOptionPane.OK_OPTION) {
+                try {
+                    // Obtener los nuevos valores de los campos
+                    int nuevoCostoMateriales = Integer.parseInt(costoMaterialesField.getText());
+                    int nuevaManoObra = Integer.parseInt(manoObraField.getText());
+                    int nuevoOtrosGastos = Integer.parseInt(otrosGastosField.getText());
+
+                    // Llamar al método para editar el presupuesto
+                    presupuestosDAO.editarPresupuesto(row, nuevoCostoMateriales, nuevaManoObra, nuevoOtrosGastos);
+                    JOptionPane.showMessageDialog(null, "Presupuesto editado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(null, "Por favor, ingrese números válidos.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                System.out.println("El usuario canceló la edición del presupuesto.");
+            }
         } else {
             JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para editar.", "Error", JOptionPane.ERROR_MESSAGE);
         }

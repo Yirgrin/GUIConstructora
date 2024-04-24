@@ -97,17 +97,29 @@ public class verActividad extends javax.swing.JPanel {
 }
  
     public void editActividad() {
-    dateActividad.setDateFormatString("yyyy-MM-dd");
-    int selectedRow = jtable.getSelectedRow();
-    if (selectedRow != -1) {
-        int actividadId = ((BigDecimal) jtable.getValueAt(selectedRow, 0)).intValue();
-        String nombre = (String) jtable.getValueAt(selectedRow, 1); 
-        String hora = (String) jtable.getValueAt(selectedRow, 3);
-        String ubicacion = (String) jtable.getValueAt(selectedRow, 4);
-        String descripcion = (String) jtable.getValueAt(selectedRow, 5); 
-        String participantes = (String) jtable.getValueAt(selectedRow, 6);
-        
-        JPanel panel = new JPanel(new GridLayout(6, 2));
+        int selectedRow = jtable.getSelectedRow();
+        if (selectedRow != -1) {
+            int actividadId = ((BigDecimal) jtable.getValueAt(selectedRow, 0)).intValue();
+            String nombre = (String) jtable.getValueAt(selectedRow, 1); 
+            String strFecha = (String) jtable.getValueAt(selectedRow, 2);
+            String hora = (String) jtable.getValueAt(selectedRow, 3);
+            String ubicacion = (String) jtable.getValueAt(selectedRow, 4);
+            String descripcion = (String) jtable.getValueAt(selectedRow, 5); 
+            String participantes = (String) jtable.getValueAt(selectedRow, 6);
+
+            // Convertir la fecha de String a java.util.Date
+            Date fechaUtil = null;
+            try {
+                SimpleDateFormat dateFormatTabla = new SimpleDateFormat("yyyy-MM-dd");
+                fechaUtil = dateFormatTabla.parse(strFecha);
+            } catch (ParseException e) {
+            }
+
+            // Configurar el JDateChooser con la fecha convertida
+            JDateChooser dateActividad = new JDateChooser(fechaUtil);
+            dateActividad.setDateFormatString("yyyy-MM-dd");
+
+            JPanel panel = new JPanel(new GridLayout(6, 2));
             panel.add(new JLabel("Nombre:"));
             JTextField nombreField = new JTextField(nombre);
             panel.add(nombreField);
@@ -126,18 +138,15 @@ public class verActividad extends javax.swing.JPanel {
             JTextField participantesField = new JTextField(participantes);
             panel.add(participantesField);
 
+            int result = JOptionPane.showConfirmDialog(null, panel, "Editar Actividad", JOptionPane.OK_CANCEL_OPTION);
 
-
-        int result = JOptionPane.showConfirmDialog(null, panel, "Editar Actividad", JOptionPane.OK_CANCEL_OPTION);
-
-        if (result == JOptionPane.OK_OPTION) {
-            String nuevoNombre = nombreField.getText();
-            Date fechaUtil = dateActividad.getDate();
-            java.sql.Date nuevaFecha = new java.sql.Date(fechaUtil.getTime());
-            String nuevaHora = horaField.getText();
-            String nuevaUbicacion = ubicacionField.getText();
-            String nuevaDescripcion = descripcionField.getText();
-            String nuevosParticipantes = participantesField.getText();
+            if (result == JOptionPane.OK_OPTION) {
+                String nuevoNombre = nombreField.getText();
+                Date nuevaFecha = dateActividad.getDate();
+                String nuevaHora = horaField.getText();
+                String nuevaUbicacion = ubicacionField.getText();
+                String nuevaDescripcion = descripcionField.getText();
+                String nuevosParticipantes = participantesField.getText();
 
                 try {
                     Connection conn = conexion.conectar();
@@ -145,7 +154,7 @@ public class verActividad extends javax.swing.JPanel {
                     CallableStatement stmt = conn.prepareCall(sql);
                     stmt.setInt(1, actividadId);
                     stmt.setString(2, nuevoNombre);
-                    stmt.setDate(3, nuevaFecha);
+                    stmt.setDate(3, new java.sql.Date(nuevaFecha.getTime()));
                     stmt.setString(4, nuevaHora);
                     stmt.setString(5, nuevaUbicacion);
                     stmt.setString(6, nuevaDescripcion);

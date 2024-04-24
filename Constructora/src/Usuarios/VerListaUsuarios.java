@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import oracle.jdbc.OracleTypes;
 
 public class VerListaUsuarios extends javax.swing.JPanel {
@@ -80,22 +81,76 @@ public class VerListaUsuarios extends javax.swing.JPanel {
         int row;
         if (filaSeleccionada != -1) {
             row = ((BigDecimal) tablaClientes.getValueAt(filaSeleccionada, 0)).intValue();
-            
-            String nuevoNombre = JOptionPane.showInputDialog(null, "Nombre:", "Editar Usuario", JOptionPane.QUESTION_MESSAGE);
-            String nuevoApellido = JOptionPane.showInputDialog(null, "Apellido:", "Editar Usuario", JOptionPane.QUESTION_MESSAGE);
-            String nuevoTelefono = JOptionPane.showInputDialog(null, "Número de teléfono:", "Editar Usuario", JOptionPane.QUESTION_MESSAGE);
-            String nuevoCorreo = JOptionPane.showInputDialog(null, "Correo electrónico:", "Editar Usuario", JOptionPane.QUESTION_MESSAGE);
-            String nuevoCargo = JOptionPane.showInputDialog(null, "Cargo desarrollado:", "Editar Usuario", JOptionPane.QUESTION_MESSAGE);
-            
-            JPanel panelUsuario = new JPanel(new GridLayout(2, 2));
-            panelUsuario.add(new JLabel("Fecha de contratación:"));
-            JDateChooser dateContratacion = new JDateChooser();
-            panelUsuario.add(dateContratacion);
-            JOptionPane.showConfirmDialog(null, panelUsuario, "Editar Usuario", JOptionPane.OK_CANCEL_OPTION);
-            
-            Date fechaContratacion = dateContratacion.getDate();
-            usuarioDAO.editarUsuario(row, nuevoNombre, nuevoApellido, nuevoTelefono, nuevoCorreo, nuevoCargo, fechaContratacion);
-            JOptionPane.showMessageDialog(null, "Usuario editado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+
+            try {
+                // Llamar al procedimiento almacenado para obtener los datos del usuario
+                java.sql.Connection conn = conexion.conectar();
+                String sql = "{ call sp_mostrar_usuario_por_id(?, ?) }";
+                CallableStatement stmt = conn.prepareCall(sql);
+                stmt.setInt(1, row);
+                stmt.registerOutParameter(2, OracleTypes.CURSOR);
+                stmt.execute();
+
+                // Obtener los resultados del cursor
+                ResultSet rs = (ResultSet) stmt.getObject(2);
+                if (rs.next()) {
+                    // Obtener los datos del usuario
+                    String nombre = rs.getString("nombre");
+                    String apellidos = rs.getString("apellidos");
+                    String telefono = rs.getString("telefono");
+                    String correoElectronico = rs.getString("correo_electronico");
+                    String cargo = rs.getString("cargo");
+                    Date fechaContratacion = rs.getDate("fecha_contratacion");
+
+                    // Mostrar el formulario para editar los datos del usuario
+                    JTextField nuevoNombreField = new JTextField(nombre);
+                    JTextField nuevoApellidoField = new JTextField(apellidos);
+                    JTextField nuevoTelefonoField = new JTextField(telefono);
+                    JTextField nuevoCorreoField = new JTextField(correoElectronico);
+                    JTextField nuevoCargoField = new JTextField(cargo);
+                    JDateChooser dateContratacion = new JDateChooser(fechaContratacion);
+
+                    JPanel panelUsuario = new JPanel(new GridLayout(6, 2));
+                    panelUsuario.add(new JLabel("Nombre:"));
+                    panelUsuario.add(nuevoNombreField);
+                    panelUsuario.add(new JLabel("Apellidos:"));
+                    panelUsuario.add(nuevoApellidoField);
+                    panelUsuario.add(new JLabel("Teléfono:"));
+                    panelUsuario.add(nuevoTelefonoField);
+                    panelUsuario.add(new JLabel("Correo electrónico:"));
+                    panelUsuario.add(nuevoCorreoField);
+                    panelUsuario.add(new JLabel("Cargo:"));
+                    panelUsuario.add(nuevoCargoField);
+                    panelUsuario.add(new JLabel("Fecha de contratación:"));
+                    panelUsuario.add(dateContratacion);
+
+                    int result = JOptionPane.showConfirmDialog(null, panelUsuario, "Editar Usuario", JOptionPane.OK_CANCEL_OPTION);
+
+                    if (result == JOptionPane.OK_OPTION) {
+                        // Obtener los nuevos valores de los campos
+                        String nuevoNombre = nuevoNombreField.getText();
+                        String nuevoApellido = nuevoApellidoField.getText();
+                        String nuevoTelefono = nuevoTelefonoField.getText();
+                        String nuevoCorreo = nuevoCorreoField.getText();
+                        String nuevoCargo = nuevoCargoField.getText();
+                        Date nuevaFechaContratacion = dateContratacion.getDate();
+
+                        // Llamar al método para editar el usuario
+                        usuarioDAO.editarUsuario(row, nuevoNombre, nuevoApellido, nuevoTelefono, nuevoCorreo, nuevoCargo, nuevaFechaContratacion);
+                        JOptionPane.showMessageDialog(null, "Usuario editado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        System.out.println("El usuario canceló la edición de datos.");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "No se encontró ningún usuario con el ID especificado.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+
+                rs.close();
+                stmt.close();
+                conn.close();
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null, "Error al obtener los datos del usuario: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
         } else {
             JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para editar.", "Error", JOptionPane.ERROR_MESSAGE);
         }

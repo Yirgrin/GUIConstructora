@@ -1,6 +1,7 @@
 
 package Planillas;
 
+import ConexionBD.OracleDBManager;
 import com.toedter.calendar.JDateChooser;
 import java.awt.GridLayout;
 import java.math.BigDecimal;
@@ -14,11 +15,15 @@ import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import oracle.jdbc.OracleTypes;
+import java.sql.CallableStatement;
 
 public class VerListaPlanillas extends javax.swing.JPanel {
     private final PlanillaDAO planillaDAO = new PlanillaDAO();
     DefaultTableModel modelo = new DefaultTableModel();
+    OracleDBManager conexion = new OracleDBManager();
     
     public VerListaPlanillas() {
         initComponents();
@@ -200,29 +205,80 @@ public class VerListaPlanillas extends javax.swing.JPanel {
     
     public void editarDatos() {
         tablaDatos.requestFocus();
-        int filaSeleccionada = tablaDatos.getSelectedRow();   
-        int row;
+        int filaSeleccionada = tablaDatos.getSelectedRow();
         if (filaSeleccionada != -1) {
-            row = ((BigDecimal) tablaDatos.getValueAt(filaSeleccionada, 0)).intValue();
-            
-            int idUsuario = Integer.parseInt(JOptionPane.showInputDialog(null, "Empleado:", "Editar Planilla", JOptionPane.QUESTION_MESSAGE));
-            JPanel panelPlanilla = new JPanel(new GridLayout(4, 2));
-            panelPlanilla.add(new JLabel("Fecha de ingreso:"));
-            JDateChooser dateIngreso = new JDateChooser();
-            panelPlanilla.add(dateIngreso);
-            panelPlanilla.add(new JLabel("Fecha de salida:"));
-            JDateChooser dateSalida = new JDateChooser();
-            panelPlanilla.add(dateSalida);
-            int horasSem = Integer.parseInt(JOptionPane.showInputDialog(null, "Horas Semanales:", "Editar Planilla", JOptionPane.QUESTION_MESSAGE));
-            int salarioHora = Integer.parseInt(JOptionPane.showInputDialog(null, "Salario por hora:", "Editar Planilla", JOptionPane.QUESTION_MESSAGE));
+            int row = ((BigDecimal) tablaDatos.getValueAt(filaSeleccionada, 0)).intValue();
 
-            JOptionPane.showConfirmDialog(null, panelPlanilla, "Editar Planilla", JOptionPane.OK_CANCEL_OPTION);
-            
-            Date fechaIngreso = dateIngreso.getDate();
-            Date fechaSalida = dateSalida.getDate();
-            
-            PlanillaDAO.editarPlanilla(row, idUsuario, fechaIngreso, fechaSalida, horasSem, salarioHora);
-            JOptionPane.showMessageDialog(null, "Planilla editada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            try {
+                // Llamar al procedimiento almacenado para obtener los datos de la planilla
+                java.sql.Connection conn = conexion.conectar();
+                String sql = "{ call sp_obtener_planilla_id(?, ?) }";
+                CallableStatement stmt = conn.prepareCall(sql);
+                stmt.setInt(1, row);
+                stmt.registerOutParameter(2, OracleTypes.CURSOR);
+                stmt.execute();
+
+                // Obtener los resultados del cursor
+                ResultSet rs = (ResultSet) stmt.getObject(2);
+                if (rs.next()) {
+                    // Obtener los datos de la planilla
+                    int idPlanilla = rs.getInt("id_planilla");
+                    int idUsuario = rs.getInt("usuario_id");
+                    Date fechaIngreso = rs.getDate("fecha_ingreso");
+                    Date fechaSalida = rs.getDate("fecha_salida");
+                    int horasSemana = rs.getInt("horas_semanales");
+                    int salarioHora = rs.getInt("salario_hora");
+
+                    // Mostrar el formulario para editar los datos de la planilla
+                    JTextField idUsuarioField = new JTextField(String.valueOf(idUsuario));
+                    JDateChooser fechaIngresoChooser = new JDateChooser();
+                    fechaIngresoChooser.setDate(fechaIngreso);
+                    JDateChooser fechaSalidaChooser = new JDateChooser();
+                    fechaSalidaChooser.setDate(fechaSalida);
+                    JTextField horasSemanaField = new JTextField(String.valueOf(horasSemana));
+                    JTextField salarioHoraField = new JTextField(String.valueOf(salarioHora));
+
+                    JPanel panelPlanilla = new JPanel(new GridLayout(8, 2));
+                    panelPlanilla.add(new JLabel("ID Usuario:"));
+                    panelPlanilla.add(idUsuarioField);
+                    panelPlanilla.add(new JLabel("Fecha de ingreso:"));
+                    panelPlanilla.add(fechaIngresoChooser);
+                    panelPlanilla.add(new JLabel("Fecha de salida:"));
+                    panelPlanilla.add(fechaSalidaChooser);
+                    panelPlanilla.add(new JLabel("Horas Semanales:"));
+                    panelPlanilla.add(horasSemanaField);
+                    panelPlanilla.add(new JLabel("Salario por hora:"));
+                    panelPlanilla.add(salarioHoraField);
+
+                    int result = JOptionPane.showConfirmDialog(null, panelPlanilla, "Editar Planilla", JOptionPane.OK_CANCEL_OPTION);
+
+                    if (result == JOptionPane.OK_OPTION) {
+                        try {
+                            int nuevoIdUsuario = Integer.parseInt(idUsuarioField.getText());
+                            Date nuevaFechaIngreso = fechaIngresoChooser.getDate();
+                            Date nuevaFechaSalida = fechaSalidaChooser.getDate();
+                            int nuevasHorasSemana = Integer.parseInt(horasSemanaField.getText());
+                            int nuevoSalarioHora = Integer.parseInt(salarioHoraField.getText());
+
+                            // Llamar al método para editar la planilla
+                            PlanillaDAO.editarPlanilla(idPlanilla, nuevoIdUsuario, nuevaFechaIngreso, nuevaFechaSalida, nuevasHorasSemana, nuevoSalarioHora);
+                            JOptionPane.showMessageDialog(null, "Planilla editada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                        } catch (NumberFormatException e) {
+                            JOptionPane.showMessageDialog(null, "Por favor, ingrese números válidos.", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    } else {
+                        System.out.println("El usuario canceló la edición de la planilla.");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "No se encontró ninguna planilla con el ID especificado.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+
+                rs.close();
+                stmt.close();
+                conn.close();
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null, "Error al obtener los datos de la planilla: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
         } else {
             JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para editar.", "Error", JOptionPane.ERROR_MESSAGE);
         }
