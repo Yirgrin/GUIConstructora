@@ -288,6 +288,7 @@ public class verProyecto extends javax.swing.JPanel {
                     String estado_proyecto = rs.getString("ESTADO_PROYECTO");
                     int duracion_en_dias = rs.getInt("DURACION_EN_DIAS");
                     double suma_presupuesto = rs.getDouble("SUMA_PRESUPUESTO");
+                    int dias_restantes = rs.getInt("DIAS_RESTANTES"); // Nueva línea para obtener los días restantes
 
                     StringBuilder mensaje = new StringBuilder();
                     mensaje.append("ID de Proyecto: ").append(proyecto_id).append("\n");
@@ -297,10 +298,11 @@ public class verProyecto extends javax.swing.JPanel {
                     mensaje.append("Fecha Fin: ").append(fechaFin).append("\n");
                     mensaje.append("Estado del proyecto: ").append(estado_proyecto).append("\n");
                     mensaje.append("Duración estimada en días: ").append(duracion_en_dias).append("\n");
+                    mensaje.append("Días restantes para la finalización del proyecto: ").append(dias_restantes).append("\n\n"); // Nueva línea para mostrar los días restantes
                     mensaje.append("Datos del cliente: ").append(cliente_datos).append("\n");
                     mensaje.append("\nCódigo de presupuesto asociado: ").append(presupuesto_id).append("\n");
                     mensaje.append("Suma del Presupuesto: ").append(suma_presupuesto).append("\n\n");
-
+                    
                     do {
                         int asignacion_id = rs.getInt("ASIGNACION_ID");
                         int empleado_id = rs.getInt("EMPLEADO_ID");

@@ -186,6 +186,7 @@ private Date parseFecha(String strFecha) {
         jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jtable = new javax.swing.JTable();
+        Detalles = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(102, 102, 102));
 
@@ -205,14 +206,29 @@ private Date parseFecha(String strFecha) {
         jtable.setShowGrid(true);
         jScrollPane1.setViewportView(jtable);
 
+        Detalles.setBackground(new java.awt.Color(57, 57, 57));
+        Detalles.setFont(new java.awt.Font("Eras Medium ITC", 1, 18)); // NOI18N
+        Detalles.setForeground(new java.awt.Color(255, 255, 255));
+        Detalles.setText("Detalles");
+        Detalles.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DetallesActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(301, Short.MAX_VALUE)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(282, 282, 282))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap(313, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(282, 282, 282))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(Detalles)
+                        .addContainerGap())))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
@@ -224,17 +240,64 @@ private Date parseFecha(String strFecha) {
             .addGroup(layout.createSequentialGroup()
                 .addGap(16, 16, 16)
                 .addComponent(jLabel2)
-                .addContainerGap(478, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 391, Short.MAX_VALUE)
+                .addComponent(Detalles)
+                .addContainerGap())
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(57, 57, 57)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(41, Short.MAX_VALUE)))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(59, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void DetallesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DetallesActionPerformed
+        int selectedRow = jtable.getSelectedRow();
+        if (selectedRow != -1) {
+            int alquiler_id = ((BigDecimal) jtable.getValueAt(selectedRow, 0)).intValue();
+            String sql = "SELECT MAQUINA_ID, NOMBRE_MAQUINA, CODIGO_PROVEEDOR, DIRECCION, TELEFONO_CONTACTO, FECHA_ALQUILER, FECHA_DEVOLUCION, DIAS_RESTANTES FROM Vista_Alquileres WHERE ALQUILER_ID = ?";
+            try (Connection conn = conexion.conectar();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+                stmt.setInt(1, alquiler_id);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        int maquina_id = rs.getInt("MAQUINA_ID");
+                        String nombre_maquina = rs.getString("NOMBRE_MAQUINA");
+                        String codigo_proveedor = rs.getString("CODIGO_PROVEEDOR");
+                        String direccion = rs.getString("DIRECCION");
+                        String telefono_contacto = rs.getString("TELEFONO_CONTACTO");
+                        Date fecha_alquiler = rs.getDate("FECHA_ALQUILER");
+                        Date fecha_devolucion = rs.getDate("FECHA_DEVOLUCION");
+                        int dias_restantes = rs.getInt("DIAS_RESTANTES");
+
+                        StringBuilder mensaje = new StringBuilder();
+                        mensaje.append("ID de Alquiler: ").append(alquiler_id).append("\n");
+                        mensaje.append("\nMáquina: ").append(nombre_maquina).append("\n");
+                        mensaje.append("Proveedor: ").append(codigo_proveedor).append("\n");
+                        mensaje.append("Dirección: ").append(direccion).append("\n");
+                        mensaje.append("Teléfono de Contacto: ").append(telefono_contacto).append("\n");
+                        mensaje.append("Fecha de Alquiler: ").append(fecha_alquiler).append("\n");
+                        mensaje.append("Fecha de Devolución: ").append(fecha_devolucion).append("\n");
+                        mensaje.append("Días restantes para devolución: ").append(dias_restantes).append("\n");
+
+                        JOptionPane.showMessageDialog(null, mensaje.toString(), "Detalles del Alquiler", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "No se encontró ningún alquiler con el ID especificado.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Error al ejecutar la consulta SQL.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila de la tabla.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_DetallesActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Detalles;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jtable;
