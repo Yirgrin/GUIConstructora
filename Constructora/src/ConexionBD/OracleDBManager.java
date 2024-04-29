@@ -1,4 +1,5 @@
 package ConexionBD;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -37,7 +38,7 @@ public class OracleDBManager {
         }
     }
 
-    public PreparedStatement prepareStatement(String sql) {
+    public CallableStatement prepareCall() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+}
 }

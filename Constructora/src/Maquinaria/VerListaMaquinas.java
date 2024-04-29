@@ -77,8 +77,7 @@ public class VerListaMaquinas extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para eliminar.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-
-    
+ 
     public void editarDatos() {
         tablaDatos.requestFocus();
         int filaSeleccionada = tablaDatos.getSelectedRow();   
@@ -114,9 +113,12 @@ public class VerListaMaquinas extends javax.swing.JPanel {
                     int nuevoPrecio = Integer.parseInt(precioField.getText());
                     int nuevasUnidades = Integer.parseInt(unidadesField.getText());
 
-                    // Llamar al método para editar la máquina
-                    MaquinariaDAO.editarMaquina(row, nuevoNombre, nuevaDescripcion, nuevoPrecio, nuevasUnidades);
-                    JOptionPane.showMessageDialog(null, "Máquina editada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                    
+                    if (MaquinariaDAO.editarMaquina(row, nuevoNombre, nuevaDescripcion, nuevoPrecio, nuevasUnidades)) {
+                           JOptionPane.showMessageDialog(null, "Máquina editada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                        } else {
+                            JOptionPane.showMessageDialog(null, "No se completó la edición.", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
                 } catch (NumberFormatException e) {
                     JOptionPane.showMessageDialog(null, "Por favor, ingrese números válidos.", "Error", JOptionPane.ERROR_MESSAGE);
                 }

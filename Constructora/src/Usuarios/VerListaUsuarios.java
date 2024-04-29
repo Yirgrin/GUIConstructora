@@ -2,6 +2,7 @@
 package Usuarios;
 
 import ConexionBD.OracleDBManager;
+import Maquinaria.MaquinariaDAO;
 import com.toedter.calendar.JDateChooser;
 import java.awt.GridLayout;
 import java.math.BigDecimal;
@@ -135,9 +136,11 @@ public class VerListaUsuarios extends javax.swing.JPanel {
                         String nuevoCargo = nuevoCargoField.getText();
                         Date nuevaFechaContratacion = dateContratacion.getDate();
 
-                        // Llamar al método para editar el usuario
-                        usuarioDAO.editarUsuario(row, nuevoNombre, nuevoApellido, nuevoTelefono, nuevoCorreo, nuevoCargo, nuevaFechaContratacion);
-                        JOptionPane.showMessageDialog(null, "Usuario editado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                        if  (usuarioDAO.editarUsuario(row, nuevoNombre, nuevoApellido, nuevoTelefono, nuevoCorreo, nuevoCargo, nuevaFechaContratacion)) {
+                           JOptionPane.showMessageDialog(null, "Usuario editado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                        } else {
+                            JOptionPane.showMessageDialog(null, "No se completó la edición.", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
                     } else {
                         System.out.println("El usuario canceló la edición de datos.");
                     }

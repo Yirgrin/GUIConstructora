@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.swing.JOptionPane;
 import oracle.jdbc.OracleTypes;
 
 
@@ -23,11 +24,15 @@ public class MaquinariaDAO {
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Error al insertar la máquina: " + e.getMessage());
+            if (e.getMessage().contains("ORA-20001") && e.getMessage().contains("El precio y/o las unidades de la maquinaria no pueden ser negativos.")) {
+                JOptionPane.showMessageDialog(null, "El precio y/o las unidades de la maquinaria no pueden ser negativos.", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Error al insertar la máquina: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
         } finally {
             dbManager.desconectar();
-        }
+        }    
     }
 
     public ResultSet obtenerMaquinas() {
@@ -64,7 +69,7 @@ public class MaquinariaDAO {
         }
     }
     
-     public static void editarMaquina(int maquinaId, String nombre, String descripcion, double precio, int unidadesTotales) {
+     public static boolean editarMaquina(int maquinaId, String nombre, String descripcion, double precio, int unidadesTotales) {
         try (Connection conexion = dbManager.conectar()) {
             String sql = "{call sp_actualizar_maquina(?, ?, ?, ?, ?)}";
             try (PreparedStatement statement = conexion.prepareCall(sql)) {
@@ -77,10 +82,18 @@ public class MaquinariaDAO {
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Error al editar la máquina: " + e.getMessage());
+            if (e.getMessage().contains("ORA-20001") && e.getMessage().contains("El precio y/o las unidades de la maquinaria no pueden ser negativos.")) {
+                JOptionPane.showMessageDialog(null, "El precio y/o las unidades de la maquinaria no pueden ser negativos.", "Error", JOptionPane.ERROR_MESSAGE);
+                return false;
+            } else {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Error al insertar la máquina: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
         } finally {
             dbManager.desconectar();
-        }
+        }    
+        return true;
     }
+    
 }

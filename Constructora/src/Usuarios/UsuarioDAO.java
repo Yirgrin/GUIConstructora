@@ -10,6 +10,7 @@ import java.util.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import javax.swing.JOptionPane;
 import oracle.jdbc.OracleTypes;
 
 public class UsuarioDAO {
@@ -33,8 +34,14 @@ public class UsuarioDAO {
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Error al ejecutar la sentencia: " + e.getMessage());
+            if (e.getMessage().contains("ORA-20002") && e.getMessage().contains("El número de teléfono no puede ser negativo")) {
+                JOptionPane.showMessageDialog(null, "El número de teléfono no puede ser negativo.", "Error", JOptionPane.ERROR_MESSAGE);
+            } else if (e.getMessage().contains("ORA-20003") && e.getMessage().contains("El usuario ID ya existe en la tabla Usuarios")) {
+                JOptionPane.showMessageDialog(null, "La identificacion del usuario ya está registrada.", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                e.printStackTrace();
+                System.out.println("Error al ejecutar la sentencia: " + e.getMessage());
+            }
         } finally {
             dbManager.desconectar();
         }
@@ -75,7 +82,7 @@ public class UsuarioDAO {
         }
     }
    
-   public void editarUsuario(int usuarioId, String nombre, String apellidos, String telefono, String correoElectronico, String cargo, Date fechaContratacion) {
+   public boolean editarUsuario(int usuarioId, String nombre, String apellidos, String telefono, String correoElectronico, String cargo, Date fechaContratacion) {
         try (Connection connection = dbManager.conectar();
             CallableStatement statement = connection.prepareCall("{call sp_actualizar_usuario(?, ?, ?, ?, ?, ?, ?)}")) {
             java.sql.Date sqlFechaContratacion = new java.sql.Date(fechaContratacion.getTime());
@@ -87,9 +94,21 @@ public class UsuarioDAO {
             statement.setString(6, cargo);
             statement.setDate(7, sqlFechaContratacion);
             statement.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println("Error al editadar el usuario: " + e.getMessage());
+        }catch (SQLException e) {
+            if (e.getMessage().contains("ORA-20002") && e.getMessage().contains("El número de teléfono no puede ser negativo")) {
+                JOptionPane.showMessageDialog(null, "El número de teléfono no puede ser negativo.", "Error", JOptionPane.ERROR_MESSAGE);
+                return false;
+            } else if (e.getMessage().contains("ORA-20003") && e.getMessage().contains("El usuario ID ya existe en la tabla Usuarios")) {
+                JOptionPane.showMessageDialog(null, "La identificacion del usuario ya está registrada.", "Error", JOptionPane.ERROR_MESSAGE);
+                return false;
+            } else {
+                e.printStackTrace();
+                System.out.println("Error al ejecutar la sentencia: " + e.getMessage());
+            }
+        } finally {
+            dbManager.desconectar();
         }
+        return true;
     }
 
    public static String CalcAntiguedad(int usuarioId) {

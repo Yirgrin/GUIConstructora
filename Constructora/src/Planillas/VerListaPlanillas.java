@@ -260,29 +260,31 @@ public class VerListaPlanillas extends javax.swing.JPanel {
                             int nuevasHorasSemana = Integer.parseInt(horasSemanaField.getText());
                             int nuevoSalarioHora = Integer.parseInt(salarioHoraField.getText());
 
-                            // Llamar al método para editar la planilla
-                            PlanillaDAO.editarPlanilla(idPlanilla, nuevoIdUsuario, nuevaFechaIngreso, nuevaFechaSalida, nuevasHorasSemana, nuevoSalarioHora);
+                           if (PlanillaDAO.editarPlanilla(idPlanilla, nuevoIdUsuario, nuevaFechaIngreso, nuevaFechaSalida, nuevasHorasSemana, nuevoSalarioHora)) {
                             JOptionPane.showMessageDialog(null, "Planilla editada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                        } catch (NumberFormatException e) {
-                            JOptionPane.showMessageDialog(null, "Por favor, ingrese números válidos.", "Error", JOptionPane.ERROR_MESSAGE);
+                        } else {
+                             JOptionPane.showMessageDialog(null, "No se completó la edición.", "Error", JOptionPane.ERROR_MESSAGE);
                         }
-                    } else {
-                        System.out.println("El usuario canceló la edición de la planilla.");
+                    } catch (NumberFormatException e) {
+                        JOptionPane.showMessageDialog(null, "Por favor, ingrese números válidos.", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 } else {
-                    JOptionPane.showMessageDialog(null, "No se encontró ninguna planilla con el ID especificado.", "Error", JOptionPane.ERROR_MESSAGE);
+                    System.out.println("El usuario canceló la edición de la planilla.");
                 }
-
-                rs.close();
-                stmt.close();
-                conn.close();
-            } catch (SQLException e) {
-                JOptionPane.showMessageDialog(null, "Error al obtener los datos de la planilla: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(null, "No se encontró ninguna planilla con el ID especificado.", "Error", JOptionPane.ERROR_MESSAGE);
             }
-        } else {
-            JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para editar.", "Error", JOptionPane.ERROR_MESSAGE);
+
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error al obtener los datos de la planilla: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
+    } else {
+        JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para editar.", "Error", JOptionPane.ERROR_MESSAGE);
     }
+ }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton CalcularSalario;

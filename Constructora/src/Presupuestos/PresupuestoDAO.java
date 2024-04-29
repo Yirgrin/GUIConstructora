@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import javax.swing.JOptionPane;
 import oracle.jdbc.OracleTypes;
 
 
@@ -24,11 +25,15 @@ public class PresupuestoDAO {
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Error al insertar el presupuesto: " + e.getMessage());
+            if (e.getMessage().contains("ORA-20001") && e.getMessage().contains("No se permiten montos negativos.")) {
+                JOptionPane.showMessageDialog(null, "No se permiten montos negativos.", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Error al insertar el presupuesto: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
         } finally {
             dbManager.desconectar();
-        }
+        } 
     }
     
     public ResultSet obtenerPresupuestos() {
@@ -65,7 +70,7 @@ public class PresupuestoDAO {
         }
     }
     
-    public void editarPresupuesto(int idPresupuesto, int totalMateriales, int manoDeObra, int otrosGastos) {
+    public boolean editarPresupuesto(int idPresupuesto, int totalMateriales, int manoDeObra, int otrosGastos) {
         try (Connection conexion = dbManager.conectar()) {
             String sql = "{call sp_actualizar_presupuesto(?, ?, ?, ?)}";
             try (PreparedStatement statement = conexion.prepareCall(sql)) {
@@ -77,11 +82,18 @@ public class PresupuestoDAO {
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Error al editar el presupuesto: " + e.getMessage());
+            if (e.getMessage().contains("ORA-20001") && e.getMessage().contains("No se permiten montos negativos.")) {
+                JOptionPane.showMessageDialog(null, "No se permiten montos negativos.", "Error", JOptionPane.ERROR_MESSAGE);
+                return false;
+            } else {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Error al insertar el presupuesto: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
         } finally {
             dbManager.desconectar();
-        }
+        } 
+        return true;
     }
 
     public static int CalcularPresupuesto(int idPresupuesto) {

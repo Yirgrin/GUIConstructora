@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.sql.Types;
+import javax.swing.JOptionPane;
 
 
 public class PlanillaDAO {
@@ -28,11 +29,16 @@ public class PlanillaDAO {
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
+        if (e.getMessage().contains("ORA-20001") && e.getMessage().contains("No se permite un salario negativo")) {
+            JOptionPane.showMessageDialog(null, "No se permite un salario negativo.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
             e.printStackTrace();
-            System.out.println("Error al insertar la planilla: " + e.getMessage());
-        } finally {
-            dbManager.desconectar();
-        }     
+            JOptionPane.showMessageDialog(null, "Error al insertar la planilla: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    } finally {
+        dbManager.desconectar();
+    } 
+   
     }
     
     private static final OracleDBManager dbManager = new OracleDBManager();
@@ -69,7 +75,7 @@ public class PlanillaDAO {
         }
     }
     
-    public static void editarPlanilla(int planillaId, int usuarioId, Date FechInicio, Date FechFin, int horasSemanales, int salarioHora) {
+    public static boolean editarPlanilla(int planillaId, int usuarioId, Date FechInicio, Date FechFin, int horasSemanales, int salarioHora) {
         try (Connection connection = dbManager.conectar();
             CallableStatement statement = connection.prepareCall("{call sp_actualizar_planilla(?, ?, ?, ?, ?, ?)}")) {
             java.sql.Date sqlfechaInicio = new java.sql.Date(FechInicio.getTime());
@@ -82,8 +88,18 @@ public class PlanillaDAO {
             statement.setInt(6, salarioHora);
             statement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error al editadar la planilla: " + e.getMessage());
-        }
+            if (e.getMessage().contains("ORA-20001") && e.getMessage().contains("No se permite un salario negativo")) {
+                JOptionPane.showMessageDialog(null, "No se permite un salario negativo.", "Error", JOptionPane.ERROR_MESSAGE);
+                return false;
+            } else {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Error al insertar la planilla: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+        } finally {
+            dbManager.desconectar();
+        }    
+        return true;
     }
     
     public int CalcularPlanilla(int idPlanilla) {

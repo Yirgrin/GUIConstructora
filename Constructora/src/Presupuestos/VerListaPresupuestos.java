@@ -109,9 +109,11 @@ public final class VerListaPresupuestos extends javax.swing.JPanel {
                     int nuevaManoObra = Integer.parseInt(manoObraField.getText());
                     int nuevoOtrosGastos = Integer.parseInt(otrosGastosField.getText());
 
-                    // Llamar al método para editar el presupuesto
-                    presupuestosDAO.editarPresupuesto(row, nuevoCostoMateriales, nuevaManoObra, nuevoOtrosGastos);
-                    JOptionPane.showMessageDialog(null, "Presupuesto editado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                    if (presupuestosDAO.editarPresupuesto(row, nuevoCostoMateriales, nuevaManoObra, nuevoOtrosGastos)) {
+                            JOptionPane.showMessageDialog(null, "Presupuesto editado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                        } else {
+                            JOptionPane.showMessageDialog(null, "No se completó la edición.", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
                 } catch (NumberFormatException e) {
                     JOptionPane.showMessageDialog(null, "Por favor, ingrese números válidos.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
