@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Date;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -43,9 +44,13 @@ public class addAlquiler extends javax.swing.JPanel {
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Error al insertar el alquiler: " + e.getMessage());
-        } finally {
+            if (e.getMessage().contains("ORA-20002") && e.getMessage().contains("La fecha de alquiler no puede ser posterior a la fecha de devolución.")) {
+                JOptionPane.showMessageDialog(null, "La fecha de alquiler no puede ser posterior a la fecha de devolución.", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Error al insertar el alquiler: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }  finally {
             dbManager.desconectar();
         }
     }

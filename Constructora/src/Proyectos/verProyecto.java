@@ -180,9 +180,17 @@ public class verProyecto extends javax.swing.JPanel {
 
                     stmt.close();
                     conn.close();
-                } catch (SQLException e) {
-                    JOptionPane.showMessageDialog(null, "Error al editar el proyecto: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }
+                }catch (SQLException e) {
+                    if (e.getMessage().contains("ORA-20003") && e.getMessage().contains("No se permiten campos vacíos en el proyecto.")) {
+                        JOptionPane.showMessageDialog(null, "No se permiten campos vacíos en el proyecto. No se completó la edición.", "Error", JOptionPane.ERROR_MESSAGE);
+                    } else if (e.getMessage().contains("ORA-20004") && e.getMessage().contains("La fecha de finalización no puede ser anterior a la fecha de inicio del proyecto.")) {
+                        JOptionPane.showMessageDialog(null, "La fecha de finalización no puede ser anterior a la fecha de inicio del proyecto. No se completó la edición.", "Error", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Error al editar el proyecto: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                        e.printStackTrace();
+                    }
+                } 
+               
             } else {
                 System.out.println("El usuario canceló la edición del proyecto.");
             }

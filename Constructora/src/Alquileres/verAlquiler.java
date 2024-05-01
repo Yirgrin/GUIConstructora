@@ -165,9 +165,14 @@ public void editAlquiler() {
                                 updateStmt.executeUpdate();
                                 JOptionPane.showMessageDialog(null, "Alquiler editado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                             }
-                        } catch (SQLException ex) {
-                            JOptionPane.showMessageDialog(null, "Error al actualizar el alquiler: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                        }
+                        } catch (SQLException e) {
+                            if (e.getMessage().contains("ORA-20002") && e.getMessage().contains("La fecha de alquiler no puede ser posterior a la fecha de devolución.")) {
+                                JOptionPane.showMessageDialog(null, "La fecha de alquiler no puede ser posterior a la fecha de devolución. No se completó la edición.", "Error", JOptionPane.ERROR_MESSAGE);
+                            } else {
+                                e.printStackTrace();
+                                JOptionPane.showMessageDialog(null, "Error al insertar el alquiler: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                            }
+                        } 
                     } else {
                         System.out.println("El usuario canceló la edición del alquiler.");
                     }

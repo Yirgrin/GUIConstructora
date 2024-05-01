@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Date;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -40,12 +41,19 @@ public class addProyecto extends javax.swing.JPanel {
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Error al insertar el proyecto: " + e.getMessage());
+            if (e.getMessage().contains("ORA-20003") && e.getMessage().contains("No se permiten campos vacíos en el proyecto.")) {
+                JOptionPane.showMessageDialog(null, "No se permiten campos vacíos en el proyecto. ", "Error", JOptionPane.ERROR_MESSAGE);
+            } else if (e.getMessage().contains("ORA-20004") && e.getMessage().contains("La fecha de finalización no puede ser anterior a la fecha de inicio del proyecto.")) {
+                JOptionPane.showMessageDialog(null, "La fecha de finalización no puede ser anterior a la fecha de inicio del proyecto.", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                e.printStackTrace();
+                System.out.println("Error al insertar el proyecto: " + e.getMessage());
+            }
         } finally {
-            dbManager.desconectar();
-        }
+         dbManager.desconectar();
     }
+    
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

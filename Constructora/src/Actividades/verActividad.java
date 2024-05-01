@@ -167,17 +167,17 @@ public class verActividad extends javax.swing.JPanel {
                     stmt.close();
                     conn.close();
                 } catch (SQLException e) {
-                    JOptionPane.showMessageDialog(null, "Error al editar la actividad: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            } else {
-                System.out.println("El usuario canceló la edición de la actividad.");
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para editar.", "Error", JOptionPane.ERROR_MESSAGE);
+                    if (e.getMessage().contains("ORA-20003") && e.getMessage().contains("La hora de la actividad no puede ser negativa.")) {
+                        JOptionPane.showMessageDialog(null, "La hora de la actividad no puede ser negativa. No se completó la edición.", "Error", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        e.printStackTrace();
+                        JOptionPane.showMessageDialog(null, "Error al insertar la actividad: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }       
         }
-        mostrarActividad();
+    }
 }
-
+     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

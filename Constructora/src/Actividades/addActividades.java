@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Date;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -37,8 +38,12 @@ public class addActividades extends javax.swing.JPanel {
             statement.executeUpdate();
         }
     } catch (SQLException e) {
-        e.printStackTrace();
-        System.out.println("Error al insertar la actividad: " + e.getMessage());
+        if (e.getMessage().contains("ORA-20003") && e.getMessage().contains("La hora de la actividad no puede ser negativa.")) {
+            JOptionPane.showMessageDialog(null, "La hora de la actividad no puede ser negativa.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al insertar la actividad: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     } finally {
         dbManager.desconectar();
     }
