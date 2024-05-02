@@ -165,19 +165,12 @@ public class verTarea extends javax.swing.JPanel {
                 stmt.close();
                 conn.close();
             } catch (SQLException e) {
-                if (e.getMessage().contains("ORA-20001") && e.getMessage().contains("La fecha de vencimiento no puede ser anterior a la fecha actual.")) {
-                    JOptionPane.showMessageDialog(null, "La fecha de vencimiento no puede ser anterior a la fecha actual. No se completó la edición.", "Error", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    e.printStackTrace();
                     JOptionPane.showMessageDialog(null, "Error al insertar la tarea: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         } else {
             System.out.println("El usuario canceló la edición de la tarea.");
         }
-    } else {
-        JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para editar.", "Error", JOptionPane.ERROR_MESSAGE);
-    }
     mostrarTarea();
 }
 

@@ -37,12 +37,8 @@ public class addTarea extends javax.swing.JPanel {
             statement.executeUpdate();
         }
     } catch (SQLException e) {
-        if (e.getMessage().contains("ORA-20001") && e.getMessage().contains("La fecha de vencimiento no puede ser anterior a la fecha actual.")) {
-            JOptionPane.showMessageDialog(null, "La fecha de vencimiento no puede ser anterior a la fecha actual.", "Error", JOptionPane.ERROR_MESSAGE);
-        } else {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Error al insertar la tarea: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
     } finally {
         dbManager.desconectar();
     }
